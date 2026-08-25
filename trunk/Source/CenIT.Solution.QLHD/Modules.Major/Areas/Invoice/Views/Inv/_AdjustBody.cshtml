@@ -1,0 +1,113 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvModel
+@using Cores.eContract.Consts
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.InvId)
+@Html.HiddenFor(model => model.InvKey)
+@Html.HiddenFor(model => model.InvNo)
+@Html.HiddenFor(model => model.Pattern)
+@Html.HiddenFor(model => model.Serial)
+@Html.HiddenFor(model => model.InvProductInfo.ProductCode)
+@Html.HiddenFor(model => model.InvProductInfo.ProductName)
+@Html.HiddenFor(model => model.InvProductInfo.ProductUnit)
+@Html.HiddenFor(model => model.InvProductInfo.ProductQuantity)
+@Html.HiddenFor(model => model.InvProductInfo.ProductPrice)
+@Html.HiddenFor(model => model.InvProductInfo.DiscountRate)
+@Html.HiddenFor(model => model.InvProductInfo.DiscountAmount)
+@Html.HiddenFor(model => model.InvProductInfo.TaxRate)
+@Html.HiddenFor(model => model.InvProductInfo.Amount)
+@Html.HiddenFor(model => model.InvProductInfo.Issum)
+@Html.HiddenFor(model => model.InvProductInfo.IssumName)
+@Html.HiddenFor(model => model.Total)
+@Html.HiddenFor(model => model.PaymentMethod)
+@Html.HiddenFor(model => model.InvType)
+@Html.HiddenFor(model => model.InvTypeName)
+@Html.HiddenFor(model => model.AmountInWord)
+@Html.HiddenFor(model => model.TaxAmount)
+@Html.HiddenFor(model => model.Amount)
+@Html.HiddenFor(model => model.DiscountAmount)
+@Html.HiddenFor(model => model.DiscountNonTax)
+@Html.HiddenFor(model => model.DiscountOther)
+@Html.HiddenFor(model => model.Note)
+@Html.HiddenFor(model => model.CurrencyUnit)
+@Html.HiddenFor(model => model.TaxRate)
+@Html.HiddenFor(model => model.InvCusInfo.CusCode)
+@Html.HiddenFor(model => model.ContractId)
+<hr />
+<div>
+    <div id="TypeCus">
+        <div class="form-group row">
+            @Html.TitleFor(model => model.InvCusInfo.TypeCus, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-9">
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.InvCusInfo.TypeCus, ConstsCusType.CONSUMER)
+                    <span class="badge bgc-info brc-info text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Consumer")</span>
+                    </span>
+                </label>
+
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.InvCusInfo.TypeCus, ConstsCusType.BUSINESS)
+                    <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Business")</span>
+                    </span>
+                </label>
+                @Html.HiddenFor(model => model.InvCusInfo.TypeCusName)
+            </div>
+        </div>
+
+        <hr />
+    </div>
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusName, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusName, new {@class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusCode, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusCode, new {@class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Customer_Code") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusTaxCode, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusTaxCode, new {@class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Customer_TaxCode") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusTaxCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusPhone, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusPhone, new {@class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("CustommerPhone_Search") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusPhone, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusBankName, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusBankName, new { @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Inv_BankName") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusBankName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusBankNo, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.InvCusInfo.CusBankNo, new { @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Inv_BankNo") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusBankNo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.TitleFor(model => model.InvCusInfo.CusAddress, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(model => model.InvCusInfo.CusAddress, new { rows = 3, @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Contract_Address") })
+            @Html.ValidationMessageFor(model => model.InvCusInfo.CusAddress, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>

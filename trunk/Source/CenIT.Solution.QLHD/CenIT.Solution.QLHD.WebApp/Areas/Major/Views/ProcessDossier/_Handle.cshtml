@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("Dossier_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Handle", "ProcessDossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "HandleDossier", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Dossier")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#HandleDossier').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_HandleDossier #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableDossier.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_HandleDossier form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_HandleDossier").modal("hide");
+                        $("#ModalContent #modal_HandleDossier").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableDossier.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_HandleDossier" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

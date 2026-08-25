@@ -1,0 +1,178 @@
+﻿@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorCustomerModel
+
+@Html.HiddenFor(model => model.CusId)
+@Html.HiddenFor(model => model.TypeCus)
+@Html.HiddenFor(model => model.TypeCusName)
+
+<div id="Consumer">
+    <div class="form-group row">
+        <div class="col-md-8">
+            @Html.TitleFor(model => model.CusName, new { @class = "col-form-label pr-0 font-bold" })
+            @{
+                if (Model.CusName?.Length > 100)
+                {
+                    @Html.TextBoxFor(model => model.CusName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name"), maxlength = 100, data_rel = "popover", data_placement = "top", data_content = string.Format(AppProcessor.Messagor.GetMessage("Common_MaxLengthMessage"), AppProcessor.Messagor.GetMessage("Customer_Name"), 100) })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.CusName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name"), maxlength = 100 })
+                }
+            }
+
+            @Html.ValidationMessageFor(model => model.CusName, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Gender, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="col-md-12">
+                <label class="px-0 pt-2 mr-2">
+                    @Html.RadioButtonFor(model => model.Gender, 1, new { })
+                    <span class="badge bgc-danger brc-danger text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Male")</span>
+                    </span>
+                </label>
+                <label class="px-0 pt-2 mr-2">
+                    @Html.RadioButtonFor(model => model.Gender, 0, new { })
+                    <span class="badge bgc-purple brc-purple text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Female")</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="ccard h-100 p-2">
+        <div class="form-group row">
+            <div class="col-md-8">
+                @Html.TitleFor(model => model.TypeIdentifier, new { @class = "col-form-label pr-0 font-bold" })
+                <div class="col-md-12 p-0">
+                    <label class="px-0">
+                        @Html.RadioButtonFor(model => model.TypeIdentifier, (int)EnumTypeIdentifier.DefinitionDoc, new { onchange = "_onChangeTypeIdentifier('#Consumer #TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc") + "')" })
+                        <span class="badge bgc-primary brc-primary text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc")</span>
+                        </span>
+                    </label>
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypeIdentifier, (int)EnumTypeIdentifier.IdCard, new { onchange = "_onChangeTypeIdentifier('#Consumer #TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard") + "')" })
+                        <span class="badge bgc-warning brc-warning text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard")</span>
+                        </span>
+                    </label>
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypeIdentifier, (int)EnumTypeIdentifier.Passport, new { onchange = "_onChangeTypeIdentifier('#Consumer #TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport") + "')" })
+                        <span class="badge bgc-green brc-green text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport")</span>
+                        </span>
+                    </label>
+                    @Html.HiddenFor(model => model.TypeIdentifierName)
+                </div>
+            </div>
+            <div class="col-md-4">
+                @Html.TitleFor(model => model.IdentifierNo, new { @class = "col-form-label pr-0 font-bold" })
+                @Html.TextBoxFor(model => model.IdentifierNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_IdentifierNo") })
+                @Html.ValidationMessageFor(model => model.IdentifierNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="form-group row">
+        <div class="col-md-8">
+            @Html.TitleFor(model => model.Email, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Email") })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Phone, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Phone") })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.ProvinceId)
+    @Html.HiddenFor(model => model.ProvinceName)
+    @Html.HiddenFor(model => model.WardId)
+    @Html.HiddenFor(model => model.WardName)
+    @Html.HiddenFor(model => model.StreetName)
+    @Html.HiddenFor(model => model.AddressNo)
+
+    <div class="form-group row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.Address, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.Address, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Address"), onclick = "_onTypeAddress('#Consumer #',$('#Consumer #ProvinceId').val(),$('#Consumer #WardId').val(),$('#Consumer #StreetName').val(),$('#Consumer #AddressNo').val());" })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    function _onChangeTypeIdentifier(eleName, name) {
+        $(eleName).val(name);
+    }
+
+    $('#Consumer').parents('.modal').on('shown.bs.modal', function () {
+        $('input[data-rel="popover"]').addClass('brc-danger-m2').popover({
+            container: 'body',
+            trigger: 'focus',
+            placement: 'auto',
+            template: '<div class="popover brc-danger-m2" role="tooltip"><div class="arrow arrow2 brc-white"></div><div class="arrow brc-danger-m1"></div><h3 class="popover-header bgc-danger-l2 border-0 text-115 text-danger-d3"></h3><div class="popover-body text-danger-d2 text-105"></div></div>'
+        });
+        $('input[data-rel="popover"]').trigger('focus');
+    });
+
+    //debugger;
+    $(document).ready(function () {
+        var $identifierNoElement = $("#@Html.IdFor(model => model.IdentifierNo)");
+        var $errorIdentifierNo = $("span[data-valmsg-for='@Html.IdFor(model => model.IdentifierNo)']");
+
+        $($identifierNoElement).on("blur", function () {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                var identifierNo = $(this).val().trim();
+
+                // Không được để trống
+                if (identifierNo === "") {
+                    $errorIdentifierNo.text("Vui lòng nhập số Căn Cước Công Dân.");
+                    return false;
+                }
+
+                // Chỉ gồm 12 chữ số
+                var regex = /^\d{12}$/;
+
+                if (!regex.test(identifierNo)) {
+                    $errorIdentifierNo.text("Số Căn Cước Công Dân phải gồm đúng 12 chữ số.");
+                    return false;
+                }
+
+                $errorIdentifierNo.text("");
+                return true;
+            }
+        });
+
+        $($identifierNoElement).on("keypress", function (e) {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                var charCode = e.which || e.keyCode;
+
+                // Cho phép Backspace
+                if (charCode === 8) return true;
+
+                // Chỉ cho phép số
+                if (charCode < 48 || charCode > 57) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        $($identifierNoElement).on("input", function () {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                $(this).val($(this).val().replace(/\D/g, "").substring(0, 12));
+            }
+        });
+    });
+
+</script>

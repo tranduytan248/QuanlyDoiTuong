@@ -1,0 +1,25 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateContractStatusModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("ContractStatus_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "ContractStatus", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ContractStatus_OnProcessSuccess(data, 'DeleteContractStatus')"
+    }, new { @class = "form-horizontal", id = "DeleteContractStatus" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ContractStatusId)
+        @Html.HiddenFor(model => model.ContractStatusName)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Cate.Areas.Cate.Models.SearchUnionModel
+<div class="card dcard" id="cardSearch">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-group row">
+                @Html.TitleFor(model => model.BelongUnions, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.SelectFor(model => model.BelongUnions, Model.ListUnions, "", new { @class = "form-control col-md-10", multiple = true })
+                    @Html.ValidationMessageFor(model => model.BelongUnions, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                @Html.TitleFor(model => model.TypeUnions, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.TypeUnions, new SelectList(Model.ListTypeUnions, "Value", "Text"), "", new { @class = "form-control col-md-8", multiple = true })
+                    @Html.ValidationMessageFor(model => model.TypeUnions, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                @*<button type="button" class="btn btn-primary" onclick="_tableUnion.ajax.reload(null, false);"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>*@
+                <button type="button" class="btn btn-primary" onclick="refreshTreeGridDataSource();"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+</div>

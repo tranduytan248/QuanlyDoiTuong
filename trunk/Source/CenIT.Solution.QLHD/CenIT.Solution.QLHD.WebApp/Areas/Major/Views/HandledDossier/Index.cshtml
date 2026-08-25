@@ -1,0 +1,92 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchDossierModel
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("HandledDossier_Title");
+}
+
+@section PluginCss{
+
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="col-sm-12 table-responsive-md">
+            <table id="DSDossiers" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Dossier_Title")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Dossier_ProcessedTime")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Dossier_Status")</th>
+                        <th class="w-25">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- the `html` of this element will be used by dropzone instance for previewing files/images -->
+<div id="preview-template" class="d-none">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-image">
+            <img alt="Dropzone placeholder" data-dz-thumbnail="" />
+        </div>
+
+        <div class="dz-details">
+            <div class="dz-size">
+                <span data-dz-size=""></span>
+            </div>
+
+            <div class="dz-filename">
+                <span data-dz-name=""></span>
+            </div>
+        </div>
+
+        <div class="dz-progress progress border-1 brc-yellow-tp2" style="height: 0.75rem;">
+            <div class="progress-bar bgc-success dz-upload " role="progressbar" data-dz-uploadprogress=""></div>
+        </div>
+
+        <div class="dz-error-message">
+            <span data-dz-errormessage=""></span>
+        </div>
+
+        <div class="dz-success-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-white"></i>
+                <i class="fa fa-check fa-stack-1x fa-inverse text-success-m1"></i>
+            </span>
+        </div>
+
+        <div class="dz-error-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-danger-m3"></i>
+                <i class="fas fa-exclamation fa-stack-1x fa-inverse text-white"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+@section BottomScript
+{
+    @*<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/typeaheadjs/dist/typeahead.bundle.js")"></script>*@
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/typeaheadjs/dist/typeahead.js")"></script>
+    <script src="@Url.Content("~/Contents/Modules/Major/plugins/money2string/money2text.js")"></script>
+    <script src="@Url.Content("~/Areas/Major/Views/HandledDossier/HandledDossier.js")"></script>
+
+}
+
+@section PluginJs{
+}

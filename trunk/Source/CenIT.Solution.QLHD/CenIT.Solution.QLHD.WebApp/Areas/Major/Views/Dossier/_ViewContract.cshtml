@@ -1,0 +1,246 @@
+﻿@using Newtonsoft.Json
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Contract_Title")} - [{Model.ContractTypeName} - {Model.ContractNoInfo}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    pink
+}
+
+@section FormIcon{
+    <i class="fas fa-file-contract"></i>
+}
+
+@section FormBody{
+
+    <div class="row">
+        <div id="ContractContents" class="col-md-12">
+            <div class="alert bgc-primary-l4 brc-primary-m4 align-items-center text-dark-tp2 p-3" role="alert">
+                <h5 class="alert-heading text-primary-m1 font-bolder">
+                    <i class="fas fa-user-tie mr-1 mb-1"></i>
+                    Thông tin khách hàng
+                </h5>
+                <hr class="border-none border-t-3 brc-primary-l2 border-double">
+                <div class="text-110 text-500 text-primary-d1">@Model.CusName</div>
+                <span class="badge badge-lg badge-success radius-4 mb-1">
+                    <span class="px-2">@Model.TypeCusName</span>
+                </span>
+                @{
+                    if (!Model.CusInfo.IsRepresenter)
+                    {
+                        <span class="badge badge-lg bgc-danger brc-danger text-white radius-4 mb-1">
+                            <span class="px-2">@(Model.CusInfo.Gender == 1? AppProcessor.Messagor.GetMessage("Gender_Male"): AppProcessor.Messagor.GetMessage("Gender_Female"))</span>
+                        </span>
+                    }
+                }
+
+                @if (Model.CusInfo.TypeCus == "BUSINESS")
+                {
+                    <span class="badge badge-info badge-lg arrowed-in-right mb-1">
+                        @AppProcessor.Messagor.GetMessage("Customer_TaxCode")
+                    </span>
+                    <span class="badge btn-pink badge-lg arrowed ml-n1 mb-1">
+                        @Model.CusInfo.TaxCode
+                    </span>
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(Model.CusInfo.IdentifierNo))
+                    {
+                        <span class="badge badge-info badge-lg arrowed-in-right mb-1">
+                            @Model.CusInfo.TypeIdentifierName
+                        </span>
+                        <span class="badge btn-pink badge-lg arrowed ml-n1 mb-1">
+                            @Model.CusInfo.IdentifierNo
+                        </span>
+                    }
+                }
+
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-phone text-purple"></i> @Model.CusInfo.Phone
+                </span>
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-map-marker text-orange-d1"></i> @Model.CusInfo.Address
+                </span>
+            </div>
+
+            <div class="alert bgc-warning-l4 brc-warning-m4 align-items-center text-dark-tp2 p-3" role="alert">
+                <h5 class="alert-heading text-success-m1 font-bolder">
+                    <i class="fas fa-file-contract mr-1 mb-1"></i>Thông tin hợp đồng
+                </h5>
+                <hr class="border-none border-t-3 brc-info-l2 border-double">
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="far fa-hand-point-right"></i> @Model.PurposeName
+                </span>
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-map-marker"></i> @($"Thửa đất số {Model.LandParcelNo} thuộc bản đồ số {Model.MapNo} - {Model.Address}")
+                </span>
+                <div class="mt-2 w-100 text-secondary radius-1 py-3">
+                    <div class="d-flex mb-1">
+                        <h6 class="text-600 text-danger-d1 text-105">
+                            <i class="fas fa-money-check-alt"></i>
+                            @AppProcessor.Messagor.GetMessage("Contract_Total")
+                        </h6>
+                    </div>
+                    <div class="border-1 brc-dark-l3 radius-1 px-3 py-25 bgc-secondary-l3 text-primary-d1 text-105">
+                        <div class="mt-2">
+                            <span class="w-75 d-inline-block text-right mr-3 text-500">@AppProcessor.Messagor.GetMessage("Contract_SubTotal"):</span>
+
+                            <span class="w-20 text-right badge bgc-danger-l3 text-danger-d3 text-100 px-3">@Model.SubTotal.ToString("#,### đ")</span>
+                        </div>
+                        @{
+                            if (!Model.HasTaxForContract)
+                            {
+                                <div class="mt-2">
+                                    <span class="w-75 d-inline-block text-right mr-3 text-500">@Model.InfoDiscountContract:</span>
+                                    <span class="w-20 text-right badge bgc-danger-l3 text-danger-d3 text-100 px-3">@Model.Discount.ToString("#,### đ")</span>
+                                </div>
+                            }
+                        }
+                        <div class="mt-2">
+                            <span class="w-75 d-inline-block text-right mr-3 text-500">@AppProcessor.Messagor.GetMessage("Contract_Total"):</span>
+                            <span class="w-20 text-right badge bgc-danger-l3 text-danger-d3 text-100 px-3">@Model.Total.ToString("#,### đ")</span>
+                            @{
+                                if (Model.HasTaxForContract)
+                                {
+                                    <span class="w-100 d-inline-block text-danger-d1 text-85 text-right mr-3 text-500">(@Model.TaxInfo)</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-none border-t-3 brc-info-l2 border-double">
+                <div class="table-responsive-md">
+                    <span class="text-primary-d3 text-105 text-500">
+                        <i class="fa fa-info mr-1"></i>
+                        Chi tiết
+                    </span>
+                    <hr class="w-100 mx-auto mb-0 brc-default-l2">
+                    <table id="ListContractTasks" class="table table table-striped-default table-borderless bgc-transparent" width="100%">
+                        <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                            <tr>
+                                <th class="w-50">@AppProcessor.Messagor.GetMessage("ContractTask_Contents")</th>
+                                <th class="w-50" id="total">@AppProcessor.Messagor.GetMessage("ContractTask_Total")</th>
+                            </tr>
+                        </thead>
+                        <tfoot class="bgc-lightgrey-l3 d-none">
+                            <tr class="text-500 text-danger-d1 text-105">
+                                <th>@AppProcessor.Messagor.GetMessage("ContractTask_Totals")</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+    <script type="text/javascript">
+
+        var _tableContractTasks;
+
+        $(document).ready(function () {
+            _initTableContractTasks();
+
+            $("#ModalContent #modal_ViewContractt").on("hidden.bs.modal", function () {
+                $('a[data-modal-id="ViewContract"]').remove();
+            });
+        });
+
+        function _initTableContractTasks() {
+            _tableContractTasks = $("#ListContractTasks").DataTable({
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                "Responsive": true,
+                "language": {
+                    "processing": '<div id="tableLoading" class="pageload-overlay show pageload-loading" data-opening="M 0,0 80,-10 80,60 0,70 0,0" data-closing="M 0,-10 80,-20 80,-10 0,0 0,-10" style=""><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 80 60" preserveAspectRatio="none"><path d="M 0,70 80,60 80,80 0,80 0,70"></path></svg></div>'
+                        //"<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+                },
+                "order": [[0, 'desc']],
+                "lengthChange": true,
+                "processing": true,
+                "serverSide": false,
+                "searching": false,
+                "paging": false, "info": false,
+                "columns": [
+                    {
+                        "data": "Contents",
+                        "sortable": false,
+                        "defaultContent": "1",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display") {
+                                if (row["RateFormula"] == null) return data;
+                                var rowIdx = meta.settings._iDisplayStart + meta.row + 1;
+                                return "{3}. {0} (KL*ĐG*{1}){2}".format(data, row["RateFormula"], (row.Area != null && row.Area != undefined ? " - ({0}".format(row.Area) : ""), row["Ordinal"]);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "Total",
+                        "sortable": false,
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type === "display") {
+                                return '<span class="d-inline-block radius-round bgc-default-l2 text-primary-d2 text-500 px-25 py-3px mx-2px my-2px">{0}</span>'.format("{0} x {1} ({2}) * {3} = {4}".format(VND.format(row["Price"]), row["Amount"], row["Unit"], row["Rate"].toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 }), VND.format(data)));
+                            }
+                            return data;
+                        }
+                    },
+                ],
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api();
+
+                    api.columns('#total', {
+                        page: 'current'
+                    }).every(function () {
+                        var sum = this
+                            .data()
+                            .reduce(function (a, b) {
+                                var x = parseFloat(a) || 0;
+                                var y = parseFloat(b) || 0;
+                                return x + y;
+                            }, 0);
+                        var totalAmount = Math.round(sum);
+                        $(this.footer()).html(VND.format(totalAmount));
+                    });
+                }
+            });
+
+            _tableContractTasks.on('draw', function () {
+                var btnSubmit = $('#ContractInfo').parents('.modal-content').find('button[type="submit"]')[0];
+                var tblFooter = _tableContractTasks.footer();
+
+                if (_tableContractTasks.data().count() > 0) {
+                    $(btnSubmit).removeClass('disabled');
+                    $(tblFooter).removeClass('d-none');
+                } else {
+                    if (!$(btnSubmit).hasClass('disabled')) {
+                        $(btnSubmit).addClass('disabled');
+                    }
+
+                    if (!$(tblFooter).hasClass('d-none')) {
+                        $(tblFooter).addClass('d-none');
+                    }
+                }
+            });
+
+            var dataTasks = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.ListTasks))');
+            if (typeof dataTasks != null) {
+                _tableContractTasks.clear().rows.add(dataTasks).draw();
+                _tableContractTasks.column(0).data().sort();
+            }
+        }
+
+    </script>
+}
+
+@section SubmitControl{
+
+}

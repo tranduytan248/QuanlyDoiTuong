@@ -1,0 +1,115 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorCustomerModel
+
+@Html.HiddenFor(model => model.CusId)
+@Html.HiddenFor(model => model.RefCus)
+@Html.HiddenFor(model => model.TypeCus)
+@Html.HiddenFor(model => model.TypeCusName)
+<div id="Business">
+    <div class="form-group row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.EnterpriseName, new { @class = "col-form-label pr-0 font-bold" })
+            @{
+                if (Model.CusName?.Length > 100)
+                {
+                    @Html.TextBoxFor(model => model.EnterpriseName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Enterprise_Name"), maxlength = 100, data_rel = "popover", data_placement = "top", data_content = string.Format(AppProcessor.Messagor.GetMessage("Common_MaxLengthMessage"), AppProcessor.Messagor.GetMessage("Customer_Enterprise_Name"), 100) })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.EnterpriseName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Enterprise_Name") })
+                }
+            }
+
+            @Html.ValidationMessageFor(model => model.EnterpriseName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-5">
+            @Html.TitleFor(model => model.TaxCode, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.TaxCode, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_TaxCode") })
+            @Html.ValidationMessageFor(model => model.TaxCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-5">
+            @Html.TitleFor(model => model.Phone, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Phone") })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-7">
+            @Html.TitleFor(model => model.Email, new { @class = "col-sm-12 col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Email") })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.ProvinceId)
+    @Html.HiddenFor(model => model.ProvinceName)
+    @Html.HiddenFor(model => model.WardId)
+    @Html.HiddenFor(model => model.WardName)
+    @Html.HiddenFor(model => model.StreetName)
+    @Html.HiddenFor(model => model.AddressNo)
+
+    <div class="form-group row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.Address, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.Address, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Address"), onclick = "_onTypeAddress('#Business #',$('#Business #ProvinceId').val(),$('#Business #WardId').val(),$('#Business #StreetName').val(),$('#Business #AddressNo').val());" })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+
+    <div class="ccard h-100">
+        <div class="card-header bg-transparent">
+            <h5 class="card-title">
+                <i class="fas fa-user-tie text-blue opacity-1"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Customer_Representer")
+            </h5>
+        </div>
+        <div class="card-body p-2">
+            <div class="form-group row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.RepresenterName, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextBoxFor(model => model.RepresenterName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Representer_Name") })
+                    @Html.ValidationMessageFor(model => model.RepresenterName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    @Html.TitleFor(model => model.RepresenterGender, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="col-md-12 p-0">
+                        <label class="px-0 pt-2 mr-2">
+                            @Html.RadioButtonFor(model => model.RepresenterGender, 1, new { })
+                            <span class="badge bgc-danger brc-danger text-white badge-lg arrowed arrowed-in-right mb-1">
+                                <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Male")</span>
+                            </span>
+                        </label>
+                        <label class="px-0 pt-2 mr-2">
+                            @Html.RadioButtonFor(model => model.RepresenterGender, 0, new { })
+                            <span class="badge bgc-purple brc-purple text-white badge-lg arrowed arrowed-in-right mb-1">
+                                <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Female")</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    @Html.TitleFor(model => model.RepresenterTitle, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextBoxFor(model => model.RepresenterTitle, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Representer_Title") })
+                    @Html.ValidationMessageFor(model => model.RepresenterTitle, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#Business').parents('.modal').on('shown.bs.modal', function () {
+        $('input[data-rel="popover"]').addClass('brc-danger-m2').popover({
+            container: 'body',
+            trigger: 'focus',
+            placement: 'auto',
+            template: '<div class="popover brc-danger-m2" role="tooltip"><div class="arrow arrow2 brc-white"></div><div class="arrow brc-danger-m1"></div><h3 class="popover-header bgc-danger-l2 border-0 text-115 text-danger-d3"></h3><div class="popover-body text-danger-d2 text-105"></div></div>'
+        });
+        $('input[data-rel="popover"]').trigger('focus');
+    });
+</script>

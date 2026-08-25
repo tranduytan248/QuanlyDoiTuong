@@ -1,0 +1,36 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchSubjectModel
+<div class="card dcard">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-row form-group align-items-center">
+                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Giới tính:</div>
+                <div class="col-md-3">
+                    <select class="form-control" id="Gender" name="Gender">
+                        <option value="">-- Tất cả giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Từ khóa:</div>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(model => model.Key, new { @class = "form-control", placeholder = "Nhập số CCCD, họ tên, số điện thoại, quê quán..." })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableSubject.ajax.reload(null, false);"><i class="fa fa-search"></i>&nbsp;Tìm kiếm đối tượng</button>
+            </div>
+        </div>
+    </div>
+</div>

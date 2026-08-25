@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcedureModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Procedure_Config_Title")} - {Model.ProcedureName}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-users-cog"></i>
+}
+
+@section FormBody{
+
+    <div class="row modal-body p-0 mx-0" id="bodyForm">
+        @Html.Partial("_Diagram")
+    </div>
+}
+
+@section SubmitControl{
+}

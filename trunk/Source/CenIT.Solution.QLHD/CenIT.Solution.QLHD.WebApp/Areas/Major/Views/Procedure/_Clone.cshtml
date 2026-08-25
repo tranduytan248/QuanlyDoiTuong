@@ -1,0 +1,28 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Clone"), $"{AppProcessor.Messagor.GetMessage("Procedure_Title")} [{Model.ProcedureName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="far fa-clone"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Clone", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Procedure_OnProcessSuccess(data, 'CloneProcedure')"
+    }, new { @class = "form-horizontal", id = "CloneProcedure" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Procedure")
+        </div>
+    }
+}

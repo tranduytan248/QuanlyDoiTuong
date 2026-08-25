@@ -1,0 +1,290 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+
+<link rel="stylesheet" href="~/Contents/Base/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
+
+<div class="" id="DecisionPenalize">
+    <div class="form-group row">
+        <h3 class="text-center font-500 col-12 text-primary-d2">BIÊN BẢN VI PHẠM HÀNH CHÍNH</h3>
+    </div>
+    <hr class="brc-danger-m1" />
+
+    <div class="form-group row">
+        <div class="col-3 input-floating-label text-danger-d2 brc-danger-m1">
+            <input required="" type="text" placeholder="Số biên bản" class="form-control shadow-none" id="SoBBVPHC" name="SoBBVPHC" />
+            <span class="floating-label text-danger-m3 text-500">
+                Biên bản số (*)
+            </span>
+        </div>
+        <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+            <input required="" type="text" placeholder="Lập biên bản ngày" class="form-control shadow-none datepicker" id="NgayLapBBVPHC" name="NgayLapBBVPHC" />
+            <span class="floating-label text-danger-m3 text-500">
+                Lập biên bản ngày (*)
+            </span>
+        </div>
+    </div>
+
+    @*<div class="form-group row">
+	    <span class="has-float-label input-floating-label col-11 text-danger-d2 brc-danger-m1">
+		    <textarea required class="form-control shadow-none" id="DiaChiLap" name="DiaChiLap" placeholder="Tại địa chỉ (*)" rows="2"></textarea>
+		    <label class="floating-label text-danger-m3 text-500" for="DiaChiLap">
+			    Tại địa chỉ (*)
+		    </label>
+	    </span>
+    </div>*@
+    
+    @*<div class="form-group row">
+	    <span class="has-float-label input-floating-label col-11 text-danger-d2 brc-danger-m1">
+		    <textarea disabled="disabled" class="form-control shadow-none" id="LapBienBanTai" name="LapBienBanTai" placeholder="Lý do lập biên bản tại (*)" rows="2"></textarea>
+		    <label class="floating-label text-danger-m3 text-500" for="LapBienBanTai">
+			    Lý do lập biên bản tại (*)
+		    </label>
+	    </span>
+    </div>*@
+
+    <div class="form-group row">
+	    <div class="col-12 input-floating-label text-danger-d2 brc-danger-m1">
+		    <input required="" type="text" placeholder="Căn cứ" class="form-control shadow-none" id="CanCuLapBBVPHC" name="CanCuLapBBVPHC"/>
+		    <span class="floating-label text-danger-m3 text-500">
+			    Căn cứ (*)
+		    </span>
+	    </div>
+    </div>
+
+    <hr class="brc-danger-m1" />
+
+    <div class="form-group row mt-2">
+        <label for="TypeViolator" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("TypeViolator_Title")</label>
+        <label class="col-form-label col-4">
+            <input type="radio" name="TypeViolator" value="@((int)EnumTypeViolator.Persional)" checked="checked" id="Persional" , onchange="_onChangeTypeViolator(this);" />
+            @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolator_Persional"), new { @for = "Persional" })
+        </label>
+        <label class="col-form-label col-4">
+            <input type="radio" name="TypeViolator" value="@((int)EnumTypeViolator.Organization)" id="Organization" , onchange="_onChangeTypeViolator(this);" />
+            @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolator_Organization"), new { @for = "Organization" })
+        </label>
+    </div>
+
+    <div class="card dcard mb-4" draggable="false">
+        <div class="card-header">
+            <h5 class="card-title text-120 text-danger-d2 text-500">
+                <i class="fas fa-wrench"></i>&nbsp;@AppProcessor.Messagor.GetMessage("TypeViolator_Title")
+            </h5>
+            <div class="card-toolbar">
+                <div class="card-toolbar no-border">
+                    <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                        <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-2">
+            <div id="ViolatorInfo" class="mt-1">
+                @Html.Partial("_Violator")
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+	    <span class="has-float-label input-floating-label col-11 text-danger-d2 brc-danger-m1">
+		    <textarea required class="form-control shadow-none" id="HanhViViPham" name="HanhViViPham" placeholder="Hành vi vi phạm (*)" rows="4"></textarea>
+		    <label class="floating-label text-danger-m3 text-500" for="HanhViViPham">
+			    Hành vi vi phạm (*)
+		    </label>
+	    </span>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-10 input-floating-label text-danger-d2 brc-danger-m1">
+            <input required="" type="text" placeholder="Căn cứ" class="form-control shadow-none" id="QuyDinh" name="QuyDinh" />
+            <span class="floating-label text-danger-m3 text-500">
+                Quy định tại (*)
+            </span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Contents/Base/plugins/bootstrap-datetimepicker/js/moment-with-locales.js"></script>
+<script type="text/javascript" src="~/Contents/Base/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    $(document).ready(function () {
+
+        //$(".datetimepicker").datetimepicker({
+        //    locale: 'vi',
+        //    format: 'DD/MM/YYYY LT',
+        //    dayViewHeaderFormat: 'MMMM YYYY',
+        //    calendarWeeks: true,
+        //    showTodayButton: true,
+        //    icons: {
+        //        time: 'fas fa-clock',
+        //        date: 'fas fa-calendar',
+        //        up: 'fas fa-chevron-up',
+        //        down: 'fas fa-chevron-down',
+        //        previous: 'fas fa-chevron-left',
+        //        next: 'fas fa-chevron-right',
+        //        today: 'fas fa-calendar-day',
+        //        clear: 'fas fa-trash',
+        //        close: 'fas fa-remove'
+        //    }
+        //});
+
+        var $invalidClass = 'brc-danger-tp2'
+        var $validClass = 'brc-info-tp2'
+        var $errorClass = 'form-text form-error text-danger-m2'
+        var arrIgnore = $('#DecisionPenalize [name="TypeViolator"]').val() == '@((int)EnumTypeViolator.Persional)' ? $('#ForOrganization input[required=""]').map(function (idx, el) { return "#" + $(el).attr("id") }) : $('#ForPersonal input[required=""]').map(function (idx, el) { return "#" + $(el).attr("id") });
+
+        $('#CreateDossier').validate({
+            errorElement: 'span',
+            errorClass: $errorClass,
+            focusInvalid: false,
+            ignore: arrIgnore.get().join(','),
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                password2: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#password"
+                },
+                name: {
+                    required: true
+                },
+                phone: {
+                    required: true,
+                    phone: 'required'
+                },
+                url: {
+                    required: true,
+                    url: true
+                },
+                comment: {
+                    //required: true
+                },
+                state: {
+                    //required: true
+                },
+                platform: {
+                    required: true
+                },
+                subscription: {
+                    required: true
+                },
+                gender: {
+                    required: true,
+                },
+                agree: {
+                    required: true,
+                }
+            },
+
+            //messages: {
+            //    email: {
+            //        required: "Please provide a valid email.",
+            //        email: "Please provide a valid email."
+            //    },
+            //    password: {
+            //        required: "Please specify a password.",
+            //        minlength: "Please specify a secure password."
+            //    },
+            //    platform: "Please choose your platform",
+            //    subscription: "Please choose at least one option",
+            //    gender: "Please choose gender",
+            //    agree: "Please agree to our terms of use"
+            //},
+            //highlight: function (element) {
+            //    var $element = $(element);
+            //    //remove error messages to be inserted again, so that the `.fa-exclamation-circle` is inserted in `errorPlacement` function
+            //    $element.closest('.form-group').find('input[id=' + element.id + ']').next('.form-error').remove()
+            //    if ($element.is('input[type=checkbox]') || $element.is('input[type=radio]')) return
+            //    else if ($element.is('.select2')) {
+            //        var container = $element.siblings('[class*="select2-container"]')
+            //        container.find('.select2-selection').addClass($invalidClass)
+            //    }
+            //    else if ($element.is('.chosen')) {
+            //        var container = $element.siblings('[class*="chosen-container"]');
+            //        container.find('.chosen-choices, .chosen-single').addClass($invalidClass)
+            //    }
+            //    else {
+            //        $element.addClass($invalidClass + ' d-inline-block input-error').removeClass($validClass)
+            //    }
+            //    $element.focus(function () {
+            //        $element.removeClass($invalidClass + ' d-inline-block input-error');
+            //    });
+            //},
+            //success: function (error, element) {
+            //    var parent = error.parent()
+            //    var $element = $(element)
+            //    $element.removeClass($invalidClass)
+            //            .closest('.form-group').find('.form-text').remove()
+            //    if ($element.is('input[type=checkbox]') || $element.is('input[type=radio]')) return
+            //    else if ($element.is('.select2')) {
+            //        var container = $element.siblings('[class*="select2-container"]')
+            //        container.find('.select2-selection').removeClass($invalidClass)
+            //    }
+            //    else if ($element.is('.chosen')) {
+            //        var container = $element.siblings('[class*="chosen-container"]')
+            //        container.find('.chosen-choices, .chosen-single').removeClass($invalidClass)
+            //    }
+            //    else {
+            //        $element.addClass($validClass + ' d-inline-block')
+            //    }
+            //    // append 'fa-check' icon
+            //    parent.append('<span class="form-text d-inline-block ml-sm-2"><i class=" fa fa-check text-success-m1 text-120"></i></span>')
+            //},
+
+            errorPlacement: function (error, element) {
+                // prepend 'fa-exclamation-circle' icon
+                error.prepend('<i class="form-text fa fa-exclamation-circle text-danger-m1 text-100 mr-1 ml-2"></i>')
+
+                if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
+                    element.closest('div[class*="col-"]').append(error)
+                }
+                else if (element.is('.select2')) {
+                    var container = element.siblings('[class*="select2-container"]')
+                    error.insertAfter(container)
+                    container.find('.select2-selection').addClass($invalidClass)
+                }
+                else if (element.is('.chosen')) {
+                    var container = element.siblings('[class*="chosen-container"]')
+                    error.insertAfter(container)
+                    container.find('.chosen-choices, .chosen-single').addClass($invalidClass)
+                }
+                else {
+                    error.addClass('d-inline-block').insertAfter(element)
+                }
+
+                element.focus(function () {
+                    element.removeClass($errorClass);
+                });
+            },
+
+            submitHandler: function (form) {
+            },
+
+            invalidHandler: function (form, validator) {
+                //var errors = validator.numberOfInvalids();
+                //if (errors) {
+                //    validator.errorList[0].element.focus();
+                //}
+            },
+        });
+
+        //$('#Construction input[name="Construction.LandParcelNo"], #Construction input[name="Construction.MapNo"]').change(function () {
+        //    var landParcelNo = $('#Construction input[name="Construction.LandParcelNo"]').val();
+        //    var mapNo = $('#Construction input[name="Construction.MapNo"]').val();
+        //    $("#DecisionPenalize #LapBienBanTai").val("Thửa đất số {0}, TBĐ số {1}".format(landParcelNo, mapNo));
+        //});
+    });
+
+</script>

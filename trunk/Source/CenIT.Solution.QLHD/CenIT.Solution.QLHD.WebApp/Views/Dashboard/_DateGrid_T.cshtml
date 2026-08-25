@@ -1,0 +1,83 @@
+﻿@using Syncfusion.EJ2
+
+<script src="~/Contents/Modules/Major/plugins/ej2/ej2.min.js"></script>
+<link href="~/Contents/Modules/Major/plugins/ej2/bootstrap5-dark.css" rel="stylesheet" />
+
+<style type="text/css">
+    @@font-face {
+        font-family: 'ej2-headertemplate';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .e-grid .e-icon-userlogin::before {
+        font-family: 'ej2-headertemplate';
+        width: 15px !important;
+        content: '\e702';
+    }
+
+    .e-grid .e-icon-calender::before {
+        font-family: 'ej2-headertemplate';
+        width: 15px !important;
+        content: '\e960';
+    }
+</style>
+
+<div class="card bcard h-auto">
+    <div class="p-2 table-responsive-md p-2">
+        <div class="control-section" style="overflow-x: auto; margin-left: 4px;">
+            @{
+                List<object> commands = new List<object>
+                    {
+                    new { type = "Edit", buttonOption = new { iconCss = "e-icons e-edit", cssClass = "e-flat" } },
+                    new { type = "Delete", buttonOption = new { iconCss = "e-icons e-delete", cssClass = "e-flat" } },
+                    new { type = "Save", buttonOption = new { iconCss = "e-icons e-update", cssClass = "e-flat" } },
+                    new { type = "Cancel", buttonOption = new { iconCss = "e-icons e-cancel-icon", cssClass = "e-flat" } }
+                };
+
+                var contracts = Html.EJS().Grid("ExapandoObjectGrid")
+                    .DataSource(dataManger => { dataManger.Url("https://ej2services.syncfusion.com/production/web-services/api/Orders").CrossDomain(true).Adaptor("ODataV4Adaptor"); })
+                    .AllowMultiSorting().AllowSorting().AllowFiltering().AllowResizing().AllowTextWrap().ShowColumnChooser()
+                    .EnableHover().EnableStickyHeader().Height("410").FrozenColumns(1).AllowPdfExport().AllowExcelExport()
+                    .Columns(col =>
+                    {
+                        //col.HeaderText("Employee Image").TextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Template("#template").Width("150").Add();
+                        col.Field("OrderID").HeaderText("Order ID").IsPrimaryKey(true).Width("140").MinWidth("140")
+                            .ValidationRules(new { required = true, number = true }).TextAlign(Syncfusion.EJ2.Grids.TextAlign.Right).Add();
+                        col.Field("CustomerID").HeaderText("Customer Name").HeaderTemplate("#employeetemplate").Width("220").MinWidth("220")
+                            .ValidationRules(new { required = true, minLength = 3 }).Add();
+                        col.Field("Freight").HeaderText("Freight").Width("140").MinWidth("140").EditType("numericedit")
+                            .ValidationRules(new { required = true }).Format("C2").TextAlign(Syncfusion.EJ2.Grids.TextAlign.Left).Add();
+                        col.Field("ShipCountry").HeaderText("Ship Country").Width("250").MinWidth("250").EditType("dropdownedit").Add();
+                        col.Field("OrderDate").HeaderText("Order Date").HeaderTemplate("#datetemplate").Width("210").MinWidth("210")
+                            .EditType("datepickeredit").TextAlign(Syncfusion.EJ2.Grids.TextAlign.Right)
+                            .Format(new { type = "datetime", format = "dd/MM/yyyy" }).Add();
+                        col.HeaderText("Actions").Width("150").Commands(commands).Add();
+                    })
+                    .AllowGrouping().AllowPaging().PageSettings(page => page.PageCount(4).PageSizes(true))
+                    .FilterSettings(filter => { filter.Type(Syncfusion.EJ2.Grids.FilterType.Excel); })
+                    .EditSettings(edit => { edit.AllowAdding(true).AllowEditing(true).AllowDeleting(true).Mode(Syncfusion.EJ2.Grids.EditMode.Normal); })
+                    .Toolbar(new List<string> { "Add", "Edit", "Delete", "Update", "Cancel", "ColumnChooser", "ExcelExport", "PdfExport" })
+                    .Aggregates(agg =>
+                    {
+                        agg.Columns(new List<Syncfusion.EJ2.Grids.GridAggregateColumn> { new Syncfusion.EJ2.Grids.GridAggregateColumn { Field = "Freight", Format = "C2", Type = "Sum", FooterTemplate = "Sum: ${Sum}" } }).Add();
+                        agg.Columns(new List<Syncfusion.EJ2.Grids.GridAggregateColumn> { new Syncfusion.EJ2.Grids.GridAggregateColumn { Field = "Freight", Format = "C2", Type = "Average", FooterTemplate = "Average: ${Average}" } }).Add();
+                    });
+            }
+            @contracts.Render()
+        </div>
+    </div>
+</div>
+
+<script id="template" type="text/x-template">
+    <div class="image">
+        <img src="@Url.Content("~/Content/images/${(OrderID%8 + 1)}.png")" alt="${CustomerID}" />
+    </div>
+</script>
+<script id="datetemplate" type="text/x-template">
+    <span class="e-icon-calender e-icons headericon"></span> Order Date
+</script>
+<script id="employeetemplate" type="text/x-template">
+    <span class="e-icon-userlogin e-icons employee"></span> Emp ID
+</script>

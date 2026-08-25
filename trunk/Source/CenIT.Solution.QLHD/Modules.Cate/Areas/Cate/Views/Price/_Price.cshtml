@@ -1,0 +1,53 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CatePriceModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.PriceId)
+<div id="Price">
+    @*<div class="form-group row">
+        @Html.TitleFor(model => model.LandType_ID, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-6">
+            @Html.DropDownListFor(model => model.LandType_ID, new SelectList(Model.ListLandTypes.OrderBy(kl => kl.LandType_ID), "LandType_ID", "LandTypeName"), "", new { @class = "col-md-10" })
+            @Html.ValidationMessageFor(model => model.LandType_ID, "", new { @class = "text-danger" })
+        </div>
+    </div>*@
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Unit, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.Unit, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Price_Label_Unit") })
+            @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+        </div>
+        @Html.TitleFor(model => model.Price, new { @class = "col-md-2 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.Price, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Price_Label_UnitPrice"), type = "number", id = "soTienInput", oninput = "formatNumber()" })
+            <p id="UnitPriceCost"></p>
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.onload = formatNumber()
+    document.addEventListener("DOMContentLoaded", function () {
+        var inputElement = document.getElementById("soTienInput");
+        var isUserInput = false; // Biến trạng thái để theo dõi sự kiện người dùng
+
+        inputElement.addEventListener("keyup", function (event) {
+            if (isUserInput) {
+                var inputValue = event.target.value;
+                var formattedValue = formatNumber(inputValue);
+                event.target.value = formattedValue;
+            } else {
+                isUserInput = true;
+            }
+        });
+    });
+
+    function formatNumber() {
+        var number = document.getElementById("soTienInput").value;
+        // Xử lý số và định dạng ở đây
+        var cost = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number)
+        document.getElementById('UnitPriceCost').innerHTML = cost
+    }
+</script>

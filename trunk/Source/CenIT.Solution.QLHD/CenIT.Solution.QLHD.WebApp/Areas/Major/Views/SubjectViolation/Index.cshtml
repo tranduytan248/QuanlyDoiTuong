@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("SubjectViolation_Title") ?? "Lịch sử Vi phạm Đối tượng";
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @Html.Button(true, "AddSubjectViolation", Url.Action("Add", new { area = "Major" }), "<i class='fa fa-plus'></i>", "Thêm lần vi phạm", new { @class = "btn btn-danger btn-h-red btn-a-red border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "960px" })
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md">
+            <table id="DSSubjectViolation" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="text-center" style="width:50px;">STT</th>
+                        <th style="width:140px;">Thời gian VP</th>
+                        <th style="width:140px;">Số CCCD</th>
+                        <th style="width:180px;">Đối tượng vi phạm</th>
+                        <th>Hành vi vi phạm</th>
+                        <th>Biện pháp xử lý</th>
+                        <th class="text-center" style="width:70px;">Hình ảnh</th>
+                        <th class="text-center" style="width:120px;">Thao tác</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section BottomScript
+{
+    <script src="~/Areas/Major/Views/SubjectViolation/SubjectViolation.js"></script>
+}

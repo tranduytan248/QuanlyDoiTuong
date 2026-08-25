@@ -1,0 +1,66 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchComplainModel
+<div class="card dcard">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            @*<div class="form-row form-group">
+                    <span class="has-float-label input-floating-label col-4 brc-danger-m1">
+                        @Html.DropDownListFor(model => model.ListSourceIds, new SelectList(Model.ListSources, "Value", "Text"), "", new { @class = "form-control col-12", multiple = true, placeholder = Html.DisplayNameFor(model => model.ListSourceIds) })
+                        @Html.TitleFor(model => model.ListSourceIds, new { @class = "floating-label text-grey-m3 text-500" })
+                    </span>
+                </div>*@
+            <div class="form-group form-row">
+                <div class="col-4">
+                    @Html.TitleFor(model => model.ListUnionIds, new { @class = "text-500" })
+                    @Html.SelectFor(model => model.ListUnionIds, Model.ListUnions, "", new { @class = "form-control", multiple = true, placeholder = AppProcessor.Messagor.GetMessage("Complain_ReflectBy") })
+                </div>
+                <div class="col-6">
+                    <label class="text-500 col-12">@AppProcessor.Messagor.GetMessage("Complain_CreatedOn")</label>
+                    <div class="form-group form-row col-12">
+                        <div class="col-6">
+                            @Html.TextBoxFor(model => model.CreatedFrom, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Common_FromDate") })
+                        </div>
+                        <div class="col-6">
+                            @Html.TextBoxFor(model => model.CreatedTo, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate") })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group form-row">
+                <div class="col-3">
+                    @Html.TitleFor(model => model.ListComplainStatusIds, new { @class = "text-500" })
+                    @Html.DropDownListFor(model => model.ListComplainStatusIds, new SelectList(Model.ListComplainStatus, "Value", "Text"), "", new { @class = "form-control", multiple = true, placeholder = AppProcessor.Messagor.GetMessage("Complain_Status") })
+                </div>
+                <div class="col-3">
+                    @Html.TitleFor(model => model.ListHandleStatusIds, new { @class = "text-500" })
+                    @Html.DropDownListFor(model => model.ListHandleStatusIds, new SelectList(Model.ListHandleStatus, "Value", "Text"), "", new { @class = "form-control col-10", multiple = true, placeholder = AppProcessor.Messagor.GetMessage("Complain_HandleStatus") })
+                </div>
+                <div class="col-6">
+                    <label class="text-500 col-12">@AppProcessor.Messagor.GetMessage("Complain_HandledOnDate")</label>
+                    <div class="form-group form-row col-12">
+                        <div class="col-5">
+                            @Html.TextBoxFor(model => model.HandleOnFrom, new { @class = "form-control datepicker", placeholder = AppProcessor.Messagor.GetMessage("Common_FromDate") })
+                        </div>
+                        <div class="col-5">
+                            @Html.TextBoxFor(model => model.HandleOnTo, new { @class = "form-control datepicker", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate") })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableComplain.ajax.reload(null, false);"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+</div>

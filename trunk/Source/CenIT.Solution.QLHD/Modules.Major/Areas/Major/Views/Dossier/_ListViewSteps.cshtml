@@ -1,0 +1,54 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+<div class="card ccard radius-t-0 h-100">
+    <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div><!-- the blue line on top -->
+
+    <div class="card-header brc-secondary-l3 pb-3">
+        <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+            @AppProcessor.Messagor.GetMessage("Flow_Handle_Title")
+        </h5>
+    </div>
+
+    <div class="card-body bgc-white p-0 pb-15">
+        <form autocomplete="off" id="tasks" class="mt-n1px">
+            @{
+                var inStepView = Model.ListSteps.FirstOrDefault(s => s.StepId == Model.InStep);
+
+                foreach (var step in Model.ListSteps)
+                {
+                    if (step.Ordinal <= inStepView?.Ordinal)
+                    {
+                        <div class="task-item d-flex align-items-center border-t-1 bgc-h-green-l3 brc-secondary-l3 px-2 @(step.Ordinal == inStepView?.Ordinal ? "bgc-primary-l2" :"line-through") disabled ">
+                            <label class="line-through text-grey-d2">
+                                <input type="checkbox" class="align-middle input-sm ml-2 mr-25" id="step-@step.StepId" checked="checked" />
+                            </label>
+
+                            <label class="flex-grow-1 mr-3 py-3" for="step-@step.StepId">
+                                <span class="align-middle">
+                                    @step.StepName
+                                </span>
+                            </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="task-item d-flex align-items-center border-t-1 bgc-h-green-l3 brc-secondary-l3 px-2 disabled">
+                            <label class="">
+                                <input type="checkbox" class="align-middle input-sm ml-2 mr-25" id="step-@step.StepId" />
+                            </label>
+
+                            <label class="flex-grow-1 mr-3 py-3" for="step-@step.StepId">
+                                <span class="align-middle">
+                                    @step.StepName
+                                </span>
+                            </label>
+                        </div>
+                    }
+                    
+                }
+            }
+
+        </form>
+    </div><!-- /.card-body -->
+</div>

@@ -1,0 +1,73 @@
+﻿
+@using Cores.Cate.Models
+@using TSFramework.App.Processors
+@model Modules.Sys.Areas.Sys.Models.FakeAccountModel
+@{
+    ViewBag.Title = "Giả lập tài khoản";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fas fa-retweet"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("FakeAccount", "SysTool", new { area = "Sys" }, FormMethod.Post, new { encType = "multipart/form-data", id = "FakeAccount", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            <div class="form-group row">
+                @*@Html.TitleFor(model => model.UserName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })*@
+                <div class="col-md-12">
+
+                    <select id="UserName" name="UserName" class="form-control col-md-12 selectpicker none-select2 show-tick" data-size="7" data-live-search="true" data-container="body" data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("User_Title")">
+                        @{
+                            foreach (var union in Model.ListUsers.GroupBy(s => s.UnionName).Select(g => new { UnionName = g.Key, Staffs = g.Select(h => h) }).ToList())
+                            {
+                                <optgroup data-icon="fas fa-building" label="@union.UnionName">
+                                    @foreach (var staff in union.Staffs.GroupBy(s => new {s.UserName,s.FullName}).Select(s => new CateUnionMemberModel{ UserName = s.Key.UserName, FullName = s.Key.FullName }).ToList().OrderBy(s => s.FullName).ToList())
+                                    {
+                                        @Html.Raw($"<option value='{staff.UserName}' data-content=\"<div class='d-flex align-items-start'><div class='mx-2 text-grey-d1'><div class='text-600 text-blue-d1'><i class='w-3 text-center fas fa-user-tie'></i>{staff.FullName}</div><i class='w-3 text-center fas fa-at text-95'></i>{staff.UserName}</div></div>\">{staff.FullName}</option>")
+                                    }
+                                </optgroup>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+        $(function () {
+            $("#UserName").selectpicker('refresh');
+        });
+        $('form#FakeAccount').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_FakeAccount").modal("hide");
+                    $("#ModalContent #modal_FakeAccount").on('hidden.bs.modal', function () {
+                        if (response.status != undefined) {
+                            _onWaiting();
+                            eval(response.message);
+                            response.status = undefined;
+                            setTimeout(function () {
+                                window.location = window.location.origin + "@Url.Action("Index", "Dashboard", new{area=""})";
+                            }, 1500);
+                        }
+                    });
+                } else {
+                    $("#ModalContent #modal_FakeAccount" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnSave" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-user-check"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

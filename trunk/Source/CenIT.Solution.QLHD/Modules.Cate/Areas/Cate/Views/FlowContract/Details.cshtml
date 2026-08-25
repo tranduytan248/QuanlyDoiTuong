@@ -1,0 +1,182 @@
+﻿@model Cores.eContract.Models.FlowContractModel
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Detail"), AppProcessor.Messagor.GetMessage("ContractFlow_Label_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="far fa-eye"></i>
+}
+@section FormBody{
+    <div class="row">
+        <div class="col-md-6">
+            @*<div class="form-group row">
+                <label for="contractFlowTemplateId" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowID_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="contractFlowTemplateId" value="@Model.ContractFlowTemplateId" readonly />
+                </div>
+            </div>*@
+            <div class="form-group row">
+                <label for="name" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowName_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="name" value="@Model.Name" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="description" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowDescription_Title")</label>
+                <div class="col-md-8">
+                    <textarea class="form-control" id="description" rows="3" readonly>@Model.Description</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            @*<div class="form-group row">
+                <label for="partyId" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowPartyID_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="partyId" value="@Model.PartyId" readonly />
+                </div>
+            </div>*@
+            <div class="form-group row">
+                <label for="fileName" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowFileName_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="fileName" value="@Model.FileName" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="type" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowType_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="type" value="@((Model.Type == "PAPER") ? "Hợp đồng giấy" : "Hợp đồng điện tử")" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="type" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowDiscuss_Title")</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="type" value="@((Model.Discuss == true) ? "Hợp đồng đàm phán" : "Hợp đồng không đàm phán")" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12 mt-2">
+        <!-- Hiển thị danh sách InternalDiscuss -->
+        @if (Model.listInternalDiscuss != null && Model.listInternalDiscuss.Any())
+        {
+            <div class="form-group">
+                <label class="font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowInternalDiscuss_Title")</label>
+                <table class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            @*<th>@AppProcessor.Messagor.GetMessage("ContractFlowUserID_Title")</th>*@
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowFullName_Title")</th>
+                            @*<th>@AppProcessor.Messagor.GetMessage("ContractFlowDepartmentID_Title")</th>*@
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowDepartmentName_Title")</th>
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowPermissions_Title")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var internalDiscuss in Model.listInternalDiscuss)
+                        {
+                            <tr>
+                                @*<td>@internalDiscuss.UserId</td>*@
+                                <td>@internalDiscuss.FullName</td>
+                                @*<td>@internalDiscuss.DepartmentId</td>*@
+                                <td>@internalDiscuss.DepartmentName</td>
+                                <td>
+                                    <ul>
+                                        @foreach (var permission in internalDiscuss.Permissions)
+                                        {
+                                            <li>
+                                                @switch (permission)
+                                                {
+                                                    case "INTERNAL_DISCUSSABLE":
+                                                        <text>Thảo thuận</text>
+                                                        break;
+                                                    case "INTERNAL_ACCEPTABLE":
+                                                        <text>Đồng ý</text>
+                                                        break;
+                                                    case "INTERNAL_EDITABLE":
+                                                        <text>Chỉnh sửa</text>
+                                                        break;
+                                                    default:
+                                                        <text>@permission</text>
+                                                        break;
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Hiển thị danh sách SignFlow -->
+    <div class="col-md-12">
+        @if (Model.listSignFlow != null && Model.listSignFlow.Any())
+        {
+            <div class="form-group">
+                <label class="font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractFlowSignFlow_Title")</label>
+                <table class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowSignType_Title")</th>
+                            @*<th>@AppProcessor.Messagor.GetMessage("ContractFlowDepartmentID_Title")</th>*@
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowDepartmentName_Title")</th>
+                            @*<th>@AppProcessor.Messagor.GetMessage("ContractFlowUserID_Title")</th>*@
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowFullName_Title")</th>
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowSequence_Title")</th>
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowLimitDate_Title")</th>
+                            <th>@AppProcessor.Messagor.GetMessage("ContractFlowSignForm_Title")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var signFlow in Model.listSignFlow)
+                        {
+                            <tr>
+                                <td>
+                                    @if (signFlow.SignType == "DRAFT")
+                                    {
+                                        <text>Ký nháy</text>
+                                    }
+                                    else if (signFlow.SignType == "APPROVAL")
+                                    {
+                                        <text>Ký duyệt</text>
+                                    }
+                                    else
+                                    {
+                                        @signFlow.SignType
+                                    }
+                                </td>
+                                @*<td>@signFlow.DepartmentId</td>*@
+                                <td>@signFlow.DepartmentName</td>
+                                @*<td>@signFlow.UserId</td>*@
+                                <td>@signFlow.FullName</td>
+                                <td>@signFlow.Sequence</td>
+                                <td>@signFlow.LimitDate</td>
+                                <td>
+                                    <ul>
+                                        @foreach (var form in signFlow.SignForm)
+                                        {
+                                            <li>@form</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+
+}

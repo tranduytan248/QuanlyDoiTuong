@@ -1,0 +1,64 @@
+﻿@using TSFramework.App.Processors
+@model List<Cores.Major.Models.MajorMessageModel>
+@{
+    if (Model != null)
+    {
+        var msgNotReaded = Model.Count(m => !m.IsReaded);
+
+        <a class="nav-link dropdown-toggle @(msgNotReaded > 0?"pl-lg-3":"pl-lg-4") pr-lg-4" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" data_rel="tooltip" , title="Thông báo">
+            <i class="fa fa-bell text-110 @(msgNotReaded > 0?"icon-animated-bell":"") mr-lg-2"></i>
+            <span class="d-inline-block d-lg-none ml-2">@AppProcessor.Messagor.GetMessage("Message_Title")</span>
+            @if (msgNotReaded > 0)
+            {
+                <span id="id-navbar-badge1" class="badge badge-danger radius-round text-75">@msgNotReaded</span>
+            }
+            <i class="caret fa fa-angle-left d-block d-lg-none text-warning-d2"></i>
+        </a>
+        <div class="shadow dropdown-menu dropdown-animated dropdown-sm p-0 brc-primary-m3 border-b-2 bgc-white">
+            <!-- .nav-tabs -->
+            <!-- .tab-pane : notifications -->
+            <div class="tab-pane mh-none pl-md-2" id="messages" role="tabpanel">
+                <div data-ace-scroll='{"ignore": "mobile", "height": 300, "smooth":true}'>
+                    @{
+                        foreach (var msg in Model)
+                        {
+                            <a href="@msg.DetailUrl" msg-id="@msg.MessageId" class="d-flex mb-0 border-0 list-group-item list-group-item-action btn-h-lighter-secondary @(!msg.IsReaded ? "msg":"")">
+                                <div>
+                                    <i class="fas fa-user-edit"></i>
+                                    <span class="@(msg.IsReaded ? "text-grey-m1" : "text-primary text-500")">@Html.Raw(msg.Contents)</span>
+                                    <br />
+                                    <span class="text-grey-m1 text-85">
+                                        <i class="far fa-clock"></i> @(msg.CreatedOn.ToString("HH:mm:ss dd/MM/yyyy"))
+                                    </span>
+                                </div>
+                            </a>
+                            <hr class="my-1px brc-grey-l3" />
+                        }
+                    }
+                </div>
+                <!-- ace-scroll -->
+                <hr class="my-1px brc-secondary-l2 border-double" />
+                <a href="@Url.Action("All","Notification",new{area=""})" data-modal="true" data-modal-id="AllMessage" data-width="fullscreen" class="mb-0 py-3 border-0 list-group-item text-primary text-uppercase text-center text-85 font-bolder">
+                    @AppProcessor.Messagor.GetMessage("Message_ViewAll") <i class="ml-2 fa fa-arrow-right text-muted"></i>
+                </a>
+            </div>
+            <!-- .tab-pane : messages -->
+        </div>
+                        }
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Update conversation's max-height according to available space
+        var updateScrollAreaHeight = function () {
+            var _scroller = document.querySelector('#conversations [class*="ace-scroll"]');
+            if (_scroller != null) {
+                _scroller.style.display = 'none';
+                if (_scroller) _scroller.style.maxHeight = (Math.max(320, _scroller.parentNode.clientHeight)) + 'px'
+                _scroller.style.display = ''
+            }
+        }
+        window.addEventListener('load', updateScrollAreaHeight)
+        window.addEventListener('resize', updateScrollAreaHeight)
+    });
+</script>

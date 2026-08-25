@@ -1,0 +1,672 @@
+﻿@using Cores.Cate.Enum
+@using Newtonsoft.Json
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+<div id="ContractInfo">
+    @Html.HiddenFor(model => model.Total)
+    @Html.HiddenFor(model => model.TotalInWords)
+    @Html.HiddenFor(model => model.ReceivedOn)
+    @Html.HiddenFor(model => model.ContractNo)
+    @Html.HiddenFor(model => model.ContractSignal)
+    @Html.HiddenFor(model => model.ExpertiseCostPercent)
+    @Html.HiddenFor(model => model.HasTaxForContract)
+
+    @{
+        if (!Model.IsNew)
+        {
+            @Html.HiddenFor(model => model.HandlingTime)
+            @Html.HiddenFor(model => model.JsonExtendContracts)
+
+            @Html.Hidden("DayContract", $"{(Model.ReceivedOn ?? DateTime.Now).Day}")
+            @Html.Hidden("MonthContract", $"{(Model.ReceivedOn ?? DateTime.Now).Month}")
+            @Html.Hidden("YearContract", $"{(Model.ReceivedOn ?? DateTime.Now).Year}")
+        }
+    }
+
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-location-arrow text-primary"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Land_Address")
+            </h5>
+        </div>
+
+        <div class="card-body">
+            @Html.HiddenFor(model => model.ProvinceId)
+            @Html.HiddenFor(model => model.ProvinceName)
+            @Html.HiddenFor(model => model.WardId)
+            @Html.HiddenFor(model => model.WardName)
+
+            <div class="form-group row">
+                @*@Html.TitleFor(model => model.Address, new { @class = "col-md-2 col-form-label text-sm-right pr-0 font-bold" })*@
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Address, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_Land_Address"), onclick = "_onTypeAddress('#ContractInfo #',$('#ContractInfo #ProvinceId').val(),$('#ContractInfo #WardId').val(),'','');", onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            @*</div>
+
+            <div class="form-group row col-12">*@
+                @*@Html.TitleFor(model => model.LandParcelNo, new { @class = "col-md-2 col-form-label text-sm-right pr-0 font-bold" })*@
+                @*@Html.TitleFor(model => model.MapNo, new { @class = "col-md-2 col-form-label text-sm-right pr-0 font-bold" })*@
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.MapNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_MapNo"), onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                    @Html.ValidationMessageFor(model => model.LandParcelNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.LandParcelNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_LandParcelNo"), onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                    @Html.ValidationMessageFor(model => model.LandParcelNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div><!-- /.card-body -->
+    </div>
+
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-info-circle text-info"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Infor")
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.PurposeId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.PurposeId, new SelectList(Model.ListPurposes, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#ContractInfo #PurposeName',false)" })
+                    @Html.ValidationMessageFor(model => model.PurposeId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.PurposeName)
+                </div>
+            </div>
+        </div><!-- /.card-body -->
+    </div>
+
+    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-tasks text-danger"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Tasks")
+            </h5>
+            <div class="card-toolbar">
+
+                @Html.Button(true, "AddTask", Url.Action("AddTask", new { area = "Major", contractId = Model.ContractId, typeContract = Model.ContractTypeId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "card-toolbar-btn btn px-4 btn-outline-purple mb-1", data_width = "1024px", title = "Thêm công việc", data_rel = "tooltip" })
+
+                @*<a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-light-default btn-brc-tp mx-2px">
+                        <i class="fa fa-angle-up w-2 mx-1px"></i>
+                    </a>*@
+
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="p-2 table-responsive-md px-1">
+                <table id="ListContractTasks" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                            <th class="w-25">@AppProcessor.Messagor.GetMessage("ContractTask_Contents")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Area")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Price")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Amount")</th>
+                            <th class="w-5" id="total">@AppProcessor.Messagor.GetMessage("ContractTask_Total")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="bgc-yellow-m3 d-none">
+                        <tr class="text-500 text-danger text-105">
+                            <th class="w-25" colspan="5">@AppProcessor.Messagor.GetMessage("ContractTask_Totals")</th>
+                            <th class="w-25" colspan="2"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @*<hr class="border-none border-t-3 brc-grey-l2 border-double">*@
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            @*<h5 class="card-title">
+                    <i class="fas fa-file-invoice-dollar text-warning"></i>&nbsp;@AppProcessor.Messagor.GetMessage("ContractPayment_Title")
+                </h5>*@
+        </div>
+
+        <div class="card-body">
+            <div class="form-group row">
+                @{
+                    if (Model.ContractTypeId == (int)EnumContractType.Expertise)
+                    {
+                        <div class="col-md-3">
+                            @Html.TitleFor(model => model.ExpertiseCostFormatter, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.SubTotalFormatter, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("Contract_SubTotal") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.SubTotal)
+                        </div>
+                    }
+                    else if (Model.ContractTypeId == (int)EnumContractType.Indefinite)
+                    {
+                        <div class="col-md-3">
+                            @Html.TitleFor(model => model.SubTotalFormatter, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.SubTotalFormatter, new { rawValue = Model.SubTotal, @class = "form-control text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("Contract_SubTotal") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.SubTotal)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            @Html.TitleFor(model => model.SubTotalFormatter, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.SubTotalFormatter, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("Contract_SubTotal") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.SubTotal)
+                        </div>
+                    }
+                }
+                @{
+                    if (!Model.HasTaxForContract)
+                    {
+                        <div class="col-md-9">
+                            @Html.TitleFor(model => model.InfoDiscountContract, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.InfoDiscountContract, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110" })
+                            </div>
+                        </div>
+                        @Html.HiddenFor(model => model.Discount)
+                    }
+                    @*else
+                        {
+                            <div class="col-md-5">
+                                @Html.TitleFor(model => model.TaxRate, new { @class = "col-form-label pr-0 font-bold" })
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.FuncTaxContract, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110" })
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.TaxRate)
+                            @Html.HiddenFor(model => model.TaxAmount)
+                        }*@
+                }
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                    @Html.TitleFor(model => model.TotalInFormatter, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.TotalInFormatter, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("Contract_Total") })
+                        <div class="input-group-append">
+                            <span class="input-group-text">đ</span>
+                        </div>
+                    </div>
+                </div>
+                @{
+                    if (Model.HasTaxForContract)
+                    {
+                        <div class="col-md-8">
+                            @*@Html.TitleFor(model => model.TaxRate, new { @class = "col-form-label pr-0 font-bold" })*@
+                            <label class="col-form-label pr-0 font-bold">&nbsp;</label>
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.TaxInfo, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110" })
+                            </div>
+                        </div>
+                        @Html.HiddenFor(model => model.TaxRate)
+                    }
+                }
+
+            </div>
+
+        </div>
+    </div>
+
+    @{
+        //if (Model.IsNew)
+        {
+            <div class="acard card h-100">
+                <div class="card-header pb-15">
+                    <h5 class="card-title">
+                        <i class="fas fa-file-invoice-dollar text-warning"></i>&nbsp;@AppProcessor.Messagor.GetMessage("ContractPayment_Title")
+                    </h5>
+                </div>
+
+                <div class="card-body" id="Payment">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            @Html.TitleFor(model => model.PaymentMethod, new { @class = "col-form-label pr-0 font-bold" })
+                            @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+                            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.PaymentMethodName)
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TitleFor(model => model.PercentAdvance, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.PercentAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance"), onchange = "_onChangePercentAdvance(this, '#ContractInfo [name=\"Total\"]', '#Payment #FormattedAdvanceAmount', '#Payment [name=\"AdvanceAmount\"]');" })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TitleFor(model => model.PeriodAdvance, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.PeriodAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PeriodAdvance") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">ngày</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.TitleFor(model => model.AdvanceAmount, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.FormattedAdvanceAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("Contract_AdvanceAmount") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.AdvanceAmount)
+                            @Html.ValidationMessageFor(model => model.AdvanceAmount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @*<hr class="border-none border-t-3 brc-grey-l2 border-double">
+                        <div class="form-group row">
+
+                        </div>*@
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+<script src="~/Contents/Modules/Major/plugins/money2string/money2string.js"></script>
+
+<script type="text/javascript">
+
+    debugger;
+    var typeContract = @(Model.ContractTypeId ?? 1);
+    ////var disabledSubmitButton = @(Model.IsNew && Model.ContractTypeId != (int)EnumContractType.Indefinite ? 1 : 0) == 1;
+    var disabledSubmitButton = @(Model.ContractTypeId != (int)EnumContractType.Indefinite ? 1 : 0) == 1;
+
+    var _tableContractTasks;
+
+    $(document).ready(function () {
+        _initTableContractTasks();
+
+        $('#Payment [name="FormattedAdvanceAmount"]').maskNumber({ integer: true });
+        $('#Payment [name="FormattedAdvanceAmount"]').trigger('keyup');
+        $('#Payment #PercentAdvance').trigger("change");
+
+        $("input[name='PercentAdvance'],input[name='PeriodAdvance']").inputFilter(function (value) {
+            return /^\d*$/.test(value);
+        }, "Phải nhập số nguyên không dấu");
+
+        @{
+            if (Model.ContractTypeId == (int)EnumContractType.Indefinite)
+            {
+                @Html.Raw("$('#ContractInfo [name=\"SubTotalFormatter\"]').maskNumber({ integer: true, thousands: ',' });");
+            }
+        }
+
+        $('#ContractInfo [name="SubTotalFormatter"]').focusout(function () {
+            var subTotal = $(this).val().replaceAll(',', '');
+            //var subTotal = Math.round(subTotal / 1000) * 1000;
+            $(this).val(FormatCurrency.format(subTotal))
+            $(this).attr("rawValue", subTotal);
+            $('#ContractInfo [name="SubTotal"]').val(subTotal);
+                @Html.Raw(Model.HasTaxForContract ? "_calcTaxAmount(subTotal);" : "_calcDiscountAmount(subTotal);")
+        });
+
+        $('#ContractInfo [name="SubTotalFormatter"]').blur();
+
+    });
+
+    function _initTableContractTasks() {
+        _tableContractTasks = $("#ListContractTasks").DataTable({
+            fixedHeader: {
+                header: true,
+                footer: true
+            },
+            "Responsive": true,
+            "language": {
+                "processing": '<div id="tableLoading" class="pageload-overlay show pageload-loading" data-opening="M 0,0 80,-10 80,60 0,70 0,0" data-closing="M 0,-10 80,-20 80,-10 0,0 0,-10" style=""><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 80 60" preserveAspectRatio="none"><path d="M 0,70 80,60 80,80 0,80 0,70"></path></svg></div>'
+                    //"<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+            },
+            "lengthChange": true,
+            "processing": true,
+            "serverSide": false,
+            "searching": false,
+            "paging": false, "info": false,
+            //"order": [[1, 'asc']],
+            "columns": [
+                {
+                    "data": "",
+                    "defaultContent": "1",
+                    "render": function (data, type, row, meta) {
+                        return meta.settings._iDisplayStart + meta.row + 1;
+                    }
+                },
+                {
+                    "data": "Contents",
+                    "defaultContent": "1",
+                    "render": function (data, type, row, meta) {
+                        if (type == "display") {
+                            if (typeContract == 1 || typeContract == 3) {
+                                if (row["RateFormula"] == null) return data;
+                                return "{0} (KL*ĐG*{1})".format(data, row["RateFormula"]);
+                            } else if (typeContract == 2) {
+                                if (row["RateFormula"] == null) return "{0} - <b>{1}</b>)".format(data, row.SubSectionName);
+                                return "{0} - <b>{2}</b> (KL*ĐG*{1})".format(data, row["RateFormula"], row.SubSectionName);
+                            }
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "Area",
+                    "sortable": false,
+                    "defaultContent": ""
+                },
+                {
+                    "data": "Price",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type === "display") {
+                            return FormatCurrency.format(data);
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "Amount",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type == "display") {
+                            return "{0} ({1})".format(data, row["Unit"]);
+                        }
+                        return data;
+                    }
+                },
+                //{
+                //    "data": "Rate",
+                //    "visible": false,
+                //    "defaultContent": "",
+                //    "render": function (data, type, row, meta) {
+                //        if (type === "display") {
+                //            return data.toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 });
+                //        }
+                //        return data;
+                //    }
+                //},
+                {
+                    "data": "Total",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type === "display") {
+                            return "({0}) {1}".format(row["Rate"].toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 }), FormatCurrency.format(data));
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "TaskId",
+                    "style": "width:100px;",
+                    "orderable": false,
+                    "render": function (data, type, row, meta) {
+                        var html = '<span class="d-none d-lg-inline">';
+
+                        if (type === "display") {
+                            if (row["CanEdit"]) {
+                                html += _renderButton(true,
+                                    "EditTask",
+                                    "btn px-4 btn-outline-primary mr-1 v-hover",
+                                    "/Major/Contract/EditTask?taskId=" + data + "&contractId=@Model.ContractId",
+                                    '<i class="far fa-edit text-120"></i>',
+                                    "Cập nhật", "1024px");
+                            }
+
+                            html += _renderButton(true,
+                                "DeleteTask",
+                                "btn px-4 btn-outline-danger mr-1 v-hover",
+                                "/Major/Contract/DeleteTask?taskId=" + data + "&contractId=@Model.ContractId",
+                                '<i class="far fa-trash-alt text-120"></i>',
+                                "Xoá");
+                        }
+                        html += "</span>";
+
+                        return html;
+                    }
+                }
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api();
+
+                api.columns('#total', {
+                    page: 'current'
+                }).every(function () {
+                    var sum = this
+                        .data()
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+
+                    var totalCost = Math.round(sum);
+                    $(this.footer()).html(FormatCurrency.format(totalCost));
+                });
+
+                var totalContract = 0;
+                var subTotalContract = 0;
+
+                if (data.length > 0) {
+                    // Tính giá trị hợp đồng + miễn giảm
+                    totalContract = data.map(item => item.Total).reduce((prev, next) => prev + next);
+                    //subTotalContract = Math.round(totalContract / 1000) * 1000;
+                    subTotalContract = Math.round(totalContract);
+                }
+
+                @{
+                    if (Model.ContractTypeId == (int)EnumContractType.Indefinite)
+                    {
+                        @Html.Raw($"subTotalContract = subTotalContract > 0 ? subTotalContract : {Model.SubTotal};")
+                    }
+                }
+                @Html.Raw(Model.HasTaxForContract ? "_calcTaxAmount(subTotalContract);" : "_calcDiscountAmount(subTotalContract);")
+                //_calcDiscountAmount(subTotalContract);
+
+            }
+        });
+
+        _tableContractTasks.on('draw', function () {
+            var btnSubmit = $('#ContractInfo').parents('.modal-content').find('button[type="submit"]')[0];
+            var tblFooter = _tableContractTasks.footer();
+
+            if (_tableContractTasks.data().count() > 0) {
+                $(btnSubmit).removeClass('disabled');
+                $(tblFooter).removeClass('d-none');
+            }
+            else {
+                if (disabledSubmitButton) {
+                    if (!$(btnSubmit).hasClass('disabled')) {
+                        $(btnSubmit).addClass('disabled');
+                    }
+                }
+
+                if (!$(tblFooter).hasClass('d-none')) {
+                    $(tblFooter).addClass('d-none');
+                }
+            }
+        });
+
+        var dataTasks = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.ListTasks))');
+        if (typeof dataTasks != null) {
+            _tableContractTasks.clear().rows.add(dataTasks).draw();
+            _tableContractTasks.column(0).data().sort();
+        }
+    }
+
+    function _calcDiscountAmount(subTotal) {
+        @{
+            if (Model.ContractTypeId == (int)EnumContractType.Expertise)
+            {
+                @Html.Raw($"var _expertiseCostPercent = {Model.ExpertiseCostPercent};")
+                @Html.Raw("subTotal = Math.round(subTotal * _expertiseCostPercent / 100);")
+            }
+        }
+
+        $("#ContractInfo [name='SubTotal']").val(subTotal);
+        $("#ContractInfo [name='SubTotalFormatter']").val(FormatCurrency.format(subTotal));
+
+        var total = subTotal;
+
+        var funcDiscountContract = "@Model.FuncDiscountContract";
+        var infoDiscountContract = "@Model.InfoDiscountContract";
+
+        if (funcDiscountContract != null && funcDiscountContract.length > 0) {
+            var funcDiscount = funcDiscountContract.format(subTotal);
+            var discountAmount = Math.round(eval(funcDiscount));
+            $("#ContractInfo [name='Discount']").val(discountAmount);
+
+            if (infoDiscountContract != null && infoDiscountContract.length > 0) {
+                var infoDiscount = infoDiscountContract.format(FormatCurrency.format(subTotal), FormatCurrency.format(discountAmount));
+                $("#ContractInfo [name='InfoDiscountContract']").val(infoDiscount);
+            }
+
+            total = discountAmount != null && discountAmount > 0 ? total - discountAmount : total;
+        }
+
+        $("#ContractInfo [name='Total']").val(total);
+        $("#ContractInfo [name='TotalInFormatter']").val(FormatCurrency.format(total));
+
+        var money2String = new DocTienBangChu();
+        $("#ContractInfo [name='TotalInWords']").val(money2String.doc(total, true).replaceAll('  ', ' ').replaceAll('   ', ' '));
+
+        $('#Payment [name="PercentAdvance"]').trigger("change");
+    }
+
+    function Task_OnProcessSuccess(response, formId) {
+        if (response.status != undefined) {
+            if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                if (response.status != undefined) {
+
+                    var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                    $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                        _initElements(this);
+                    });
+
+                    eval(response.message);
+                    var jsonDataTasks = JSON.parse(response.data);
+                    _tableContractTasks.clear().rows.add(jsonDataTasks).draw();
+
+                    response.status = undefined;
+                }
+            } else {
+                $("#ModalContent #modal_" + formId).modal("hide");
+                $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                    function () {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            var jsonDataTasks = JSON.parse(response.data);
+                            _tableContractTasks.clear().rows.add(jsonDataTasks).draw();
+                            response.status = undefined;
+                        }
+                    });
+            }
+        } else {
+            $("#ModalContent #modal_" + formId + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+        }
+    }
+
+    function _onChangePercentAdvance(elePercent, eleRemainingAmount, eleAmountViaPercent, eleAdvanceAmount) {
+        var percentAdvance = $(elePercent).val();
+        var rate = parseInt(percentAdvance) / 100;
+        var remainingAmount = $(eleRemainingAmount).val();
+        //var amountViaPercent = Math.round(remainingAmount * rate / 1000) * 1000;
+        var amountViaPercent = Math.round(remainingAmount * rate);
+        $(eleAmountViaPercent).val(amountViaPercent).trigger('keyup');
+        $(eleAdvanceAmount).val(amountViaPercent)
+    }
+
+    function _checkInfoLandAddess(eleMapNo, eleLandParcelNo, eleProvince, eleProvinceName, eleWard, eleWardName) {
+        var mapNo = $(eleMapNo).val();
+        var landParcelNo = $(eleLandParcelNo).val();
+        var province = $(eleProvince).val();
+        var ward = $(eleWard).val();
+
+        var provinceName = $(eleProvinceName).val();
+        var wardName = $(eleWardName).val();
+
+        var urlCheckLandMap = "@Url.Action("CheckLandMap", "Contract", new { area = "Major" })?mapNo=" + mapNo + "&landParcelNo=" + landParcelNo + "&provinceId=" + province + "&wardId=" + ward;
+        $.ajax({
+            type: "GET",
+            url: urlCheckLandMap,
+            dataType: "JSON",
+            success: function (response) {
+                if (response.status) {
+                    var htmlContracts = '';
+
+                    $.each(response.data, function (idx, contract) {
+                        htmlContracts += '<a href="@Url.Action("ViewContract")?contractId={0}" data-modal="" data-modal-id="ViewContract" class="text-primary-d2 bgc-h-primary-l3 radius-1 px-1" title="{1}" data-rel="tooltip">{1}</a>'.format(contract.ContractId, "{0} {1}/{2}".format(contract.ContractTypeName, contract.ContractNo, contract.ContractSignal));
+                    });
+
+                    bootbox.alert({
+                        title: '<span class="text-danger text-500 text-120"><i class="fas fa-exclamation-triangle"></i>&nbsp;Cảnh báo</span>',
+                        message: '<p class="alert bgc-secondary-l4 brc-danger-m1 border-0 border-l-4 radius-0 text-danger-d2 text-500 text-110"><i class="far fa-hand-point-right mr-1"></i><span>Dữ liệu thửa đất <b class="text-danger-d2">' + landParcelNo + '</b> tờ bản đồ <b class="text-danger-d2">' + mapNo + '</b> tại <b class="text-danger-d2">' + wardName + ',' + provinceName + '</b> đã được sử dụng tại @AppProcessor.Messagor.GetMessage("Contract_Title")' + htmlContracts +' </span></p><hr/><div class="alert bgc-primary-l4 brc-primary-m4 d-flex align-items-center text-dark-tp2" role="alert"><i class="fas fa-info-circle mr-3 fa-2x text-blue"></i><span class="text-500">Vui lòng kiểm tra để tránh trùng dữ liệu!</span></div>',
+                        onEscape: true,
+                        closeButton: false,
+                        //callback: function (result) {
+
+                        //}
+                    });
+                }
+            }
+        });
+    }
+
+    function _calcTaxAmount(subTotal) {
+        @{
+            if (Model.ContractTypeId == (int)EnumContractType.Expertise)
+            {
+                @Html.Raw($"var _expertiseCostPercent = {Model.ExpertiseCostPercent};")
+                @Html.Raw("subTotal = Math.round(subTotal * _expertiseCostPercent / 100);")
+            }
+        }
+
+        $("#ContractInfo [name='SubTotal']").val(subTotal);
+        $("#ContractInfo [name='SubTotalFormatter']").val(FormatCurrency.format(subTotal));
+        var total = subTotal;
+
+        var infoTaxContract = "@Html.Raw(Model.TaxInfo)";
+        var taxRate = @Model.TaxRate;
+
+        if (infoTaxContract != null && infoTaxContract.length > 0) {
+            var subTotalToCalcTax = Math.round(total * 100 / (taxRate + 100));
+            var taxAmount = Math.round(subTotalToCalcTax * taxRate / 100);
+
+            $("#ContractInfo [name='TaxAmount']").val(taxAmount);
+            //total = taxAmount != null && taxAmount > 0 ? total + taxAmount : total;
+            var infoTax = infoTaxContract.format(taxRate, FormatCurrency.format(taxAmount));
+            $("#ContractInfo [name='TaxInfo']").val(infoTax);
+        }
+
+        $("#ContractInfo [name='Total']").val(total);
+        $("#ContractInfo [name='TotalInFormatter']").val(FormatCurrency.format(total));
+
+        var money2String = new DocTienBangChu();
+        $("#ContractInfo [name='TotalInWords']").val(money2String.doc(total, true).replaceAll('  ', ' ').replaceAll('   ', ' '));
+
+        $('#Payment [name="PercentAdvance"]').trigger("change");
+    }
+
+</script>

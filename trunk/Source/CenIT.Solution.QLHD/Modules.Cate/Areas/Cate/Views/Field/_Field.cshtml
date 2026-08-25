@@ -1,0 +1,35 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateFieldModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.FieldId)
+
+<div class="form-group row">
+    <div class="col-md-4">
+        <label class="col-form-label pr-0 font-bold">Mã lĩnh vực <span class="text-danger">(*)</span></label>
+        @Html.TextBoxFor(model => model.FieldCode, new { @class = "form-control", placeholder = "Ví dụ: 125, 114,..." })
+        @Html.ValidationMessageFor(model => model.FieldCode, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-8">
+        <label class="col-form-label pr-0 font-bold">Tên lĩnh vực <span class="text-danger">(*)</span></label>
+        @Html.TextBoxFor(model => model.FieldName, new { @class = "form-control", placeholder = "Nhập tên lĩnh vực..." })
+        @Html.ValidationMessageFor(model => model.FieldName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Ghi chú / Mô tả</label>
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = "3", placeholder = "Nhập mô tả chi tiết lĩnh vực..." })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <div class="custom-control custom-checkbox">
+            @Html.CheckBoxFor(model => model.IsActive, new { @class = "custom-control-input", id = "Field_IsActive" })
+            <label class="custom-control-label font-bold" for="Field_IsActive">Đang hoạt động</label>
+        </div>
+    </div>
+</div>

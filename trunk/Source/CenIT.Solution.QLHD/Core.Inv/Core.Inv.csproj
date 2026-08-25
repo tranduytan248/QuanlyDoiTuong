@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8BAF0151-73F7-40B0-B165-154E8DB1063C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Core.Inv</RootNamespace>
+    <AssemblyName>Core.Inv</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Biz\MajorInvBiz.cs" />
+    <Compile Include="Biz\MajorInvActionLogBiz.cs" />
+    <Compile Include="Biz\MajorInvAdjustBiz.cs" />
+    <Compile Include="Biz\MajorInvConfigBiz.cs" />
+    <Compile Include="Biz\MajorInvCusBiz.cs" />
+    <Compile Include="Biz\MajorInvPatternBiz.cs" />
+    <Compile Include="Biz\MajorInvProductBiz.cs" />
+    <Compile Include="Caches\MajorInvCache.cs" />
+    <Compile Include="Caches\MajorInvActionLogCache.cs" />
+    <Compile Include="Caches\MajorInvAdjustCache.cs" />
+    <Compile Include="Caches\MajorInvConfigCache.cs" />
+    <Compile Include="Caches\MajorInvCusCache.cs" />
+    <Compile Include="Caches\MajorInvPatternCache.cs" />
+    <Compile Include="Caches\MajorInvProductCache.cs" />
+    <Compile Include="Enums\EnumInvAdjustType.cs" />
+    <Compile Include="Enums\EnumInvCancelStatus.cs" />
+    <Compile Include="Enums\EnumInvCurrencyUnit.cs" />
+    <Compile Include="Enums\EnumInvPaymentMethob.cs" />
+    <Compile Include="Enums\EnumInvProductType.cs" />
+    <Compile Include="Enums\EnumInvTransferStatus.cs" />
+    <Compile Include="Enums\EnumInvActionType.cs" />
+    <Compile Include="Enums\EnumInvPaymentStatus.cs" />
+    <Compile Include="Enums\EnumInvStatus.cs" />
+    <Compile Include="Enums\EnumInvType.cs" />
+    <Compile Include="Helpers\InvHelper.cs" />
+    <Compile Include="Logs\InvLog.cs" />
+    <Compile Include="Logs\InvLogger.cs" />
+    <Compile Include="Logs\InvLogWriter.cs" />
+    <Compile Include="Models\Invs\EInvConfigModel.cs" />
+    <Compile Include="Models\Invs\InvAdjustModel.cs" />
+    <Compile Include="Models\Invs\InvCustomerModel.cs" />
+    <Compile Include="Models\Invs\InvDataModel.cs" />
+    <Compile Include="Models\Invs\InvInvoiceModel.cs" />
+    <Compile Include="Models\Invs\InvReplaceModel.cs" />
+    <Compile Include="Models\Invs\InvReportUsedModel.cs" />
+    <Compile Include="Models\Invs\InvServiceResponseModel.cs" />
+    <Compile Include="Models\Invs\InvByCusModel.cs" />
+    <Compile Include="Models\Invs\InvStatusModel.cs" />
+    <Compile Include="Models\MajorInvActionLogModel.cs" />
+    <Compile Include="Models\MajorInvAdjustModel.cs" />
+    <Compile Include="Models\MajorInvConfigModel.cs" />
+    <Compile Include="Models\MajorInvCusModel.cs" />
+    <Compile Include="Models\MajorInvModel.cs" />
+    <Compile Include="Models\MajorInvPatternModel.cs" />
+    <Compile Include="Models\MajorInvProductModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Providers\InvProvider.cs" />
+    <Compile Include="Providers\InvServiceProvider.cs" />
+    <Compile Include="Web References\InvBusinessService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\InvPortalService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\InvPublishService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TSFramework.App\TSFramework.App.csproj">
+      <Project>{0577F056-6B2C-4CDA-B85B-4E47AA37DDB4}</Project>
+      <Name>TSFramework.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TSFramework.Core\TSFramework.Core.csproj">
+      <Project>{04290B90-CB09-4C09-8F26-1BE6728ED3F7}</Project>
+      <Name>TSFramework.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://cafico999-tt78admindemo.vnpt-invoice.com.vn/businessservice.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\InvBusinessService\</RelPath>
+      <UpdateFromURL>https://cafico999-tt78admindemo.vnpt-invoice.com.vn/businessservice.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Core_Inv_InvBusinessService_BusinessService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://cafico999-tt78admindemo.vnpt-invoice.com.vn/portalservice.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\InvPortalService\</RelPath>
+      <UpdateFromURL>https://cafico999-tt78admindemo.vnpt-invoice.com.vn/portalservice.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Core_Inv_InvPortalService_PortalService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://cafico999-tt78admindemo.vnpt-invoice.com.vn/publishservice.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\InvPublishService\</RelPath>
+      <UpdateFromURL>https://cafico999-tt78admindemo.vnpt-invoice.com.vn/publishservice.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Core_Inv_InvPublishService_PublishService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\InvBusinessService\businessservice.wsdl" />
+    <None Include="Web References\InvBusinessService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\InvPortalService\portalservice.wsdl" />
+    <None Include="Web References\InvPortalService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\InvPublishService\publishservice.wsdl" />
+    <None Include="Web References\InvPublishService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\InvPublishService\publishservice.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\InvPortalService\portalservice.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\InvBusinessService\businessservice.disco" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("Step_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Edit", "Step", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Step_OnProcessSuccess(data, 'EditStep')"
+    }, new { @class = "form-horizontal", id = "EditStep" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Step")
+        </div>
+    }
+}

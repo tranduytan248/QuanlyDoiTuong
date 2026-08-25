@@ -1,0 +1,206 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SelectViolationModel
+
+<div class="row form-group">
+    <span class="col-12">
+        <label class="text-500" for="ConstructionParticipantId">@AppProcessor.Messagor.GetMessage("ConstructionParticipan_Title")</label>
+        <select id="ConstructionParticipantId" name="ConstructionParticipantId" disabled="disabled" class="form-control col-12" onchange="_onChangeConstructionParticipant(this, '#ConstructionParticipant');"></select>
+    </span>
+    <input type="hidden" id="ConstructionParticipant" name="ConstructionParticipant" />
+</div>
+<div class="row form-group">
+    <span class="col-12">
+        <label class="text-500" for="ViolationBehaviorId">@AppProcessor.Messagor.GetMessage("ViolationBehavior_Title")</label>
+        <select id="ViolationBehaviorId" name="ViolationBehaviorId" class="form-control col-12" onchange="_onChangeViolationBehavior(this, ['#ViolationBehavior']);"></select>
+    </span>
+    <input type="hidden" id="ViolationBehavior" name="ViolationBehavior" />
+</div>
+<div class="row form-group">
+    <span class="col-12">
+        <label class="text-500" for="ViolationAreaId">@AppProcessor.Messagor.GetMessage("ViolationArea_Title")</label>
+        <select id="ViolationAreaId" name="ViolationAreaId" class="form-control col-12" onchange="_onChangeViolationArea(this);"></select>
+    </span>
+</div>
+
+<div class="row form-group">
+    <span class="col-12">
+        <label class="text-500" for="RegulationId">@AppProcessor.Messagor.GetMessage("Regulation_Title")</label>
+        <textarea required class="form-control shadow-none" id="RegulationName" name="RegulationName" placeholder="@AppProcessor.Messagor.GetMessage("Regulation_Title")" rows="4"></textarea>
+    </span>
+    <input type="hidden" id="RegulationId" name="RegulationId" />
+</div>
+<div class="form-group row">
+    <div class="col-4 ">
+        <span class="text-500">
+            @AppProcessor.Messagor.GetMessage("FineAmountMin_Title")
+        </span>
+        <input type="text" readonly="readonly" placeholder="@AppProcessor.Messagor.GetMessage("FineAmountMin_Title")" class="form-control shadow-none" id="FineAmountMin" name="FineAmountMin" />
+    </div>
+    <div class="col-4 ">
+        <span class="text-500">
+            @AppProcessor.Messagor.GetMessage("FineAmount_Title")
+        </span>
+        <input type="text" placeholder="@AppProcessor.Messagor.GetMessage("FineAmount_Title")" class="form-control shadow-none" id="FineAmountFormatter" name="FineAmountFormatter" />
+    </div>
+    <div class="col-4 ">
+        <span class="text-500">
+            @AppProcessor.Messagor.GetMessage("FineAmountMax_Title")
+        </span>
+        <input type="text" readonly="readonly" placeholder="@AppProcessor.Messagor.GetMessage("FineAmountMax_Title")" class="form-control shadow-none" id="FineAmountMax" name="FineAmountMax" />
+    </div>
+    <input type="hidden" class="form-control shadow-none" id="FineAmount" name="FineAmount" />
+
+    <input type="hidden" class="form-control shadow-none" id="MinArea" name="MinArea" />
+    <input type="hidden" class="form-control shadow-none" id="MaxArea" name="MaxArea" />
+
+    <input type="hidden" class="form-control shadow-none" name="RemedialMeasure" />
+    <input type="hidden" class="form-control shadow-none" name="RemediationRegulationName" />
+    <input type="hidden" class="form-control shadow-none" name="DeductionAccount" />
+    <input type="hidden" class="form-control shadow-none" name="RegulationDeductionAccount" />
+</div>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    $(document).ready(function () {
+        _initViolationArea();
+    });
+
+    function _initViolationArea() {
+
+        var areaViolationVal = $('#Land [name="Land.Area"]').val();
+        var areaViolation = areaViolationVal != null && areaViolationVal != undefined && areaViolationVal.length > 0 ? parseFloat(areaViolationVal) : 0;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ListViolationAreas", "RegulationViolations")",
+            dataType: "JSON",
+            success: function (response) {
+                $("#SelectViolation select#ViolationAreaId").empty();
+                $("#SelectViolation select#ViolationAreaId").append('<option value=""></option>');
+                var selectedVal = '';
+                $.each(response, function (index, item) {
+
+                    var areaMin = item.AreaMin != null && item.AreaMin != undefined ? item.AreaMin : -1;
+                    var areaMax = item.AreaMax != null && item.AreaMax != undefined ? item.AreaMax : -1;
+
+                    var areaMinView = item.AreaMin != null && item.AreaMin != undefined ? ' area-min="{0}"'.format(item.AreaMin) : '';
+                    var areaMaxView = item.AreaMax != null && item.AreaMax != undefined ? ' area-max="{0}"'.format(item.AreaMax) : '';
+
+                    if (areaMin <= -1 && areaMax > 0) {
+                        if (areaViolation <= areaMax)
+                        {
+                            selectedVal = item.ViolationAreaId;
+                        }
+                    } else if (areaMax <= -1 && areaMin > 0) {
+                        if (areaViolation > areaMax) {
+                            selectedVal = item.ViolationAreaId;
+                        }
+                    }
+                    else if (areaMin >= 0 && areaMax >= areaMin) {
+                        if (areaViolation > areaMin && areaViolation <= areaMax) {
+                            selectedVal = item.ViolationAreaId;
+                        }
+                    }
+
+                    $("#SelectViolation select#ViolationAreaId").append('<option ' + areaMinView + areaMaxView + ' value="' + item.ViolationAreaId + '">' + item.ViolationAreaName + "</option>");
+                });
+                $("#SelectViolation select#ViolationAreaId").val(selectedVal).trigger('change.select2');
+            }
+        });
+    }
+
+    function _initRegulation() {
+        var constructionParticipantId = $("#SelectViolation select#ConstructionParticipantId").val();
+        var violationBehaviorId = $("#SelectViolation select#ViolationBehaviorId").val();
+        var violatedAreaId = $("#SelectViolation select#ViolationAreaId").val();
+        var typeViolator = $('[name="TypeViolator"]:checked').val();
+        var isPersonal = "@((int)EnumTypeViolator.Persional)" == typeViolator;
+
+        $("#SelectViolation select#RegulationId").empty();
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ListRegulation", "RegulationViolations")?constructionParticipantId=" + constructionParticipantId + "&violationBehaviorId=" + violationBehaviorId + "&violatedAreaId=" + violatedAreaId,
+            dataType: "JSON",
+            success: function (response) {
+                if (response != null && response != undefined) {
+                    if (response.data != null && response.data != undefined) {
+
+                        $("#SelectViolation [name=RegulationName]").val(response.data.RegulationName);
+                        $("#SelectViolation [name=RegulationId]").val(response.data.RegulationId);
+
+                        var fineAmountAverage = response.data.FineAmountAverage;
+                        var fineAmountMin = response.data.FineAmountMin;
+                        var fineAmountMax = response.data.FineAmountMax;
+
+                        if (isPersonal) {
+                            fineAmountAverage = fineAmountAverage * 0.5;
+                            fineAmountMin = fineAmountMin * 0.5;
+                            fineAmountMax = fineAmountMax * 0.5;
+                        }
+
+                        $("#SelectViolation [name=FineAmountFormatter]").val(fineAmountAverage).trigger('keyup');
+                        $("#SelectViolation [name=FineAmountMin]").val(fineAmountMin).trigger('keyup');
+                        $("#SelectViolation [name=FineAmount]").val(fineAmountAverage);
+                        $("#SelectViolation [name=FineAmountMax]").val(fineAmountMax).trigger('keyup');
+
+                        $("#SelectViolation [name=RemedialMeasure]").val(response.data.ContentOfRemedialMeasure);
+                        $("#SelectViolation [name=RemediationRegulationName]").val(response.data.RemediationRegulationName);
+                        $("#SelectViolation [name=DeductionAccount]").val(response.data.DeductionAccountName);
+                        $("#SelectViolation [name=RegulationDeductionAccount]").val(response.data.DeductionRegulationName);
+
+                        if (typeViolator != undefined && fineAmountAverage != undefined)
+                            _initAuthorityCode(typeViolator, fineAmountAverage);
+
+                    } else {
+                        $("#SelectViolation [name=RegulationName]").val('');
+                        $("#SelectViolation [name=RegulationId]").val('');
+                        $("#SelectViolation [name=FineAmountFormatter]").val('').trigger('keyup');
+                        $("#SelectViolation [name=FineAmountMin]").val('').trigger('keyup');
+                        $("#SelectViolation [name=FineAmount]").val('');
+                        $("#SelectViolation [name=FineAmountMax]").val('').trigger('keyup');
+
+                        $("#SelectViolation [name=RemedialMeasure]").val('');
+                        $("#SelectViolation [name=RemediationRegulationName]").val('');
+                        $("#SelectViolation [name=DeductionAccount]").val();
+                        $("#SelectViolation [name=RegulationDeductionAccount]").val();
+
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeViolationArea(cbb) {
+        var violationAreaId = $(cbb).val();
+        if (violationAreaId == null || violationAreaId == undefined) return;
+
+        var areaMin = $(cbb).attr('area-min');
+        var areaMax = $(cbb).attr('area-max');
+
+        if (areaMin != undefined) {
+            $('[name="MinArea"]').val(areaMin);
+        }
+        if (areaMax != undefined) {
+            $('[name="MaxArea"]').val(areaMax);
+        }
+
+        _initRegulation();
+    }
+
+    function _onChangeViolationBehavior(cbb, eleNames) {
+        $.each(eleNames, function (idx, eleName) {
+            $(eleName).val($(cbb).children("option:selected").text());
+        });
+        if ($(cbb).val() == "") {
+            $('button[id=btnSave]').addClass('disabled');
+        } else {
+            $('button[id=btnSave]').removeClass('disabled');
+            _initRegulation();
+        }
+    }
+</script>

@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcStepSituationModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Situation_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "StepSituation", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "StepSituation_OnProcessSuccess(data, 'DeleteStepSituation')"
+    }, new { @class = "form-horizontal", id = "DeleteStepSituation" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.SituationId)
+        @Html.HiddenFor(model => model.SituationDesc)
+        @Html.HiddenFor(model => model.StepId)
+        @Html.HiddenFor(model => model.StepName)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

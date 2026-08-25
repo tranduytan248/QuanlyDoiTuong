@@ -1,0 +1,27 @@
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorSubjectModel
+@{
+    ViewBag.Title = "Thêm mới Đối tượng";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-user-plus"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Add", "Subject", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Subject_OnProcessSuccess(data, 'AddSubject')"
+    }, new { @class = "form-horizontal", id = "AddSubject" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Subject", Model)
+        </div>
+    }
+}

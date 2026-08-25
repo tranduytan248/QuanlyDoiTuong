@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("LegislationDoc_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Edit", "LegislationDoc", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "EditLegislationDoc", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_LegislationDoc")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#EditLegislationDoc').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_EditLegislationDoc #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableLegislationDoc.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_EditLegislationDoc form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_EditLegislationDoc").modal("hide");
+                        $("#ModalContent #modal_EditLegislationDoc").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableLegislationDoc.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_EditLegislationDoc" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

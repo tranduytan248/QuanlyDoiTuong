@@ -1,0 +1,25 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcedureModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Procedure_Diagram_Title")} - {Model.ProcedureName}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-project-diagram"></i>
+}
+
+@section FormBody{
+
+    <div class="row modal-body p-0 mx-0" id="bodyForm">
+        @Html.Partial("_FlowDiagram")
+    </div>
+}
+
+@section SubmitControl{
+    <button type="button" class="btn px-4 btn-outline-primary mb-1" data-dismiss="modal" onclick="_onSaveDiagram();"><i class="fa fa-save"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Save")</button>
+}

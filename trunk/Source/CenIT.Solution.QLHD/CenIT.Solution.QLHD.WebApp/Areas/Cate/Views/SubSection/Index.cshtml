@@ -1,0 +1,55 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateSubSectionModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("SubSection_Label_Title")} - [{Model.MainSectionName}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    warning
+}
+
+@section FormIcon{
+    <i class="fas fa-money-bill-alt"></i>
+}
+
+@section FormBody{
+    <div class="row" id="bodyForm">
+        @Html.HiddenFor(model => model.Cate_MainSectionId)
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @Html.Button(true, "AddSubSection", Url.Action("Add", new { area = "Cate", id = Model.Cate_MainSectionId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="card dcard">
+                    <div class="p-2 table-responsive-md">
+                        <table id="DSSubSection" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table">
+                            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                                <tr>
+                                    <th>@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                                    <th class="w-50">@AppProcessor.Messagor.GetMessage("SubSection_Label_Name")</th>
+                                    @*<th>@AppProcessor.Messagor.GetMessage("MainSection_Label_Name")</th>*@
+                                    <th>@AppProcessor.Messagor.GetMessage("Price_Label_Unit")</th>
+                                    <th>@AppProcessor.Messagor.GetMessage("Price_Label_UnitPrice")</th>
+                                    <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Areas/Cate/Views/SubSection/SubSection.js"></script>
+}
+@section SubmitControl{
+
+}

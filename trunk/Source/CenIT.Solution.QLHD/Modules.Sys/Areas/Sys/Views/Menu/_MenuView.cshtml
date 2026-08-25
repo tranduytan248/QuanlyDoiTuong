@@ -1,0 +1,109 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Sys.SysMenuModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.MenuId)
+@Html.HiddenFor(model => model.Depth)
+@Html.HiddenFor(model => model.LevelMenu)
+<div class="form-group row">
+    <div class="col-md-7">
+        @Html.TitleFor(model => model.Name, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Menu_Label_Name") })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-5">
+        <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_Parent")</label>
+        @Html.DropDownListFor(model => model.ParentId, new SelectList(Model.ParentMenus, "Value", "Text"), "", new { @class = "form-control col-md-12" })
+        @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-md-2">
+        <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_Icon")</label>
+        <div class="col-md-12 p-0">
+            <button type="button" name="Icon" class="btn btn-default btn-lg fa-2x" data-search-text="Tìm kiếm" data-cols="6" data-align="center" data-placement="right" data-iconset="fontawesome5" data-icon="@Model.Icon" role="iconpicker"></button>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_Position")</label>
+        @Html.TextBoxFor(model => model.Position, new { @class = "form-control col-md-12", type = "number", placeholder = AppProcessor.Messagor.GetMessage("Menu_Label_Position") })
+        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-7">
+        <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_Link")</label>
+        @Html.TextBoxFor(model => model.Link, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Menu_Label_Link") })
+        @Html.ValidationMessageFor(model => model.Link, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_LinkFunction")</label>
+        @Html.DropDownListFor(model => model.FunctionActionId, new SelectList(Model.FunctionActions, "Value", "Text"), AppProcessor.Messagor.GetMessage("Menu_Label_LinkFunction"), new { @class = "form-control col-md-12" })
+        @Html.ValidationMessageFor(model => model.FunctionActionId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-md-4">
+        <label class="">
+            @Html.CheckBoxFor(model => model.IsShow)
+            @Html.LabelFor(model => model.IsShow, new { @class = "col-form-label pr-0 font-bold" })
+        </label>
+    </div>
+    <div class="col-md-8 row">
+        <label class="col-md-4">
+            @Html.CheckBoxFor(model => model.UseModal, new { onchange = "_onUseModal(this)" })
+            @Html.LabelFor(model => model.UseModal, new { @class = "col-form-label pr-0 font-bold" })
+        </label>
+        @{
+            var hidden = Model.UseModal ? "" : "d-none";
+        }
+        <div class="col-md-8 @hidden" id="formModalId">
+            @*<label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Menu_Label_ModalId")</label>*@
+            @Html.TextBoxFor(model => model.ModalId, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Menu_Label_ModalId") })
+            @Html.ValidationMessageFor(model => model.ModalId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    //$(function() {
+    //    $('#iconpicker').iconpicker({ placement: 'top', defaultValue: true, hideOnSelect: false, selectedCustomClass: "fa-2x" });
+    //    $(".iconpicker-items a").on('click',
+    //        function(e) {
+    //            e.preventDefault();
+    //            return false;
+    //        });
+    //    $('#iconpicker').on('iconpickerSelected',
+    //        function(e) {
+    //            $("#Icon").val(e.iconpickerValue);
+    //            $(this).children('i').get(0).className = 'fa-2x ' + e.iconpickerValue;
+    //        });
+    //    $('#ParentId option').each(function(idx, opt) {
+    //        opt.innerHTML = opt.text;
+    //    });
+    //});
+
+    function _onUseModal(chbk) {
+        if ($(chbk).is(":checked")) {
+            $("#formModalId").removeClass("d-none");
+        }
+        else {
+            $("#formModalId").addClass("d-none");
+        }
+    }
+
+    $(function () {
+        $('button[role="iconpicker"]').iconpicker()
+            .iconpicker('setAlign', 'center') // Only in div tag
+            .iconpicker('setArrowClass', 'btn-success')
+            .iconpicker('setSearchText', 'Tìm kiếm')
+            .iconpicker('setSelectedClass', 'btn-danger')
+            .iconpicker('setUnselectedClass', 'btn-primary');
+        //.on('change', function (e) {
+        //    $(this).children('i').addClass('fa-2x');
+        //});
+    });
+
+</script>

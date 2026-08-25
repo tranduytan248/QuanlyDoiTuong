@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = Html.Raw(string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"<b>[{Model.ComplainCode} - {AppProcessor.Messagor.GetMessage("Complain_Title")} {Model.Title}]</b>"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Edit", "Complain", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "EditComplain", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ComplainViaApi")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#EditComplain').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_EditComplain #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableComplain.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_EditComplain form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_EditComplain").modal("hide");
+                        $("#ModalContent #modal_EditComplain").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableComplain.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_EditComplain" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

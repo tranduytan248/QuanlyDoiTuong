@@ -1,0 +1,25 @@
+## Visual Studio & Tooling
+.vs/
+*.user
+*.suo
+*.userprefs
+TestResults/
+*.tmp
+*.log
+
+## Build Output & Compiled Binaries
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+trunk/Release/
+*.pdb
+
+## NuGet Packages
+packages/
+[Pp]ackages/
+*.nupkg
+
+## User Uploads
+[Uu]ploads/

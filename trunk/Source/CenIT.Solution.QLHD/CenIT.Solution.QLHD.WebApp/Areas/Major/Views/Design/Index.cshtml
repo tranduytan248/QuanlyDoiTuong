@@ -1,0 +1,210 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVFormModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Design_Title");
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @{
+        if (Model?.FormId != null)
+        {
+            <button type="button" class="btn px-4 btn-outline-primary mb-1" data-rel="tooltip" title="Lưu biểu mẫu" onclick="saveView();"><i class="fas fa-save"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Save")</button>
+        }
+    }
+}
+
+@section PluginCss{
+    <link rel="stylesheet" href="~/Contents/Modules/Major/plugins/codemirror-2/lib/codemirror.css">
+    <link rel="stylesheet" href="~/Contents/Modules/Major/plugins/codemirror-2/theme/night.css">
+}
+
+@section HeadJs{
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/codemirror.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/util/formatting.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/css/css.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/xml/xml.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/javascript/javascript.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/util/closetag.js"></script>
+}
+
+<div class="mt-3">
+    @using (Html.BeginForm("Save", "Design", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "SaveView", @class = "form-horizontal" }))
+    {
+	    if (Model != null)
+	    {
+		    @Html.HiddenFor(model => model.FormId)
+		    @Html.HiddenFor(model => model.FormName)
+		    @Html.HiddenFor(model => model.FormTypeName)
+	    }
+        
+        <div id="bodyForm" class="mx-2 form-row">
+            <div class="card dcard h-100 col">
+                <div class="card-header">
+                    <h5 class="card-title">@(Model?.FormName)</h5>
+                    <div class="card-toolbar">
+                        <a href="#" data-action="expand" class="card-toolbar-btn text-orange-d3 d-style" data-rel="tooltip" title="Toàn màn hình">
+                            <i class="fa fa-expand d-n-active"></i>
+                            <i class="fa fa-compress d-active"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="card dcard">
+                                <div class="card-header">
+                                    <h5 class="card-title"></h5>
+                                    <div class="card-toolbar">
+                                        <a href="javascript:void(0)" class="card-toolbar-btn text-grey-d1" onclick="autoFormat();" data-rel="tooltip" title="Format Code"><i class="fas fa-indent"></i></a>
+                                        <a href="#" data-action="expand" class="card-toolbar-btn text-orange-d3 d-style" data-rel="tooltip" title="Toàn màn hình">
+                                            <i class="fa fa-expand d-n-active"></i>
+                                            <i class="fa fa-compress d-active"></i>
+                                        </a>
+                                        <a href="javascript:void(0)" class="card-toolbar-btn text-success-d1" onclick="saveCode();" data-rel="tooltip" title="Save Code"><i class="fas fa-file-download"></i></a>
+                                        <a href="javascript:void(0)" onclick="clearCode();" class="card-toolbar-btn text-green" data-rel="tooltip" title="Clear Code"><i class="fas fa-sync-alt"></i></a>
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    @{
+                                        if (Model != null)
+                                        {
+                                            @Html.TextAreaFor(model => model.ViewName, new { @class = "col" })
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<textarea id=\"ViewName\" name=\"ViewName\" class=\"col\"></textarea>")
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="card dcard">
+                                <div class="card-header">
+                                    <h5 class="card-title"></h5>
+                                    <div class="card-toolbar">
+                                        <a href="#" data-action="expand" class="card-toolbar-btn text-orange-d3 d-style" data-rel="tooltip" title="Toàn màn hình">
+                                            <i class="fa fa-expand d-n-active"></i>
+                                            <i class="fa fa-compress d-active"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    <div id="ViewResult" class="table-responsive p-2 brc-default-l2" style="height: calc(80vh)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section BottomScript
+{
+	<script src="@Url.Content("~/Contents/Modules/Major/plugins/money2string/money2text.js")"></script>
+
+    <script type="text/javascript">
+        var editor;
+        var delay;
+
+        $(document).ready(function () {
+
+            editor = CodeMirror.fromTextArea(document.getElementById("ViewName"), {
+                lineNumbers: true,
+                mode: "htmlmixed",
+                tabMode: 'indent',
+                theme: "night",
+                onChange: function () {
+                    clearTimeout(delay);
+                    delay = setTimeout(updatePreview, 300);
+                },
+                extraKeys: {
+                    "'>'": function (cm) { cm.closeTag(cm, '>'); },
+                    "'/'": function (cm) { cm.closeTag(cm, '/'); }
+                },
+                wordWrap: true,
+                lineWrapping: true,
+                onCursorActivity: function () {
+                    editor.setLineClass(hlLine, null, null);
+                    hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
+                }
+            });
+            editor.setSize("100%", "calc(80vh)");
+            setTimeout(updatePreview, 300);
+            var hlLine = editor.setLineClass(0, "activeline");
+            CodeMirror.commands["selectAll"](editor);
+        });
+
+        function autoFormat() {
+            var totalLines = editor.lineCount();
+            var totalChars = editor.getTextArea().value.length;
+            editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines, ch: totalChars });
+        }
+
+        function clearCode() {
+            editor.setValue("");
+            editor.clearHistory();
+        }
+
+        function updatePreview() {
+            //var previewFrame = document.getElementById('ViewResult');
+            //var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            //preview.open();
+            //preview.write(editor.getValue());
+            //preview.close();
+            $("#ViewResult").html(editor.getValue());
+        }
+
+        function saveCode() {
+            var htmlCode = editor.getValue();
+            var fileAsBlob = new Blob([htmlCode], { type: 'text/plain' });
+            // filename to save as
+            var fileName = "_Form.cshtml";
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileName;
+
+            // hidden link title name
+            downloadLink.innerHTML = "LINKTITLE";
+            window.URL = window.URL || window.webkitURL;
+            downloadLink.href = window.URL.createObjectURL(fileAsBlob);
+            downloadLink.onclick = destroyClickedElement;
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        }
+
+        function destroyClickedElement(event) {
+            document.body.removeChild(event.target);
+        }
+
+        function saveView() {
+            $("form#SaveView").submit();
+        }
+
+        $('form#SaveView').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                arr.find(a => a.name == "ViewName").value = editor.getValue();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    eval(response.message);
+                    response.status = undefined;
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000)
+                }
+            }
+        });
+
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CatePriceModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Price_Label_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Delete", "Price", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Price_OnProcessSuccess(data, 'DeletePrice')"
+    }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.PriceId)
+        @Html.HiddenFor(model => model.Cate_SubSectionId)
+        @Html.HiddenFor(model => model.Unit)
+        @Html.HiddenFor(model => model.Price)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

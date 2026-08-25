@@ -1,0 +1,69 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Modal_Title_Approve");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-check-double"></i>
+}
+
+@section FormBody{
+
+    @*@using (Ajax.BeginForm("Approve", "Dossier", new { area = "Major" }, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnSuccess = "Dossier_OnProcessSuccess(data, 'ApproveDossier')"
+        }, new { @class = "form-horizontal", id = "ApproveDossier" }))*@
+
+    @using (Html.BeginForm("Approve", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ApproveDossier", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ApproveBody")
+        </div>
+    }
+    <script type="text/javascript">
+        $('form#ApproveDossier').ajaxForm({
+            beforeSubmit: function () {
+                _onWaiting();
+            },
+            success: function (response) {
+                var formId = "ApproveDossier";
+
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableDossier.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                            $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElements(this);
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_" + formId).modal("hide");
+                        $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableDossier.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+            }
+        });
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnApprove" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-check-double"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

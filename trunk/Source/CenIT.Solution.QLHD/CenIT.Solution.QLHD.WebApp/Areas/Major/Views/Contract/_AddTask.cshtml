@@ -1,0 +1,35 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractTaskModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("ContractTask_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddTask", "Contract", new { area = "Major", contractId = Model.ContractId, typeContract = Model.TypeContractId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Task_OnProcessSuccess(data, 'AddTask')",
+        OnBegin = "_onWaiting()"
+    }, new { @class = "form-horizontal", id = "AddTask" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Task")
+        </div>
+    }
+}
+@section SubmitControl{
+    <button type="submit" id="btnAdd" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Add")</button>
+}
+@section ContinueForm{
+
+}

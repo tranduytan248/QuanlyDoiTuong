@@ -1,0 +1,26 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvPatternModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("SysPattern_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "InvPattern", new { area = "Invoice" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "AppPattern_OnProcessSuccess(data, 'DeletePattern')"
+    }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.PatternId)
+        @Html.HiddenFor(model => model.Pattern)
+        @Html.HiddenFor(model => model.Serial)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

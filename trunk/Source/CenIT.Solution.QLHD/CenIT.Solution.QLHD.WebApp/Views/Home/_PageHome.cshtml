@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "~/Views/Home/_MainHome.cshtml";
+}
+
+
+@section PluginCss{
+    @*<link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/photoswipe/dist/photoswipe.css">
+        <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/photoswipe/dist/default-skin/default-skin.css">*@
+
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/aos/dist/aos.css">
+
+    @RenderSection("PluginCss", false)
+}
+
+@section HeadJs{
+    @RenderSection("HeadJs", false)
+    @Html.RenderScripts(ScriptPosition.HeadEnd)
+}
+
+@section HeadCss{
+    @RenderSection("HeadCss", false)
+}
+
+<!-- page header and toolbox -->
+<div class="page-header pb-0" id="PageTitle">
+    @*<h1 class="page-title text-primary-d2 text-150">
+            @RenderSection("PageTitle", false)
+        </h1>
+
+        <div class="page-tools d-inline-flex" id="PageAction">
+            @RenderSection("PageAction", false)
+        </div>*@
+
+    @Html.Partial("_Header")
+</div>
+
+@RenderBody()
+
+@Html.Partial("_Footer")
+
+@section PluginJs{
+
+    <script src="~/Contents/Base/plugins/ace_v4/node_modules/aos/dist/aos.js"></script>
+
+    <script type="text/javascript">
+
+        function fileListFrom(files) {
+            const b = new ClipboardEvent("").clipboardData || new DataTransfer()
+            for (const file of files) b.items.add(file)
+            return b.files
+        }
+        var rotation = 0;
+
+        jQuery(function ($) {
+
+            // enable Animation on scroll plugin
+            try {
+                AOS.init({
+                    once: true,
+                    duration: 550
+                })
+            }
+            catch (e) {
+                // if AOS is not supported, remove the stylesheets so page elements become visible again
+                $('link[href*="aos.css"],link[href*="aos.min.css"]').remove()
+            }
+        });
+
+    </script>
+
+    @RenderSection("PluginJs", false)
+}
+
+@section BottomScript{
+    @RenderSection("BottomScript", false)
+}

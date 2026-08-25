@@ -1,0 +1,251 @@
+﻿
+@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+@{
+    var disabled = Model.Construction.IsDisabled ? "disabled" : "";
+}
+
+<div id="Construction">
+    <div class="form-group row">
+        @{
+            if (Model.Construction.IsDisabled)
+            {
+                @Html.HiddenFor(model => model.Construction.LandParcelNo)
+                @Html.HiddenFor(model => model.Construction.MapNo)
+
+                <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.LandParcelNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.LandParcelNo) })
+                    @Html.TitleFor(model => model.Construction.LandParcelNo, new { @class = "floating-label text-500" })
+                </div>
+                <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.MapNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.MapNo) })
+                    @Html.TitleFor(model => model.Construction.MapNo, new { @class = "floating-label text-500" })
+                </div>
+            }
+            else
+            {
+                <div class="col-4">
+                    <div class="input-floating-label text-blue-d2 brc-blue-m1 row col-12">
+                        @Html.TextBoxFor(model => model.Construction.LandParcelNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.LandParcelNo) })
+                        @Html.TitleFor(model => model.Construction.LandParcelNo, new { @class = "floating-label text-500" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Construction.LandParcelNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-3">
+                    <div class="row col-12 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.MapNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.MapNo) })
+                        @Html.TitleFor(model => model.Construction.MapNo, new { @class = "floating-label text-500" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Construction.MapNo, "", new { @class = "text-danger" })
+                </div>
+            }
+        }
+
+    </div>
+    @{
+        if (Model.Construction.IsDisabled)
+        {
+            @Html.HiddenFor(model => model.Construction.AddressNo)
+            @Html.HiddenFor(model => model.Construction.StreetId)
+            @Html.HiddenFor(model => model.Construction.WardId)
+            @Html.HiddenFor(model => model.Construction.Owner)
+            @Html.HiddenFor(model => model.Construction.IdCard)
+            <div class="form-group row">
+                <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.AddressNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.AddressNo) })
+                    @Html.TitleFor(model => model.Construction.AddressNo, new { @class = "floating-label text-500" })
+                </div>
+                <span class="has-float-label input-floating-label col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.StreetName, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.StreetId) })
+                    @Html.TitleFor(model => model.Construction.StreetId, new { @class = "floating-label text-500" })
+                </span>
+                @Html.HiddenFor(model => model.Construction.StreetName)
+
+                <span class="has-float-label input-floating-label col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.WardName, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.WardId) })
+                    @Html.TitleFor(model => model.Construction.WardId, new { @class = "floating-label text-500" })
+                </span>
+                @Html.HiddenFor(model => model.Construction.WardName)
+            </div>
+            <div class="form-group row">
+                <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.Owner, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.Owner) })
+                    @Html.TitleFor(model => model.Construction.Owner, new { @class = "floating-label text-500" })
+                </div>
+                <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                    @Html.TextBoxFor(model => model.Construction.IdCard, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.IdCard) })
+                    @Html.TitleFor(model => model.Construction.IdCard, new { @class = "floating-label text-500" })
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="form-group row">
+                <div class="col-4">
+                    <div class="row col-12 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.AddressNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.AddressNo) })
+                        @Html.TitleFor(model => model.Construction.AddressNo, new { @class = "floating-label text-500" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Construction.AddressNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-4">
+                    <span class="has-float-label input-floating-label row col-12 text-blue-d2 brc-blue-m1">
+                        @Html.DropDownListFor(model => model.Construction.StreetId, new SelectList(Model.Construction.ListStreets, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Construction_StreetName', false);", placeholder = Html.DisplayNameFor(model => model.Construction.StreetId) })
+                        @Html.TitleFor(model => model.Construction.StreetId, new { @class = "floating-label text-500" })
+                    </span>
+                    @Html.ValidationMessageFor(model => model.Construction.StreetId, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.HiddenFor(model => model.Construction.StreetName)
+
+                <div class="col-4">
+                    <span class="has-float-label input-floating-label row col-12 text-blue-d2 brc-blue-m1">
+                        @Html.DropDownListFor(model => model.Construction.WardId, new SelectList(Model.Construction.ListWards, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Construction_WardName', false);", placeholder = Html.DisplayNameFor(model => model.Construction.WardId) })
+                        @Html.TitleFor(model => model.Construction.WardId, new { @class = "floating-label text-500" })
+                    </span>
+                    @Html.ValidationMessageFor(model => model.Construction.WardId, "", new { @class = "text-danger" })
+                </div>
+                @Html.HiddenFor(model => model.Construction.WardName)
+            </div>
+                <div class="form-group row">
+                    <div class="col-4 input-floating-label text-blue-d2 text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.Owner, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.Owner) })
+                        @Html.TitleFor(model => model.Construction.Owner, new { @class = "floating-label text-500" })
+                    </div>
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.IdCard, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.IdCard) })
+                        @Html.TitleFor(model => model.Construction.IdCard, new { @class = "floating-label text-500" })
+                    </div>
+                </div>
+        }
+    }
+    <hr class="brc-danger-m1" />
+
+    <div class="form-group row @disabled">
+        <label for="Construction.TypeViolation" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("TypeViolation_Title")</label>
+        <label class="col-form-label col-3">
+            @Html.RadioButtonFor(model => model.Construction.TypeViolation, (int)EnumTypeViolation.WrongLicense, new { id = "WrongLicense", title = "TypeViolation_WrongLicense" })
+            @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolation_WrongLicense"), new { @for = "WrongLicense" })
+        </label>
+        <label class="col-form-label col-3">
+            @Html.RadioButtonFor(model => model.Construction.TypeViolation, (int)EnumTypeViolation.NoLicense, new { id = "NoLicense", title = "TypeViolation_NoLicense" })
+            @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolation_NoLicense"), new { @for = "NoLicense" })
+        </label>
+    </div>
+
+    <hr class="brc-danger-m1" />
+
+    <div id="TypeViolationWrongLicense" class="@(Model.Construction.TypeViolation == (int)EnumTypeViolation.NoLicense ? "d-none" : "")">
+
+        <div class="form-group row">
+            <div class="acard card h-100 col-12">
+                <div class="card-header pb-15">
+                    <h5 class="card-title">
+                        @AppProcessor.Messagor.GetMessage("ConstructionLicense_Type")
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row my-0 @disabled">
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.NewBuilding, new { id = "NewBuilding", title = "TypeConstructionLicense_NewBuilding" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_NewBuilding"), new { @for = "NewBuilding" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.Repairing, new { id = "Repairing", title = "TypeConstructionLicense_Repairing" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_Repairing"), new { @for = "Repairing" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.RelocateBuilding, new { id = "RelocateBuilding", title = "TypeConstructionLicense_RelocateBuilding" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_RelocateBuilding"), new { @for = "RelocateBuilding" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.DeadlineBuilding, new { id = "DeadlineBuilding", title = "TypeConstructionLicense_DeadlineBuilding" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_DeadlineBuilding"), new { @for = "DeadlineBuilding" })
+                        </label>
+                        @Html.HiddenFor(model => model.Construction.DataConstructionLicense.LicenseTypeName)
+                    </div>
+                </div>
+            </div>
+        </div>
+        @{
+            if (Model.Construction.IsDisabled)
+            {
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.LicenseNo)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.ReleaseOn)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.NumberFloor)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.ConstructionArea)
+                <div class="form-group row">
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.LicenseNo) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "floating-label text-500" })
+                    </div>
+                    <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ReleaseOn, "{0:dd/MM/yyyy}", new { disabled = true, @class = "form-control col-md-12 datepicker", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.ReleaseOn) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseOn, new { @class = "floating-label text-500" })
+                    </div>
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.NumberFloor) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "floating-label text-500" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.ConstructionArea) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "floating-label text-500" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group row">
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.LicenseNo) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "floating-label text-500" })
+                    </div>
+                    <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ReleaseOn, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.ReleaseOn) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseOn, new { @class = "floating-label text-500" })
+                    </div>
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.NumberFloor) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "floating-label text-500" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-3 input-floating-label text-blue-d2 brc-blue-m1">
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.DataConstructionLicense.ConstructionArea) })
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "floating-label text-500" })
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Construction input[type='radio'][name='Construction.DataConstructionLicense.LicenseTypeId']").change(function () {
+            var licenseTypeName = $(this).attr("title");
+            $("#Construction input[type='hidden'][id='Construction_DataConstructionLicense_LicenseTypeName']").val(licenseTypeName);
+        });
+
+        $("#Construction input[type='radio'][name='Construction.TypeViolation']").change(function () {
+            var typeViolation = $(this).val();
+            var wrongLicense = @((int)EnumTypeViolation.WrongLicense);
+            var noLicense = @((int)EnumTypeViolation.NoLicense);
+
+            if(typeViolation == wrongLicense)
+            {
+                $("#Construction #TypeViolationWrongLicense").removeClass("d-none");
+            }
+            else if(typeViolation == noLicense){
+                $("#Construction #TypeViolationWrongLicense").addClass("d-none");
+            }
+        });
+    });
+
+</script>

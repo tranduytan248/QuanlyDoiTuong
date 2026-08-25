@@ -1,0 +1,166 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Cate.CateAddressModel
+
+<div class="modal fade" id="addressModal" data-backdrop-bg="bgc-white" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-1 border-t-3 brc-primary-m2 shadow">
+            <div class="modal-header py-2 border-0">
+
+            </div>
+
+            <div class="modal-body pt-0 px-3" id="Address">
+                <p class="text-secondary-d3 text-125 mt-2" id="addressModalLabel">
+                    <i class="fas fa-hand-point-right text-danger"></i>&nbsp;Chọn địa chỉ
+                </p>
+
+                <div class="form-group">
+                    @Html.TitleFor(model => model.ProvinceId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.ProvinceId, new SelectList(Model.ListProvinces, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeProvince(this, '#Address #ProvinceName','#Address #WardId')" })
+                    @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.ProvinceName)
+                </div>
+
+                <div class="form-group">
+                    @Html.TitleFor(model => model.WardId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.WardId, new SelectList(Model.ListWards, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Address #WardName')" })
+                    @Html.ValidationMessageFor(model => model.WardId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.WardName)
+                </div>
+                <div class="form-group row">
+                    @{
+                        if (Model.EleViews >= 16)
+                        {
+                            <div class="col-md-5">
+                                @Html.TitleFor(model => model.AddressNo, new { @class = "col-form-label pr-0 font-bold" })
+                                @Html.TextBoxFor(model => model.AddressNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_AddressNo") })
+                                @Html.ValidationMessageFor(model => model.AddressNo, "", new { @class = "text-danger" })
+                            </div>
+                        }
+                        if (Model.EleViews >= 32)
+                        {
+                            <div class="col-md-7">
+                                @Html.TitleFor(model => model.StreetName, new { @class = "col-form-label pr-0 font-bold" })
+                                @Html.TextBoxFor(model => model.StreetName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Street") })
+                                @Html.ValidationMessageFor(model => model.StreetName, "", new { @class = "text-danger" })
+                            </div>
+                        }
+                    }
+                </div>
+            </div><!-- /.modal-body -->
+
+            <div class="modal-footer justify-content-start flex-nowrap bgc-grey-l4 py-25">
+                <div>
+
+                </div>
+
+                <button type="button" class="btn py-15 px-35 text-95 btn-blue ml-auto" data-dismiss="modal" onclick="_onSaveAddress();">
+                    <i class="fas fa-check-double"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //debugger;
+    $(document).ready(function () {
+    @{
+        if (Model.ProvinceId > 0)
+        {
+            @Html.Raw($"$(\"#Address [name='ProvinceId']\").val({Model.ProvinceId}).trigger('change');");
+        }
+        if (!string.IsNullOrEmpty(Model.StreetName))
+        {
+            @Html.Raw($"$(\"#Address [name='StreetName']\").val('{Model.StreetName}');");
+        }
+        if (!string.IsNullOrEmpty(Model.AddressNo))
+        {
+            @Html.Raw($"$(\"#Address [name='AddressNo']\").val('{Model.AddressNo}');");
+        }
+    }
+
+});
+
+    function _onChangeProvince(cbbProvince, eleNameProvince, cbbWard) {
+        if ($(eleNameProvince).length > 0) {
+            $(eleNameProvince).val($(cbbProvince).children("option:selected").text());
+        }
+
+        var selectedProvince = $(cbbProvince).val();
+        var urlWardsViaProvince =
+            "@Url.Action("GetWardsBelongProvinceId", "Ajax", new { area = "Cate" })?provinceId=" + selectedProvince;
+        $.ajax({
+            type: "GET",
+            url: urlWardsViaProvince,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbWard).empty();
+                $(cbbWard).append('<option value=""></option>');
+
+                $.each(response.Wards,
+                    function(index, item) {
+                        $(cbbWard).append('<optgroup label="' + index + '">');
+                        $.each(item,
+                            function(idx, ward) {
+                                $(cbbWard).append('<option value="' + ward.WardId + '">' + ward.WardName + "</option>");
+                            });
+                        $(cbbWard).append('</optgroup>');
+                    });
+                    @{
+                        if (Model.WardId > 0)
+                        {
+                            @Html.Raw($"$(\"#Address [name='WardId']\").val({Model.WardId}).trigger('change');");
+                        }
+                        }
+                    }
+        });
+    }
+
+    function _onSaveAddress() {
+        var eleViews = @Model.EleViews;
+
+        var parentId = '@Model.ParentId';
+
+        var provinceId = "ProvinceId";
+        var provinceName = "ProvinceName";
+        var wardId = "WardId";
+        var wardName = "WardName";
+        var streetName = "StreetName";
+        var addressNo = "AddressNo";
+        var address = "Address";
+
+        var addressProvinceId = "#Address #ProvinceId";
+        var addressProvinceName = "#Address #ProvinceName";
+        var addressWardId = "#Address #WardId";
+        var addressWardName = "#Address #WardName";
+        var addressStreetName = "#Address #StreetName";
+        var addressAddressNo = "#Address #AddressNo";
+
+        var lowProvinceName = lowercaseFirstLetter($(addressProvinceName).val());
+        var lowWardName = lowercaseFirstLetter($(addressWardName).val());
+        if ($(addressAddressNo).val().length <= 0) {
+            eleViews = 16;
+        }
+        if ($(addressStreetName).val().length <= 0) {
+            eleViews = 8;
+        }
+
+        var addressInfo = eleViews >= 32 ?
+            "{0} {1}, {2}, {3}".format($(addressAddressNo).val(), $(addressStreetName).val(), lowWardName, lowProvinceName) :
+            (eleViews >= 16 ? "{0}, {1}, {2}".format($(addressStreetName).val(), lowWardName, lowProvinceName) :
+                "{0}, {1}".format(lowWardName, lowProvinceName));
+
+        $(parentId + provinceId).val($(addressProvinceId).val());
+        $(parentId + provinceName).val($(addressProvinceName).val());
+        $(parentId + wardId).val($(addressWardId).val());
+        $(parentId + wardName).val($(addressWardName).val());
+        $(parentId + streetName).val($(addressStreetName).val());
+        $(parentId + addressNo).val($(addressAddressNo).val());
+        $(parentId + address).val(addressInfo);
+    }
+    function lowercaseFirstLetter(string) {
+    return string.charAt(0).toLowerCase() + string.slice(1);
+}
+</script>

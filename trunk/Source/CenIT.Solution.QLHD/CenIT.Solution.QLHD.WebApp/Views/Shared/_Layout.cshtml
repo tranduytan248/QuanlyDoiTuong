@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+    <base href="/"/>
+
+    <title>@ViewBag.Title</title>
+
+    <!-- include common vendor stylesheets & fontawesome -->
+    @*<link href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />*@
+    @*<link href="~/Contents/Base/plugins/ace_v4/dist/css/ace-font.css" rel="stylesheet" />*@
+
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap/dist/css/bootstrap.css">
+
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/fortawesome/fontawesome-free/css/all.css">
+    @*<link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/fortawesome/fontawesome-free/css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/fortawesome/fontawesome-free/css/regular.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/fortawesome/fontawesome-free/css/brands.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/fortawesome/fontawesome-free/css/solid.css">*@
+    
+    <style type="text/css">
+        .ace-toaster-container {
+            z-index: 1080 !important;
+        }
+    </style>
+    @RenderSection("PluginCss", false)
+
+    <!-- include vendor stylesheets used in "Login" page. see "/views//pages/partials/page-login/vendor-stylesheets.hbs" -->
+    <!-- include fonts -->
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/dist/css/ace-font.css">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="~/Contents/Base/imgs/app.ico"/>
+    
+    <!-- ace.css -->
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/dist/css/ace.css">
+
+    <!-- "Dashboard 2" page styles, specific to this page for demo only -->
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/views/pages/dashboard-2/page-style.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/dist/css/ace-themes.css">
+
+    @RenderSection("HeadCss", false)
+    @RenderSection("HeadJs", false)
+    
+   
+</head>
+
+@RenderBody()
+
+</html>

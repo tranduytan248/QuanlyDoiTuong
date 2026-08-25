@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Union_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "Union", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Union_OnProcessSuccess(data, 'AddUnion')"
+    }, new { @class = "form-horizontal", id = "AddUnion" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Union")
+        </div>
+    }
+}
+
+@section ContinueForm{
+
+}

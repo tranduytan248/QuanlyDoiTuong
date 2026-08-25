@@ -1,0 +1,95 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchInvoiceModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Invoice_Title");
+}
+
+@section PluginCss
+{
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/tiny-date-picker.css">
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/date-range-picker.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+    <style type="text/css">
+        .datepicker.datepicker-dropdown.dropdown-menu {
+            z-index: 998 !important;
+        }
+        .dp-daterange-picker.visible {
+            z-index: 999 !important;
+        }
+    </style>
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+
+}
+
+<div class="mt-3">
+    @Html.Partial("_Search")
+</div>
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md d-none">
+            <table id="DSInvoice" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table dtr-inline" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th>@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_Pattern")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_Serial")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_InvNo")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("InvCus_Name")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("InvCus_Code")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_Type")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_Status")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_CreatedBy")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Inv_CreatedOn")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section PluginJs
+{
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+
+    <script src="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/dist/date-range-picker.js"></script>
+}
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Invoice/Views/Inv/Inv.js")"></script>
+    <script type="text/javascript">
+        //debugger;
+        @{
+            // 1: Chưa có tài khoản
+            // 2: Tài khoản service không có hoặc không đúng
+
+            var typeErr = (Model.HasNotSysInvAccount ?? false) ? 1 : ((Model.IsInvServiceAccountIncorrect ??false) ? 2 : 0);
+        }
+
+        $(document).ready(function(){
+            var typeErr = @typeErr;
+            if (typeErr > 0) {
+                $('.main-content > .page-content').addClass('blur');
+                var htmlButtonWarningInv = '@Html.Button(true, "WarningInv", Url.Action("WarningInv", "InvChecking", new { area = "Invoice", type = typeErr }), "", "", new { @class = "" })';
+                if (htmlButtonWarningInv.length > 0) {
+                    var eleButtonWarningInv = $.parseHTML(htmlButtonWarningInv);
+                    document.body.appendChild(eleButtonWarningInv[0]);
+                    $(eleButtonWarningInv).click().remove();
+                }
+            }
+        });
+
+    </script>
+}

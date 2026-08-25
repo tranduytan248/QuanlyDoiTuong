@@ -1,0 +1,62 @@
+﻿@model Cores.Cate.Models.CateUnionMemberModel
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Union_Title")} - <b>{AppProcessor.Messagor.GetMessage("User_Title")} [{Model.FullName}]</b>");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditMember", "Union", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "UnionMember_OnProcessSuccess(data, 'EditMember')"
+    }, new { @class = "form-horizontal", id = "EditMember" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Member")
+        </div>
+    }
+
+    <script type="text/javascript">
+        function UnionMember_OnProcessSuccess(response, formId) {
+            if (response.status != undefined) {
+                if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                    if (response.status != undefined) {
+                        eval(response.message);
+                        if (typeof _tableMember != "undefined") {
+                            _tableMember.ajax.reload(null, false);
+                        }
+                        response.status = undefined;
+                        var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                        $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                            _initElements(this);
+                        });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                if (typeof _tableMember != "undefined") {
+                                    _tableMember.ajax.reload(null, false);
+                                }
+                                response.status = undefined;
+                            }
+                        });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+            }
+        }
+    </script>
+}

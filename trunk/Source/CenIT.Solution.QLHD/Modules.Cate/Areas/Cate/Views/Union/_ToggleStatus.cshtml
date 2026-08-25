@@ -1,0 +1,22 @@
+﻿@model Cores.Cate.Models.CateUnionModel
+
+@{
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    warning
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("ToggleStatus", "Union", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Union_OnProcessSuccess(data, 'ToggleStatus')"
+    }, new { @class = "form-horizontal", id = "ToggleStatus" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ToggleStatusBody")
+        </div>
+    }
+}

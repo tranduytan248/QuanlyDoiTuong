@@ -1,0 +1,214 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVFormModel
+
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/codemirror-2/lib/codemirror.css">
+<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/codemirror-2/theme/night.css">
+
+<div id="Form">
+    @Html.HiddenFor(model => model.FormId)
+    @Html.HiddenFor(model => model.RefDocs)
+    @Html.HiddenFor(model => model.TemplateName)
+    @Html.HiddenFor(model => model.Version)
+    <div class="row">
+        <div class="col-12 col-md-6">
+
+            @{
+                if (Model.FormId == null)
+                {
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.FormCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.FormCode, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_Code") })
+                            @Html.ValidationMessageFor(model => model.FormCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.FormCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.FormCode, new { @class = "form-control col-md-12", disabled = true })
+                            @Html.ValidationMessageFor(model => model.FormCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.FormCode)
+                }
+            }
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.FormName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.FormName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_Name") })
+                    @Html.ValidationMessageFor(model => model.FormName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.FormType, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.FormType, new SelectList(Model.ListFormTypes, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "_onChangeCombo(this, '#Form #FormTypeName')" })
+                    @Html.ValidationMessageFor(model => model.FormType, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.FormTypeName)
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.FormDesc, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.FormDesc, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Form_Desc") })
+                    @Html.ValidationMessageFor(model => model.FormDesc, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.ProceTypes, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.ProceTypes, new SelectList(Model.ListProcedureTypes, "Value", "Text"), "", new { multiple = true, @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Form #BelongFormName')" })
+                    @Html.ValidationMessageFor(model => model.ProceTypes, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.ProcedureTypes)
+                </div>
+            </div>
+
+            <div class="position-rc h-100 border-l-1 brc-warning-l3"></div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group row">
+                @Html.TitleFor(model => model.RefTemplate, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @{
+                        if (!string.IsNullOrEmpty(Model.RefDocs))
+                        {
+                            @Html.Raw(Model.RefDocs)
+                        }
+                    }
+                    @Html.FileFor(model => model.RefTemplate, ".doc,.docx", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+                    @Html.ValidationMessageFor(model => model.RefTemplate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @{
+                if (string.IsNullOrEmpty(Model.ViewName))
+                {
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.RefViewName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.FileFor(model => model.RefViewName, ".cshtml,.html", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_ViewName") })
+                            @Html.ValidationMessageFor(model => model.RefViewName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.RefViewName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.FileFor(model => model.RefViewName, ".cshtml,.html", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_ViewName") })
+                            @Html.ValidationMessageFor(model => model.RefViewName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+                if (Model.FormId != null)
+                {
+                    <hr />
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                            @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <hr  class="col-12 text-danger-l1"/>
+        <div class="col-12 col-md-7">
+            <div class="form-group row">
+                @Html.TitleFor(model => model.RequiredInfo, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.RequiredInfo, new { rows = 4, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RequiredInfo") })
+                    @Html.ValidationMessageFor(model => model.RequiredInfo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+	    <div class="col-12 col-md-5">
+		    <div id="ViewResult" class="p-2 brc-default-l2" style="height: calc(30vh)"></div>
+	    </div>
+    </div>
+</div>
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/codemirror.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/util/formatting.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/css/css.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/xml/xml.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/javascript/javascript.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/mode/htmlmixed/htmlmixed.js"></script>
+<script src="~/Contents/Modules/Major/plugins/codemirror-2/lib/util/closetag.js"></script>
+
+<script type="text/javascript">
+    var editor;
+    var delay;
+    var hlLine;
+
+    
+    $(document).ready(function () {
+
+        var procTypes = "@(Model.ProcedureTypes?.ToLower() ?? "")";
+        if (procTypes.length > 0) {
+            var arrProcTypes = procTypes.split(',');
+            $('#Form #ProceTypes').val(arrProcTypes).trigger('change.select2');
+        }
+
+        editor = CodeMirror.fromTextArea(document.getElementById("RequiredInfo"), {
+            lineNumbers: true,
+            mode: "htmlmixed",
+            tabMode: 'indent',
+            theme: "night",
+            onChange: function () {
+                clearTimeout(delay);
+                delay = setTimeout(updatePreview, 300);
+            },
+            extraKeys: {
+                "'>'": function (cm) { cm.closeTag(cm, '>'); },
+                "'/'": function (cm) { cm.closeTag(cm, '/'); }
+            },
+            wordWrap: true,
+            lineWrapping: true,
+            onCursorActivity: function () {
+                //editor.setLineClass(hlLine, null, null);
+                hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
+            }
+        });
+        editor.setSize("100%", "calc(30vh)");
+        setTimeout(updatePreview, 300);
+        CodeMirror.commands["selectAll"](editor);
+
+        @*$('#Form #ProceTypes')
+            .select2({ no_results_text: "@AppProcessor.Messagor.GetMessage("Common_NotFound")" }).change(
+                function (item) {
+                    var val = $('#Form select[id$=ProceTypes] option:selected')
+                        .map(function () { return this.value }).get().join(",");
+                });*@
+    });
+
+    function autoFormat() {
+        var totalLines = editor.lineCount();
+        var totalChars = editor.getTextArea().value.length;
+        editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines, ch: totalChars });
+    }
+
+    function clearCode() {
+        editor.setValue("");
+        editor.clearHistory();
+    }
+
+    function updatePreview() {
+        $("#ViewResult").html(editor.getValue());
+        hlLine = editor.setLineClass(0, "activeline");
+    }
+</script>

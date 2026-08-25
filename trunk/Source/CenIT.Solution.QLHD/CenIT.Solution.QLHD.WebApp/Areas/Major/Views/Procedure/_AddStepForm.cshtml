@@ -1,0 +1,152 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Form_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@model Cores.Major.Models.SAVProcStepModel
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddStepForm", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Procedure_OnProcessSuccess(data, 'AddStepForm')"
+    }, new { @class = "form-horizontal", id = "AddStepForm" }))
+    {
+        <div id="bodyForm">
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Forms, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.SelectFor(model => model.SelectedForms, Model.ListForms, "", new { @class = "form-control col-md-12", onchange = "_onSelectForm(this);" })
+                </div>
+            </div>
+            <div class="d-none" id="chkRequireContent">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold"></label>
+                    <div class="col-9">
+                        <label>
+                            <input type="checkbox" class="mr-2" name="RequireDocNo">
+                            Bắt buộc nhập Số văn bản
+                        </label>
+                    </div>
+                    <div class="offset-3 col-9">
+                        <label>
+                            <input type="checkbox" class="mr-2" name="RequireUpload">
+                            Bắt buộc tải lên văn bản
+                        </label>
+                    </div>
+                    <div class="offset-3 col-9">
+                        <label>
+                            <input type="checkbox" class="mr-2" name="RequireViewForm">
+                            Hiển thị form nhập
+                        </label>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row mb-0">
+                    <div class="col-sm-3 col-form-label text-sm-right pr-0">
+                        <button type="button" onclick="_onSaveStepForm()" id="btnAdd" class="btn px-3 btn-outline-primary mb-1"><i class="fas fa-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Add")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+        //debugger;
+
+        function _onSelectForm(cbb) {
+            var selectedForm = $(cbb).val();
+            if (selectedForm != null && selectedForm != undefined && selectedForm != "") {
+                $("#chkRequireContent").removeClass('d-none');
+            } else {
+                $("#chkRequireContent").addClass('d-none');
+            }
+        }
+
+        var requireDocNoTemplate = '<div class="px-1 mt-n1"><label class="col-12"><input type="checkbox" class="mr-2" name="RequireDocNo" {1} onchange=\'_onCheckRequireDocNo(this,"{0}")\'><span class="{2}">Bắt buộc nhập Số văn bản</span></label></div>';
+
+        var requireUploadTemplate = '<div class="px-1 mt-n1"><label class="col-12"><input type="checkbox" class="mr-2" name="RequireUpload" {1} onchange=\'_onCheckRequireUpload(this,"{0}")\'><span class="{2}">Bắt buộc tải lên văn bản</span></label></div>';
+
+        var requireViewFormTemplate = '<div class="px-1 mt-n1"><label class="col-12"><input type="checkbox" class="mr-2" name="RequireViewForm" {1} onchange=\'_onCheckRequireViewForm(this,"{0}")\'><span class="{2}">Hiển thị form nhập</span></label></div>';
+
+        var selectedFormTemplate = '<div class="form-item mb-25 radius-3px bgc-secondary-l4 px-2 pt-3 pb-2 pos-rel" formId="{0}" {3}><div class="pl-1"><div class="text-600 text-blue-d2 text-95">{1}</div></div><div class="d-flex"><div class="mt-2 mb-1"></div><div class="ml-auto align-self-end"></div><div class="py-2 position-tr mt-n2 mr-n1"><div class="dropdown dd-backdrop dd-backdrop-none-md"><a class="btn btn-outline-default btn-h-outline-primary btn-brc-tp btn-xs dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a><div class="dropdown-menu mw-auto dropdown-caret dropdown-menu-right dropdown-animated animated-1 dd-appear-center dd-slide-none-md"><div class="dropdown-inner"><a class="dropdown-item" href="javascript:void(0);" onclick="_removeSelectedForm(\'{0}\')" title="Xoá" data-toggle="tooltip" data-placement="left" data-template=\'<div class="tooltip" role="tooltip"><div class="arrow brc-danger"></div><div class="tooltip-inner text-110 pb-2 bgc-danger"></div></div>\'><i class="fa fa-trash text-danger mx-1"></i><span class="d-md-none">Xoá</span></a></div></div></div></div></div>{2}</div>';
+
+        function _onSaveStepForm() {
+            var selectedFormId = $('#AddStepForm #SelectedForms').val();
+            var selectedFormName = $('#AddStepForm #SelectedForms option:selected').text();
+            var requireDocNo = $('#chkRequireContent [name="RequireDocNo"]').is(':checked');
+            var requireUpload = $('#chkRequireContent [name="RequireUpload"]').is(':checked');
+            var requireViewForm = $('#chkRequireContent [name="RequireViewForm"]').is(':checked');
+
+            var htmlRequireContent = '';
+
+            htmlRequireContent += requireDocNoTemplate.format(selectedFormId, (requireDocNo ? 'checked="true"' : ''), (requireDocNo ? 'badge badge-danger' : '')), (requireDocNo ? "requiredno" : "");
+
+            htmlRequireContent += requireUploadTemplate.format(selectedFormId, (requireUpload ? 'checked="true"' : ''), (requireUpload ? 'badge badge-danger' : '')), (requireUpload ? "requireupload" : "");
+
+            htmlRequireContent += requireViewFormTemplate.format(selectedFormId, (requireUpload ? 'checked="true"' : ''), (requireViewForm ? 'badge badge-danger' : '')), (requireViewForm ? "requireviewform" : "");
+
+            $('#lstStepForms').append(selectedFormTemplate.format(selectedFormId, selectedFormName, htmlRequireContent));
+
+            $('#AddStepForm #SelectedForms option:selected').remove();
+            _initSelect('#AddStepForm #SelectedForms');
+            $("#chkRequireContent").addClass('d-none');
+            $("form#AddStepForm")[0].reset();
+        }
+
+        $(function () {
+            $('#modal_AddStepForm').on({
+                'shown.bs.modal': function () {
+                    var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+                    if (selectedForms == undefined || selectedForms.length <= 0) return;
+                    var arrSelectedForms = selectedForms.split(';');
+                    var arrSelectedFormIds = $.map(arrSelectedForms, function (form, idx) {
+                        if (form.length > 0) {
+                            var arrInfoForms = form.split('_');
+                            return arrInfoForms[0];
+                        }
+                    });
+                    if (arrSelectedFormIds.length > 0) {
+                        $('#AddStepForm #SelectedForms option').each(function (idx, opt) {
+                            if ($.inArray($(opt).val(), arrSelectedFormIds) >= 0) {
+                                $(opt).remove();
+                            }
+                        });
+                        _initSelect('#AddStepForm #SelectedForms');
+                    }
+                },
+                'hidden.bs.modal': function () {
+                    var arrSelectedForms = [];
+                    $('#lstStepForms .form-item').each(function (index, el) {
+                        var formId = $(el).attr('formid');
+
+                        var isRequiredNo = $(el).find('[type=checkbox][name=RequireDocNo]').is(':checked');
+                        var isRequireUpload = $(el).find('[type=checkbox][name=RequireUpload]').is(':checked');
+                        var isRequireViewForm = $(el).find('[type=checkbox][name=RequireViewForm]').is(':checked');
+
+                        var requiredNo = isRequiredNo ? 1 : 0;
+                        var requireUpload = isRequireUpload ? 1 : 0;
+                        var requireViewForm = isRequireViewForm ? 1 : 0;
+
+                        var selectedForm = "{0}_{1}_{2}-{3}-{4}".format(formId, index, requiredNo, requireUpload, requireViewForm);
+                        arrSelectedForms.push(selectedForm);
+                    });
+                    $("[type='hidden'][id='SelectedForms']").val(arrSelectedForms.join(';'));
+                },
+            });
+        });
+
+    </script>
+}
+@section SubmitControl{
+
+}

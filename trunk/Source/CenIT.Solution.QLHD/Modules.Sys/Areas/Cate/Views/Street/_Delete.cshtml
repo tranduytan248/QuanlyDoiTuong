@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Cate.CateStreetModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Street_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "Street", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Street_OnProcessSuccess(data, 'DeleteStreet')"
+    }, new { @class = "form-horizontal", id = "DeleteStreet" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.StreetId)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

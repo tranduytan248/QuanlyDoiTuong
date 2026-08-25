@@ -1,0 +1,77 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.DossierId)
+@Html.HiddenFor(model => model.DossierCode)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.PrevStep)
+@Html.HiddenFor(model => model.PrevStepName)
+@Html.HiddenFor(model => model.UnionHandle)
+@Html.HiddenFor(model => model.HandledBy)
+@Html.HiddenFor(model => model.PositionId)
+@Html.HiddenFor(model => model.HandlingTime)
+@Html.HiddenFor(model => model.Status)
+@Html.HiddenFor(model => model.StatusName)
+@Html.HiddenFor(model => model.ProcUnionId)
+@Html.HiddenFor(model => model.ProcedureId)
+@Html.HiddenFor(model => model.ProcedureName)
+@Html.HiddenFor(model => model.AllowChangeHandler)
+@Html.HiddenFor(model => model.StepsChangeHandler)
+@Html.HiddenFor(model => model.SelectedSituationName)
+@Html.HiddenFor(model => model.IsRollbackPrev)
+
+<link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+<div id="ChangeNextStep">
+    <div class="alert bgc-red-l4 border-none border-l-4 brc-red-tp1 radius-0 text-dark-tp2">
+        <h4 class="alert-heading text-danger-m1 font-bolder text-110"><i class="fas fa-list-ul"></i>&nbsp;@AppProcessor.Messagor.GetMessage("CurrentTask_Title")</h4>
+        <label class="text-115 text-500 text-primary-d1 d-block">[@Model.InStepName]</label>
+    </div>
+
+    <div class="card ccard">
+        <div class="card-body px-0 py-2">
+            <div class="tab-content tab-sliding border-0 p-0">
+                <div class="tab-pane show active text-95 px-25" id="handle-dossier-pane" role="tabpanel" aria-labelledby="handle-dossier">
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label class="text-danger-d1 col-md-12 px-0 mb-0">
+                                <i class="far fa-hand-point-right"></i>&nbsp;@Html.TitleFor(model => model.NextStep, new { @class = "col-form-label pr-0 font-bold" })
+                            </label>
+                            <select id="NextStep" name="NextStep" class="form-control col-md-12 none-select2 show-tick" data-size="7" data-live-search="true" data-container="body" onchange="_onChangeCombo(this, '#ChangeNextStep #NextStepName')">
+                                @{
+                                    foreach (var step in Model.ListSteps.Where(s => s.StepId != Model.InStep)
+                                                 .OrderBy(s => s.Ordinal).ThenBy(s => s.StepName).ToList())
+                                    {
+                                        <option data-content='<span class="m-1 badge bgc-primary-l4 border-1 brc-primary-m3 text-primary-d2 px-3 text-95"><span class="pos-rel">@step.StepName</span></span>' value="@step.StepId">@step.StepName</option>  
+                                    }
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.NextStep, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.NextStepName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // bootstrap select
+        $('#ChangeNextStep select#NextStep').selectpicker('val', '@Model.NextStep');
+    });
+
+</script>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)

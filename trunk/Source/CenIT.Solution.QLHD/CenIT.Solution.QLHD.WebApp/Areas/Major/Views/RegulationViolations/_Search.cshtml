@@ -1,0 +1,180 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchRegulationViolationsModel
+
+<div class="card dcard">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-row form-group align-items-center">
+                <div class="col-sm-3 col-form-label text-sm-right pr-0 font-bold mt-1 mr-3">@AppProcessor.Messagor.GetMessage("FieldViolated_Title")</div>
+                <div class="col-md-8">
+                    @{
+                        foreach (var f in Model.ListFieldViolateds)
+                        {
+                            <label class="mb-0 mt-1 mr-4">
+                                <input type="radio" name="SearchFieldViolateId" class="mr-1" value="@f.Value" checked>
+                                @f.Text
+                            </label>
+                        }
+                    }
+                </div>
+            </div>
+            <div id="searchHeaders"></div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableRegulationViolations.ajax.reload(null, false);"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Function to update table headers based on FieldViolateId
+        function updateSearchHeaders() {
+            var fieldViolateId = $("input[name='SearchFieldViolateId']:checked").val();
+            var searchHeaders = $("#searchHeaders");
+
+            // Clear existing headers
+            searchHeaders.empty();
+
+            if (fieldViolateId == "8d0e3621-5bab-4b1f-85cb-e47f0be4bc86") {
+                // Display headers for the first condition
+                searchHeaders.html(`
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchConstructionParticipantId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchConstructionParticipantId, new SelectList(Model.ConstructionParticipants, "ConstructionParticipantId", "ConstructionParticipantName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchConstructionParticipantId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchViolationBehaviorId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchViolationBehaviorId, new SelectList(Model.ViolationBehaviors, "ViolationBehaviorId", "ViolationBehaviorName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchViolationBehaviorId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchViolatedConstructionId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchViolatedConstructionId, new SelectList(Model.ViolatedConstructions, "ViolatedConstructionId", "ViolatedConstructionName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchViolatedConstructionId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchCateId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchCateId, new SelectList(Model.Cates, "CateId", "CateName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchCateId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRegulationId, new SelectList(Model.Regulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.Regulations) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRemedialMeasureId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRemedialMeasureId, new SelectList(Model.RemedialMeasures, "RemedialMeasureId", "ContentOfRemedialMeasure"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchRemedialMeasureId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRemediationRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRemediationRegulationId, new SelectList(Model.RemediationRegulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchRemediationRegulationId) })
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        @Html.TitleFor(model => model.FineAmount, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                            @Html.TextBoxFor(model => model.FineAmount, new { @type = "number", @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.FineAmount) })
+                            @Html.TitleFor(model => model.FineAmount, new { @class = "floating-label text-grey-m3 text-500" })
+                        </div>
+                    </div>
+                </div>
+                `);
+            } else if (fieldViolateId == "693e1da5-05ea-447e-8da6-22a962c80a02") {
+                // Display headers for the second condition
+                searchHeaders.html(`
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchConstructionParticipantId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchConstructionParticipantId, new SelectList(Model.ConstructionParticipants, "ConstructionParticipantId", "ConstructionParticipantName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchConstructionParticipantId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchViolationBehaviorId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchViolationBehaviorId, new SelectList(Model.ViolationBehaviors, "ViolationBehaviorId", "ViolationBehaviorName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchViolationBehaviorId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchViolatedAreaId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchViolatedAreaId, new SelectList(Model.ViolationAreas, "ViolationAreaId", "ViolationAreaName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchViolatedAreaId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchCateId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchCateId, new SelectList(Model.Cates, "CateId", "CateName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchCateId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRegulationId, new SelectList(Model.Regulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.Regulations) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRemedialMeasureId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRemedialMeasureId, new SelectList(Model.RemedialMeasures, "RemedialMeasureId", "ContentOfRemedialMeasure"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchRemedialMeasureId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchRemediationRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchRemediationRegulationId, new SelectList(Model.RemediationRegulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchRemediationRegulationId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchDeductionAccountId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchDeductionAccountId, new SelectList(Model.DeductionAccounts, "DeductionAccountId", "DeductionAccountName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchDeductionAccountId) })
+                        </div>
+                    </div>
+                    <div class="form-row form-group align-items-center">
+                        @Html.TitleFor(model => model.SearchDeductionRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SearchDeductionRegulationId, new SelectList(Model.DeductionRegulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.SearchDeductionRegulationId) })
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        @Html.TitleFor(model => model.FineAmount, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+                            @Html.TextBoxFor(model => model.FineAmount, new { @type = "number", @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.FineAmount) })
+                            @Html.TitleFor(model => model.FineAmount, new { @class = "floating-label text-grey-m3 text-500" })
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        // Initial update based on default checked radio button
+        updateSearchHeaders();
+
+        // Handle radio button change event
+        $("input[name='SearchFieldViolateId']").change(function () {
+            updateSearchHeaders();
+        });
+
+    });
+</script>

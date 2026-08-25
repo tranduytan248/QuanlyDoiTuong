@@ -1,0 +1,16 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ReportModel
+
+<div id="_05BaoCaoLuyKeNamTTXD">
+    <div class="form-group row">
+        <div class="col-2 col-form-label text-sm-right pr-0 font-bold mt-1 mr-3">
+            <label for="UnionId" class="mb-0">
+                Địa bàn
+            </label>
+        </div>
+        <div class="col-sm-9">
+            @Html.SelectFor(model => model.UnionId, Model.ListUnions, AppProcessor.Messagor.GetMessage("Union_Title"), new { @class = "form-control col-11", onchange = "_onChangeCombo(this, '#_05BaoCaoLuyKeNamTTXD #UnionName', true)" })
+            @Html.HiddenFor(model => model.UnionName)
+        </div>
+    </div>
+</div>

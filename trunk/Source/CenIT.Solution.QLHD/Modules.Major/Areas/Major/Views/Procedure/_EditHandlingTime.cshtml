@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlingTimeModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Step_HandlingTime")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditHandlingTime", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "HandlingTimeStep_OnProcessSuccess(data, 'EditHandlingTime')"
+    }, new { @class = "form-horizontal", id = "EditHandlingTime" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_HandlingTime")
+        </div>
+    }
+}
+

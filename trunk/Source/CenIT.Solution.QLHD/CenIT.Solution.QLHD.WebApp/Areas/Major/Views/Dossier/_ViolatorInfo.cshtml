@@ -1,0 +1,25 @@
+﻿@model Cores.Major.Models.SAVDossierModel
+@using TSFramework.App.Processors
+
+@Html.HiddenFor(model => model.DossierId)
+
+@{
+	var disabled = Model.ViolatorInfo.IsDisabled ? "disabled" : "";
+}
+
+<div class="form-group">
+    <div class="acard card h-100 col-12 px-0">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                @AppProcessor.Messagor.GetMessage("TypeViolation_Title")
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="form-group row my-0 @disabled">
+                
+            </div>
+        </div><!-- /.card-body -->
+    </div>
+</div>
+<hr />
+@Html.Partial("_ConstructionInfo")

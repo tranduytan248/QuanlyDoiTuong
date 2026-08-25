@@ -1,0 +1,64 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractConfirmModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Approve"), $"[{AppProcessor.Messagor.GetMessage("Contract_Title")} - {Model.ContractNo} - {Model.CusName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-check-double"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Approve", "Contract", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ApproveContract", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ApproveBody")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('form#ApproveContract').ajaxForm({
+            beforeSubmit: function () {
+                _onWaiting();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_ApproveContract #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableContracts.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_ApproveContract form").attr("action");
+                            $("#ModalContent #modal_ApproveContract #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElements(this);
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_ApproveContract").modal("hide");
+                        $("#ModalContent #modal_ApproveContract").on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableContracts.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_ApproveContract #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+            }
+        });
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnApprove" class="btn px-4 btn-outline-success mb-1"><i class="fas fa-check-double"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

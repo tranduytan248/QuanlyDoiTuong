@@ -1,0 +1,117 @@
+﻿@using TSFramework.App.Processors
+@using Cores.Cate.Models
+@using Cores.Major.Models
+@model Cores.Major.Models.MajorSubjectViolationModel
+@{
+    var listSubjects = ViewBag.ListSubjects as List<MajorSubjectModel> ?? new List<MajorSubjectModel>();
+    var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
+    var selectedBehaviorIds = new HashSet<string>();
+    if (!string.IsNullOrEmpty(Model?.BehaviorIds))
+    {
+        foreach (var id in Model.BehaviorIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            selectedBehaviorIds.Add(id.Trim());
+        }
+    }
+}
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.ViolationId)
+@Html.HiddenFor(model => model.BehaviorIds, new { id = "Violation_BehaviorIds" })
+@Html.HiddenFor(model => model.Images, new { id = "Violation_Images" })
+
+<div class="form-group row">
+    <div class="col-md-6">
+        <label class="col-form-label pr-0 font-bold">Đối tượng vi phạm <span class="text-danger">(*)</span></label>
+        <select class="form-control select2" id="Violation_SubjectId" name="SubjectId" required>
+            <option value="">-- Chọn đối tượng vi phạm --</option>
+            @foreach (var s in listSubjects)
+            {
+                <option value="@s.SubjectId" @(Model != null && Model.SubjectId == s.SubjectId ? "selected" : "")>@s.FullName - CCCD: @s.IdentityCardNumber</option>
+            }
+        </select>
+        @Html.ValidationMessageFor(model => model.SubjectId, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-6">
+        <label class="col-form-label pr-0 font-bold">Thời gian vi phạm <span class="text-danger">(*)</span></label>
+        <div class="input-group">
+            @Html.TextBoxFor(model => model.ViolationDate, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", required = "required" })
+        </div>
+        @Html.ValidationMessageFor(model => model.ViolationDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Các hành vi vi phạm <span class="text-danger">(*) (Chọn một hoặc nhiều hành vi)</span></label>
+        <select class="form-control select2" id="Select_Behaviors" multiple="multiple" style="width: 100%;" onchange="syncViolationBehaviors();">
+            @foreach (var b in listBehaviors)
+            {
+                <option value="@b.BehaviorId" @(selectedBehaviorIds.Contains(b.BehaviorId.ToString()) ? "selected" : "")>[@b.BehaviorCode] @b.BehaviorName (@b.FieldName)</option>
+            }
+        </select>
+        @Html.ValidationMessageFor(model => model.BehaviorIds, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Biện pháp xử lý</label>
+        @Html.TextAreaFor(model => model.TreatmentMeasures, new { @class = "form-control", rows = "3", placeholder = "Nhập biện pháp xử lý vi phạm (Phạt tiền, tạm giữ, lập biên bản, giáo dục tại chỗ...)..." })
+        @Html.ValidationMessageFor(model => model.TreatmentMeasures, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Văn bản liên quan / Quyết định xử phạt</label>
+        @Html.TextAreaFor(model => model.RelatedDocuments, new { @class = "form-control", rows = "2", placeholder = "Số biên bản, số quyết định xử phạt, ngày ban hành..." })
+        @Html.ValidationMessageFor(model => model.RelatedDocuments, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Ghi chú thêm</label>
+        @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", rows = "2", placeholder = "Ghi chú bổ sung khác..." })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="col-form-label pr-0 font-bold">Hình ảnh đối tượng tại thời điểm vi phạm (Chọn nhiều ảnh)</label>
+        <div class="mb-2">
+            <input type="file" id="fileViolationImages" class="d-none" multiple="multiple" accept="image/*" onchange="handleViolationImagesUpload(this);" />
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="$('#fileViolationImages').click();">
+                <i class="fas fa-camera mr-1"></i> Tải ảnh vi phạm lên
+            </button>
+        </div>
+        <div id="containerViolationImages" class="p-2 border-1 brc-grey-l2 bgc-light radius-1 min-height-80">
+            @if (!string.IsNullOrEmpty(Model?.Images))
+            {
+                foreach (var imgUrl in Model.Images.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    <div class="position-relative d-inline-block mr-2 mb-2">
+                        <img src="@imgUrl.Trim()" class="radius-1 border-1 brc-default-m2" style="width:90px;height:70px;object-fit:cover;" />
+                        <button type="button" class="btn btn-xs btn-danger position-absolute" style="top:2px;right:2px;" onclick="removeViolationImage(this, '@imgUrl.Trim()');"><i class="fas fa-times"></i></button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.select2) {
+            $('#Select_Behaviors').select2({
+                placeholder: "Chọn các hành vi vi phạm...",
+                allowClear: true
+            });
+            $('#Violation_SubjectId').select2({
+                placeholder: "Chọn đối tượng vi phạm...",
+                allowClear: true
+            });
+        }
+    });
+</script>

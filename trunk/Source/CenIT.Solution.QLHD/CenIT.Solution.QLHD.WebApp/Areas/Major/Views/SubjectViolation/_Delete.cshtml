@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorSubjectViolationModel
+@{
+    ViewBag.Title = "Xác nhận xóa Lần vi phạm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fa fa-trash-alt"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "SubjectViolation", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SubjectViolation_OnProcessSuccess(data, 'DeleteSubjectViolation')"
+    }, new { @class = "form-horizontal", id = "DeleteSubjectViolation" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ViolationId)
+
+        <div class="alert alert-warning text-center">
+            @Html.Raw(ViewBag.ConfirmMessage ?? $"Bạn có chắc chắn muốn xóa Lần vi phạm này không?")
+        </div>
+    }
+}

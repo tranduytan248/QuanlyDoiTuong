@@ -1,0 +1,325 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcStepModel
+
+@Html.AntiForgeryToken()
+<div id="Step">
+    @Html.HiddenFor(model => model.StepId)
+    @Html.HiddenFor(model => model.ProcedureId)
+    @Html.HiddenFor(model => model.ProcedureName)
+
+    @*@{
+            if (Model.ProcedureId != null && Model.StepId == null)
+            {
+                <div class="form-group row">
+                    @Html.TitleFor(model => model.ProcedureId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-8">
+                        @Html.SelectFor(model => model.ProcedureId, Model.ListProcedures, "", new { disabled = true, @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Step #ProcedureName')" })
+                        @Html.ValidationMessageFor(model => model.ProcedureId, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProcedureId)
+                        @Html.HiddenFor(model => model.ProcedureName)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group row">
+                    @Html.TitleFor(model => model.ProcedureId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-8">
+                        @Html.SelectFor(model => model.ProcedureId, Model.ListProcedures, "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Step #ProcedureName')" })
+                        @Html.ValidationMessageFor(model => model.ProcedureId, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProcedureName)
+                    </div>
+                </div>
+            }
+        }*@
+    <div class="form-group row">
+	    @Html.TitleFor(model => model.FieldViolated, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+	    <div class="col-md-8">
+		    @Html.DropDownListFor(model => model.FieldViolated, new SelectList(Model.ListFieldViolateds, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeFieldViolated(this, '#EditStep #FieldViolatedName', '#EditStep #ProcType')" })
+		    @Html.ValidationMessageFor(model => model.FieldViolated, "", new { @class = "text-danger" })
+		    @Html.HiddenFor(model => model.FieldViolatedName)
+	    </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ProcType, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.ProcType, new SelectList(Model.ListProcTypes, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Step #ProcTypeName')" })
+            @Html.ValidationMessageFor(model => model.ProcType, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ProcTypeName)
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.StepName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.StepName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_Name") })
+            @Html.ValidationMessageFor(model => model.StepName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.StepDesc, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(model => model.StepDesc, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_Desc") })
+            @Html.ValidationMessageFor(model => model.StepDesc, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.HandledBy, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-5">
+            @Html.DropDownListFor(model => model.HandledBy, new SelectList(Model.ListHandlers, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Step #Handler')" })
+            @Html.ValidationMessageFor(model => model.HandledBy, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Handler)
+        </div>
+        @Html.TitleFor(model => model.ProcessedTime, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-2">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.ProcessedTime, new { type = "number", min = 0, max = 100, step = 0.1, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_ProcessedTime") })
+                <div class="input-group-append">
+                    <span class="input-group-text">Ngày</span>
+                </div>
+            </div>
+
+            @Html.ValidationMessageFor(model => model.ProcessedTime, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @*<div class="form-group row">
+        @Html.TitleFor(model => model.PrevStep, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.SelectFor(model => model.PrevStep, Model.ListPrevSteps, "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Step #PrevStepName')" })
+            @Html.ValidationMessageFor(model => model.PrevStep, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PrevStepName)
+        </div>
+    </div>*@
+    <div class="form-group row">
+	    @Html.TitleFor(model => model.NextStep, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+	    <div class="col-md-8">
+		    @Html.SelectFor(model => model.NextStep, Model.ListNextSteps, "", new { @class = "form-control col-md-11", onchange = "_onChangeNextStep(this, '#Step #NextStepName')" })
+		    @Html.ValidationMessageFor(model => model.NextStep, "", new { @class = "text-danger" })
+		    @Html.HiddenFor(model => model.NextStepName)
+	    </div>
+    </div>
+    <div class="form-group row">
+	    @Html.TitleFor(model => model.NextSituation, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+	    <div class="col-md-8">
+		    @Html.SelectFor(model => model.NextSituation, Model.ListNextSituations, "", new { @class = "form-control col-md-11", onchange = "_onChangeCombo(this, '#StepSituation #NextSituationName')" })
+		    @Html.ValidationMessageFor(model => model.NextSituation, "", new { @class = "text-danger" })
+		    @Html.HiddenFor(model => model.NextSituationName)
+	    </div>
+    </div>
+    <div class="form-group row">
+	    <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("NotificationType_Title")</label>
+	    <div class="col-md-8 mt-1 ml-1">
+		    @foreach (var option in Model.NotificationTypeOptions)
+		    {
+			    var isChecked = Model.SelectedNotificationTypes != null && Model.SelectedNotificationTypes.Contains(option.Value);
+			    <label class="checkbox-inline col-md-3">
+				    <input type="checkbox" name="SelectedNotificationTypes" value="@option.Value" @(isChecked ? "checked" : "") class="checkbox" /> @option.Text
+			    </label>
+		    }
+	    </div>
+    </div>
+    <hr>
+
+    <div class="form-group row">
+	    <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold"></label>
+	    <div class="col-md-9">
+		    <label class="checkbox-inline col-md-5">
+			    @Html.CheckBoxFor(model => model.ViewInputForm, new { @class = "checkbox" })
+			    @Html.LabelFor(model => model.ViewInputForm)
+		    </label>
+		    <label class="checkbox-inline col-md-5">
+			    @Html.CheckBoxFor(model => model.RequiredUploadDoc, new { @class = "checkbox" })
+			    @Html.LabelFor(model => model.RequiredUploadDoc)
+		    </label>
+	    </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.SelectedViolatedConstructions, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+	        @Html.DropDownListFor(model => model.SelectedViolatedConstructions, new SelectList(Model.ListViolatedConstructions, "Value", "Text"), "", new { @class = "form-control col-md-12", multiple = true })
+	        @Html.ValidationMessageFor(model => model.SelectedViolatedConstructions, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Forms, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+
+            <div id="lstStepForms" class="h-100 bgc-white pt-2 px-25 border-1 radius-1 brc-secondary-l2 pos-rel shadow-sm">
+                <div class="position-tl w-102 m-n1px border-t-2 brc-orange-m1"></div><!-- the colored line on top -->
+
+                <div class="d-flex align-items-center">
+                    <h5 class="text-secondary-d3 m-2 mb-3 pb-1 text-120 my-auto">
+                        <i class="text-80 fa fa-list text-dark-tp4 mr-1"></i>
+                    </h5>
+                    @Html.Button(true, "AddStepForm", Url.Action("AddStepForm", new { area = "Major", id = Model.StepId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 py-2 text-600 text-90 ml-auto", data_width = "860px" })
+                </div>
+                <hr>
+                @{
+                    foreach (var form in Model.ListSelectedForms)
+                    {
+                <div class="form-item mb-25 radius-3px bgc-secondary-l4 px-2 pt-3 pb-2 pos-rel" formId="@form.FormId" @(form.RequireDocNo ? "requiredNo" : "")>
+                    <div class="pl-1">
+                        <div class="text-600 text-blue-d2 text-95">
+                            @form.FormName
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="mt-2 mb-1">
+                        </div>
+                        <div class="ml-auto align-self-end">
+                        </div>
+                        <div class="position-tr">
+                            <div class="dropdown dd-backdrop dd-backdrop-none-md">
+                                <a class="btn btn-outline-default btn-h-outline-primary btn-brc-tp btn-xs dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+                                <div class="dropdown-menu mw-auto dropdown-caret dropdown-menu-right dropdown-animated animated-1 dd-appear-center dd-slide-none-md">
+                                    <div class="dropdown-inner">
+                                        <a class="dropdown-item" href="javascript:void(0);" onclick="_removeSelectedForm('@form.FormId')" title="" data-toggle="tooltip" data-placement="left" data-template="<div class=&quot;tooltip&quot; role=&quot;tooltip&quot;><div class=&quot;arrow brc-danger&quot;></div><div class=&quot;tooltip-inner text-110 pb-2 bgc-danger&quot;></div></div>" data-original-title="Xoá">
+                                            <i class="fa fa-trash text-danger mx-1"></i>
+                                            <span class="d-md-none">
+                                                Xoá
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @{  if (form.RequireDocNo)
+                                {
+                            <div class="px-1 mt-n1">
+                                <label>
+                                    <input type="checkbox" class="mr-2" name="RequireDocNo" checked="checked" onchange="_onCheckRequireDocNo(this,'@form.FormId')">
+                                    <span class="badge badge-danger">Bắt buộc nhập Số văn bản</span>
+                                </label>
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="px-1 mt-n1">
+                                <label>
+                                    <input type="checkbox" class="mr-2" name="RequireDocNo" onchange="_onCheckRequireDocNo(this,'@form.FormId')">
+                                    <span class="">Bắt buộc nhập Số văn bản</span>
+                                </label>
+                            </div>
+                                }
+                    }
+                </div>
+                                }
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    @{
+        if (Model.StepId != null)
+        {
+            <hr />
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+</div>
+<script type="text/javascript">
+    //debugger;
+    $(document).ready(function () {
+        //$('#Step #Forms').on("select2:select", function (evt) {
+        //    var element = evt.params.data.element;
+        //    var $element = $(element);
+
+        //    $element.detach();
+        //    $(this).append($element);
+        //    $(this).trigger("change");
+        //});
+
+        @*var forms = "@(Model.SelectedForms?.ToLower() ?? "")";
+        if (forms.length > 0) {
+            var arrForms = forms.split(',');
+            //$('#Step #Forms').val(arrForms).trigger('change.select2');
+            $('#Step #Forms').val(arrForms).trigger('change');
+
+            var options = [];
+            for (var i = 0; i < arrForms.length; i++) {
+                options.push($("#Step #Forms option[value=" + arrForms[i] + "]"));
+            }
+            $("#Step #Forms").append(...options).trigger('change');
+        }*@
+        _initFormSortable();
+    });
+    var sortableForms = null;
+
+    function _initFormSortable() {
+        sortableForms = Sortable.create($('#lstStepForms')[0], {
+            group: "form",
+            sort: true,
+            draggable: "> .form-item",
+            animation: 200,
+            ghostClass: "bgc-primary-l1",
+            chosenClass: "",
+            dragClass: "",
+            onUpdate: function (evt) {
+                var arrSelectedForms = [];
+                [].forEach.call(evt.from.getElementsByClassName('form-item'), function (el, index) {
+                    el.setAttribute("data-idx", index);
+                    var formId = $(el).attr('formid');
+                    var requiredNo = $(el).attr('requiredno');
+                    if (typeof requiredNo !== 'undefined' && requiredNo !== false) {
+                        var selectedForm = "{0}_{1}_{2}".format(formId, index, 1);
+                        arrSelectedForms.push(selectedForm);
+                    } else {
+                        var selectedForm = "{0}_{1}_{2}".format(formId, index, 0);
+                        arrSelectedForms.push(selectedForm);
+                    }
+                });
+                $("[type='hidden'][id='SelectedForms']").val(arrSelectedForms.join(';'));
+            }
+        });
+    }
+
+    function _removeSelectedForm(formId) {
+        $('[formId="' + formId + '"]').remove();
+
+        var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+        var arrSelectedForms = selectedForms.split(';');
+        var arrResultForms = $.grep(arrSelectedForms, function (form, idx) {
+            var arrInfoForms = form.split('_');
+            return arrInfoForms[0] != formId
+        });
+        $("[type='hidden'][id='SelectedForms']").val(arrResultForms.join(';'));
+    }
+
+    function _onChangeNextStep(cbb, eleName) {
+        var nextStep = $(cbb).val();
+        $(eleName).val($(cbb).children("option:selected").text());
+        var $cbbSituations = $("#Step #NextSituation");
+        var urlSituationsViaStep =
+            "@Url.Action("SituationsViaStep", "Procedure", new { area = "Major" })/" + nextStep;
+        $.ajax({
+            type: "GET",
+            url: urlSituationsViaStep,
+            dataType: "JSON",
+            success: function (response) {
+                $cbbSituations.empty();
+                $cbbSituations.append('<option value=""></option>');
+
+                $.each(response,
+                    function (index, item) {
+                        $.each(item, function (idx, situation) {
+                            $cbbSituations.append('<option value="' + situation.SituationId + '">' + situation.SituationDesc + "</option>");
+                        });
+                    });
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,29 @@
+﻿@using TSFramework.App.Processors
+
+<div class="card dcard mb-4" draggable="false">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-danger-d2 text-500">
+            <i class="fas fa-wrench"></i>&nbsp;@AppProcessor.Messagor.GetMessage("TypeViolator_Title")
+        </h5>
+        <div class="card-toolbar">
+            <div class="card-toolbar no-border">
+                <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                    <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-2">
+        <div id="ViolatorInfo" class="mt-1">
+            <div class="form-group row">
+                <div class="col-11 text-danger-d2 brc-danger-m1">
+                    <span class="text-danger-m3 text-500">
+                        Đối tượng vị phạm (*)
+                    </span>
+                    <input required="" type="text" placeholder="Họ tên" class="form-control shadow-none" id="DoiTuongViPham_Ten" name="DoiTuongViPham_Ten" value="Không xác định đối tượng vi phạm" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Cate.Areas.Cate.Models.SearchLandCalculationModel
+
+<div class="card dcard" id="SearchLandCalculation">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <select id="ListContentLandIds" name="ListContentLandIds" class="form-control none-select2 selectpicker show-menu-arrow" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("ContentLand_Label_Title")" data-selected-text-format="count > 4">
+                        @{
+                            var arrTypeContracts = new Dictionary<string, string> { { "1", "primary" }, { "2", "success" }, { "3", "info" }, { "4", "warning" }, { "5", "purple" } };
+
+                            foreach (var typeContract in Model.ListContentLands.GroupBy(cl => new { ContractTypeId =$"{cl.ContractTypeId}", cl.ContractTypeName }))
+                            {
+                                <optgroup label="@typeContract.Key.ContractTypeName" class="text-@arrTypeContracts[typeContract.Key.ContractTypeId]-d2 px-3 text-500 text-105">
+                                    @foreach (var contentLand in typeContract.Select(tc => tc).OrderBy(tc => tc.ContentLandName).ToList())
+                                    {
+                                        <option class="text-95 ml-2" value="@contentLand.ContentLandId">@contentLand.ContentLandName</option>
+
+                                        @*<option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrTypeContracts[typeContract.Value] brc-@arrTypeContracts[typeContract.Value] '>@typeContract.Text</span>" value="@typeContract.Value">@typeContract.Text</option>*@
+                                    }
+                                </optgroup>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            @*<div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="col-form-label text-sm-right pr-0 font-bold col-md-3">@AppProcessor.Messagor.GetMessage("ContentLand_Label_Name")</label>
+                        <div class="col-md-7 dropdownlist_search">
+                            @Html.SelectFor(model => model.ContentLands, Model.ListContentLands, "", new { @class = "form-control col-md-10", multiple = true })
+
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="Search()"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+            </div>
+        </div>
+    </div>
+</div>

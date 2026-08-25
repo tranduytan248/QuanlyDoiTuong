@@ -1,0 +1,28 @@
+﻿@using TSFramework.App.Processors
+<div class="back-menu">
+    <div class="content-main">
+        <div class="body-content">
+            <a href="@Url.Action("Index", "Home")" class="d-none d-lg-block d-sm-block no-underline">
+                <div class="logo-ceca d-flex">
+                    @*<div class="ceca">
+                        <img src="~/Contents/Base/imgs/logo-bo-tai-nguyen-va-moi-truong-stamp.png" width="70px;">
+                    </div>*@
+                    <div class="tag-line ml-2 my-auto">
+                        <h2 class="text-uppercase text-white text-130">@AppProcessor.Messagor.GetMessage("Agency_FullName")</h2>
+                        <h2 class="text-uppercase text-white text-600">@AppProcessor.Messagor.GetMessage("Owner_FullName")</h2>
+                        @*<h2 class="lead-text text-white">@AppProcessor.Messagor.GetMessage("Congthongtin_Title")</h2>*@
+                    </div>
+                </div>
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="d-lg-none d-sm-none d-flex my-auto no-underline" style="padding-top:8%;">
+                @*<img src="/Contents/Base/imgs/logo-bo-tai-nguyen-va-moi-truong-stamp.png" width="" style="width: 15%;">*@
+                <div class="ml-2 my-auto">
+                    <span class="text-uppercase text-white text-130">@AppProcessor.Messagor.GetMessage("Agency_FullName")</span>
+                    <span class="text-uppercase text-white text-600">@AppProcessor.Messagor.GetMessage("Owner_FullName")</span>
+                    @*<span class="text-uppercase m-auto text-white">@AppProcessor.Messagor.GetMessage("Congthongtin_Title")</span>*@
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>

@@ -1,0 +1,65 @@
+﻿@model Cores.Major.Models.SAVProcedureStepPermisionModel
+
+@Html.AntiForgeryToken()
+<div id="StepPermit">
+    @Html.HiddenFor(model => model.StepId)
+    @Html.HiddenFor(model => model.StepName)
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ProcedureName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.ProcedureName, new { disabled = true, @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.ProcedureName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.StepName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.StepName, new { disabled = true, @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.StepName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <hr/>
+    @{
+        if (Model.IsEdit)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.UserName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.UserName, new SelectList(Model.ListUsers, "Value", "Text"), "", new { disabled = true, @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#StepPermit #FullName')" })
+                    @Html.HiddenFor(model => model.FullName)
+                    @Html.HiddenFor(model => model.UserName)
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.UserName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.UserName, new SelectList(Model.ListUsers, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#StepPermit #FullName')" })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.FullName)
+                </div>
+            </div>
+        }
+    }
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Permit, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8 mt-2">
+            @{
+                foreach (var permit in Model.ListPermits)
+                {
+                    <span class="col-sm-3">
+                        @Html.RadioButton("Permit", permit.Value, new { id = $"Permit-{permit.Value}" })
+                        <label for="Permit-@permit.Value">@permit.Text</label>
+                    </span>
+                }
+            }
+        </div>
+    </div>
+
+</div>

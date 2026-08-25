@@ -1,0 +1,47 @@
+﻿@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractPaymentModel
+@{
+    var dictTypePaymentColors = new Dictionary<int, string>{
+        {(int)EnumTypePayment.Advance,"primary"},
+        {(int)EnumTypePayment.PayOff,"success"},
+        {(int)EnumTypePayment.Refunded,"danger"}
+    };
+
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("ContractPayment_Status")} - {Model.TypePaymentName}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    @Html.Raw(dictTypePaymentColors[Model.TypePayment])
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddPayment", "Contract", new { area = "Major", contractId = Model.ContractId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Payment_OnProcessSuccess(data, 'AddPayment')",
+        OnBegin = "_onWaiting()"
+    }, new { @class = "form-horizontal", id = "AddPayment" }))
+    {
+        var dictTypePaymentViews = new Dictionary<int, string>
+        {
+            { (int)EnumTypePayment.Advance, "_AdvancePayment" },
+            { (int)EnumTypePayment.PayOff, "_PayOffPayment" },
+            { (int)EnumTypePayment.Refunded, "_RefundedPayment" }
+        };
+
+        <div id="bodyForm">
+            @Html.Partial(dictTypePaymentViews[Model.TypePayment])
+        </div>
+    }
+}
+
+@*@section ContinueForm{
+
+}*@

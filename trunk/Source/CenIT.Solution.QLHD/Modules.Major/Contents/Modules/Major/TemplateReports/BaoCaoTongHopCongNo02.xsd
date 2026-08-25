@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="BaoCaoTongHopCongNo02" targetNamespace="http://tempuri.org/BaoCaoTongHopCongNo02.xsd" xmlns:mstns="http://tempuri.org/BaoCaoTongHopCongNo02.xsd" xmlns="http://tempuri.org/BaoCaoTongHopCongNo02.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="BaoCaoTongHopCongNo02" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="BaoCaoTongHopCongNo02" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="BaoCaoTongHopCongNo02">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="BaoCaoTongHopCongNo02" msprop:Generator_RowClassName="BaoCaoTongHopCongNo02Row" msprop:Generator_RowEvHandlerName="BaoCaoTongHopCongNo02RowChangeEventHandler" msprop:Generator_RowDeletedName="BaoCaoTongHopCongNo02RowDeleted" msprop:Generator_RowDeletingName="BaoCaoTongHopCongNo02RowDeleting" msprop:Generator_RowEvArgName="BaoCaoTongHopCongNo02RowChangeEvent" msprop:Generator_TablePropName="_BaoCaoTongHopCongNo02" msprop:Generator_RowChangedName="BaoCaoTongHopCongNo02RowChanged" msprop:Generator_UserTableName="BaoCaoTongHopCongNo02" msprop:Generator_RowChangingName="BaoCaoTongHopCongNo02RowChanging" msprop:Generator_TableClassName="BaoCaoTongHopCongNo02DataTable" msprop:Generator_TableVarName="tableBaoCaoTongHopCongNo02">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ContractNoInfo" msprop:Generator_UserColumnName="ContractNoInfo" msprop:Generator_ColumnPropNameInTable="ContractNoInfoColumn" msprop:Generator_ColumnPropNameInRow="ContractNoInfo" msprop:Generator_ColumnVarNameInTable="columnContractNoInfo" type="xs:string" minOccurs="0" />
+              <xs:element name="CusName" msprop:Generator_UserColumnName="CusName" msprop:Generator_ColumnPropNameInTable="CusNameColumn" msprop:Generator_ColumnPropNameInRow="CusName" msprop:Generator_ColumnVarNameInTable="columnCusName" type="xs:string" minOccurs="0" />
+              <xs:element name="PaidAmountAdvance" msprop:Generator_UserColumnName="PaidAmountAdvance" msprop:Generator_ColumnPropNameInTable="PaidAmountAdvanceColumn" msprop:Generator_ColumnPropNameInRow="PaidAmountAdvance" msprop:Generator_ColumnVarNameInTable="columnPaidAmountAdvance" type="xs:string" minOccurs="0" />
+              <xs:element name="LiquidationAmount" msprop:Generator_UserColumnName="LiquidationAmount" msprop:Generator_ColumnPropNameInTable="LiquidationAmountColumn" msprop:Generator_ColumnPropNameInRow="LiquidationAmount" msprop:Generator_ColumnVarNameInTable="columnLiquidationAmount" type="xs:string" minOccurs="0" />
+              <xs:element name="UnionName" msprop:Generator_ColumnPropNameInRow="UnionName" msprop:Generator_ColumnPropNameInTable="UnionNameColumn" msprop:Generator_ColumnVarNameInTable="columnUnionName" msprop:Generator_UserColumnName="UnionName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

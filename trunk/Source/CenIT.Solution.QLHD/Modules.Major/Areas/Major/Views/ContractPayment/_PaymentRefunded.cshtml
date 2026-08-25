@@ -1,0 +1,100 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractPaymentModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.PaymentId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.ContractNo)
+@Html.HiddenFor(model => model.IsEdit)
+
+<div id="Payment">
+    @Html.HiddenFor(model => model.Total)
+    @Html.HiddenFor(model => model.RemainingAmount)
+    @Html.HiddenFor(model => model.TypePaymentName)
+    @Html.HiddenFor(model => model.TypePayment)
+    @Html.HiddenFor(model => model.PercentAdvance)
+    @Html.HiddenFor(model => model.Status)
+    @Html.HiddenFor(model => model.StatusName)
+
+    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+    <div class="form-row">
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.RefDocNo, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.RefDocNo, new { @readonly = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_RefDocNo") })
+            @Html.ValidationMessageFor(model => model.RefDocNo, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @*@Html.TitleFor(model => model.PaidAmount, new { @class = "col-form-label pr-0 font-bold" })*@
+            <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount_Expense")</label>
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormatterPaidAmount, new { @class = "form-control text-500 text-danger-d1 text-110", rawValue = Model.PaidAmount, placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount") })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.FormatterTotal, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PaidAmount)
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6">
+            @*@Html.TitleFor(model => model.PaymentMethod, new { @class = "col-form-label pr-0 font-bold" })*@
+            <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ContractPayment_PaymentMethod_Expense")</label>
+            @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PaymentMethodName)
+        </div>
+        <div class="col-md-6">
+            @*@Html.TitleFor(model => model.PaidOn, new { @class = "col-form-label pr-0 font-bold" })*@
+            <label class="col-form-label pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidOn_Expense")</label>
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.PaidOn, "{0:dd/MM/yyyy}", new { @class = "form-control  datepicker", placeholder = AppProcessor.Messagor.GetMessage("Contract_PaidOn") })
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.PaidOn, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.Note, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.Note, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_Note") })
+            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @{
+        if (Model.IsEdit)
+        {
+            <hr class="border-none border-t-3 brc-grey-l2 border-double">
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.Reason, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Payment [name="FormatterTotal"],#Payment [name="FormatterPaidAmount"],#Payment [name="FormatterRemainingAmount"]').maskNumber({ integer: true });
+        $('#Payment [name="FormatterTotal"],#Payment [name="FormatterPaidAmount"],#Payment [name="FormatterRemainingAmount"]').trigger('keyup');
+
+        $('#Payment #PercentAdvance').trigger("change");
+    });
+
+    function _onChangePaidAmount(eleFormatterPaidAmount, elePaidAmount) {
+        var formatterPaidAmount = $(eleFormatterPaidAmount).val();
+        var realPaidAmount = Number(formatterPaidAmount.replace(/[^0-9.-]+/g, ""));
+        $(elePaidAmount).val(realPaidAmount);
+    }
+
+</script>

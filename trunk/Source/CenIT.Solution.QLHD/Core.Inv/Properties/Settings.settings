@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Core.Inv.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Core_Inv_InvPublishService_PublishService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://cafico999-tt78admindemo.vnpt-invoice.com.vn/publishservice.asmx</Value>
+    </Setting>
+    <Setting Name="Core_Inv_InvPortalService_PortalService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://cafico999-tt78admindemo.vnpt-invoice.com.vn/portalservice.asmx</Value>
+    </Setting>
+    <Setting Name="Core_Inv_InvBusinessService_BusinessService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://cafico999-tt78admindemo.vnpt-invoice.com.vn/businessservice.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

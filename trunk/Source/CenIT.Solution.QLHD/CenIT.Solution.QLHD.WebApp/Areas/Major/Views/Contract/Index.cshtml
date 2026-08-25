@@ -1,0 +1,106 @@
+﻿@using Cores.Cate.Enum
+@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchContractModel
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Contract_Title");
+}
+
+@section PluginCss
+{
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/tiny-date-picker.css">
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/date-range-picker.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+    <style type="text/css">
+        .datepicker.datepicker-dropdown.dropdown-menu {
+            z-index: 998 !important;
+        }
+        .dp-daterange-picker.visible {
+            z-index: 999 !important;
+        }
+    </style>
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    <div class="dropdown d-inline-block mb-1" id="ButtonCreateContract">
+        <button class="btn px-3 h-6 waves-effect btn-primary btn-h-outline-primary btn-a-outline-primary py-1 text-600 pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class='fa fa-plus'></i>
+            @AppProcessor.Messagor.GetMessage("Button_Add_Contract")
+        </button>
+        <div class="dropdown-menu dropdown-caret dropdown-menu-right">
+            @{
+                var mappingIconTypeContracts = new Dictionary<string, string>
+                {
+                    {$"{(int)EnumContractType.MeasureDraw}", "fas fa-pencil-ruler"}, //Đo vẽ đất
+                    {$"{(int)EnumContractType.BoundaryMarkers}", "fas fa-map-pin"}, //Cắm mốc
+                    {$"{(int)EnumContractType.Expertise}", "fas fa-user-check"}, //Thẩm định hồ sơ
+                    {$"{(int)EnumContractType.Indefinite}", "fas fa-user-clock"}, //Không xác định thời hạn
+                    {$"{(int)EnumContractType.UpdateZoning}", "fas fa-solar-panel"}, //Cập nhật quy hoạch
+                };
+                var mappingColorTypeContracts = new Dictionary<string, string>
+                {
+                    {$"{(int)EnumContractType.MeasureDraw}", "primary"}, //Đo vẽ đất
+                    {$"{(int)EnumContractType.BoundaryMarkers}", "success"}, //Cắm mốc
+                    {$"{(int)EnumContractType.Expertise}", "info"}, //Thẩm định hồ sơ
+                    {$"{(int)EnumContractType.Indefinite}", "warning"}, //Không xác định thời hạn
+                    {$"{(int)EnumContractType.UpdateZoning}", "purple"}, //Cập nhật quy hoạch
+                };
+                foreach (var typeContract in Model.ListTypeContracts)
+                {
+                    if (mappingIconTypeContracts.ContainsKey(typeContract.Value) && mappingColorTypeContracts.ContainsKey(typeContract.Value))
+                    {
+                        @Html.Button(true, "CreateContract", Url.Action("Add", new { area = "Major", typeContract = typeContract.Value }), $"<i class=\"{mappingIconTypeContracts[typeContract.Value]}\"></i>", typeContract.Text, new { @class = $"dropdown-item text-105 btn btn-outline-{mappingColorTypeContracts[typeContract.Value]}", data_width = "1024px", data_scrollbars_inside = true })
+                    }
+                }
+            }
+        </div>
+    </div>
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md d-none">
+            <table id="ListContracts" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th class="w-50">@AppProcessor.Messagor.GetMessage("Contract_Title")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Contract_HandlingTime")</th>
+                        @*<th class="">@AppProcessor.Messagor.GetMessage("Contract_ReceivedOn")</th>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Contract_GiveResultOn")</th>*@
+                        @*<th class="w-25">@AppProcessor.Messagor.GetMessage("Customer_Title")</th>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Purpose_Title")</th>*@
+                        <th class="">@AppProcessor.Messagor.GetMessage("Contract_Status")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section PluginJs
+{
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+    <script src="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/dist/date-range-picker.js"></script>
+}
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Major/Views/Contract/Contract.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            var permissions = function () { return @Html.Raw(Json.Encode(Model.Permissions)); }();
+            window['Permissions'] = permissions;
+        });
+    </script>
+}

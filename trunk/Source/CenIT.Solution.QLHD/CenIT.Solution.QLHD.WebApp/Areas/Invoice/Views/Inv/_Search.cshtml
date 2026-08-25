@@ -1,0 +1,223 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchInvoiceModel
+
+<style type="text/css">
+    .bootstrap-select .dropdown-toggle {
+        word-wrap: break-word !important;
+        text-overflow: inherit !important;
+        white-space: normal !important;
+    }
+
+        .bootstrap-select .dropdown-toggle:focus {
+            border-color: #80bdff !important;
+            outline: unset !important;
+        }
+</style>
+
+<div class="card dcard" id="SearchInv">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            @{
+                if (Model.ListUnions?.Count > 1)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-12 mb-2">
+                            <select id="ListUnionIds" name="ListUnionIds" class="form-control none-select2 selectpicker show-menu-arrow" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Union_Manager_Title")" data-selected-text-format="count > 8">
+                                @{
+                                    foreach (var union in Model.ListUnions)
+                                    {
+                                        <option data-content='<span class="m-1 badge bgc-primary-l4 border-1 brc-primary-m3 text-primary-d2 px-3 text-95"><span class="pos-rel">@union.Text</span></span>' value="@union.Value">@union.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <hr class="border-none border-t-3 brc-grey-l2 border-double w-100">
+                }
+            }
+            <div class="form-group row">
+                <div class="col-md-3">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_Pattern")</label>*@
+                    @Html.DropDownListFor(model => model.Pattern, new SelectList(Model.ListInvPatterns, "Value", "Text"), new { @class = "form-control none-select2 selectpicker show-menu-arrow", onchange = "OnChangePattern(this, $('#SearchInv select#ListSerials'))", title = AppProcessor.Messagor.GetMessage("Inv_Pattern"), data_actions_box = "true", data_selected_text_format = "count > 8" })
+
+                </div>
+                <div class="col-md-5">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_Serial")</label>*@
+                    @Html.DropDownListFor(model => model.ListSerials, new SelectList(Model.ListInvSerials, "Value", "Text"), new { multiple = true, @class = "form-control col-md-11 none-select2 selectpicker show-menu-arrow", title = AppProcessor.Messagor.GetMessage("Inv_Serial"), data_actions_box = "true", data_selected_text_format = "count > 8" })
+                </div>
+                <div class="col-md-4">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_InvNo")</label>*@
+                    @Html.TextBoxFor(model => model.InvNo, new { @class = "form-control col-8", placeholder = AppProcessor.Messagor.GetMessage("Inv_InvNo") })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_Status")</label>*@
+                    @Html.DropDownListFor(model => model.ListStatusInvs, new SelectList(Model.ListInvStatus, "Value", "Text"), new { multiple = true, @class = "form-control col-md-11 none-select2 selectpicker show-menu-arrow", title = AppProcessor.Messagor.GetMessage("Inv_Status"), data_actions_box = "true", data_selected_text_format = "count > 8" })
+                </div>
+                <div class="col-md-6">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_Type")</label>*@
+                    @Html.DropDownListFor(model => model.ListTypeInvs, new SelectList(Model.ListInvTypes, "Value", "Text"), new { multiple = true, @class = "form-control col-md-11 none-select2 selectpicker show-menu-arrow", title = AppProcessor.Messagor.GetMessage("Inv_Type"), data_actions_box = "true", data_selected_text_format = "count > 8" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <div id="createdOn-wrapper">
+                        @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_CreatedOn")</label>*@
+                        <div class="form-row">
+                            <div class="col">
+                                @Html.TextBoxFor(model => model.CreatedFrom, new { @class = "form-control ex-inputs-start", placeholder = $"{AppProcessor.Messagor.GetMessage("Inv_CreatedOn")} {AppProcessor.Messagor.GetMessage("Common_FromDate")}" })
+                            </div>
+
+                            <div class="text-grey-l2"> _ </div>
+
+                            <div class="col">
+                                @Html.TextBoxFor(model => model.CreatedTo, new { @class = "form-control ex-inputs-end", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate") })
+                            </div>
+                        </div>
+
+                        <div id="createdOn-container" class="dp-daterange-picker"></div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_CreatedBy")</label>*@
+                    @Html.DropDownListFor(model => model.ListCreators, new SelectList(Model.ListUsers, "Value", "Text"), new { multiple = true, @class = "form-control col-11 none-select2 selectpicker show-menu-arrow", title = AppProcessor.Messagor.GetMessage("Inv_CreatedBy"), data_actions_box = "true", data_selected_text_format = "count > 8" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Customer_Code")</label>*@
+                    @Html.TextBoxFor(model => model.CusCode, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Customer_Code") })
+                </div>
+                <div class="col-md-6">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Customer_Name")</label>*@
+                    @Html.TextBoxFor(model => model.CusName, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name") })
+                </div>
+                <div class="col-md-3">
+                    @*<label class="pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Inv_TaxCode")</label>*@
+                    @Html.TextBoxFor(model => model.CusTaxCode, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Inv_TaxCode") })
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-footer">
+        <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-primary" onclick="onSearchInv();"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // date range picker example
+        var daterange_container = document.querySelector('#createdOn-container')
+        // Inject DateRangePicker into our container
+        var daterangePicker = DateRangePicker.DateRangePicker(daterange_container, {
+            mode: 'dp-permanent',
+            startOpts: {
+                lang: {
+                    days: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    months: [
+                        'Tháng 1',
+                        'Tháng 2',
+                        'Tháng 3',
+                        'Tháng 4',
+                        'Tháng 5',
+                        'Tháng 6',
+                        'Tháng 7',
+                        'Tháng 8',
+                        'Tháng 9',
+                        'Tháng 10',
+                        'Tháng 11',
+                        'Tháng 12',
+                    ],
+                    today: 'Hôm nay',
+                    clear: 'Xoá',
+                    close: 'Đóng',
+                }
+            },
+            endOpts: {
+                lang: {
+                    days: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    months: [
+                        'Tháng 1',
+                        'Tháng 2',
+                        'Tháng 3',
+                        'Tháng 4',
+                        'Tháng 5',
+                        'Tháng 6',
+                        'Tháng 7',
+                        'Tháng 8',
+                        'Tháng 9',
+                        'Tháng 10',
+                        'Tháng 11',
+                        'Tháng 12',
+                    ],
+                    today: 'Hôm nay',
+                    clear: 'Xoá',
+                    close: 'Đóng',
+                },
+            }
+        })
+            .on('statechange', function (_, rp) {
+                // Update the inputs when the state changes
+                var range = rp.state
+                $('#CreatedFrom').val(range.start ? moment(range.start).format("DD/MM/YYYY") : '')
+                $('#CreatedTo').val(range.end ? moment(range.end).format("DD/MM/YYYY") : '')
+            })
+
+        $('#CreatedFrom, #CreatedTo').on('focus', function () {
+            daterange_container.classList.add('visible')
+        })
+
+        var daterange_wrapper = document.querySelector('#createdOn-wrapper')
+        var previousTimeout = null;
+        $(daterange_wrapper).on('focusout', function () {
+            if (previousTimeout) clearTimeout(previousTimeout)
+            previousTimeout = setTimeout(function () {
+                if (!daterange_wrapper.contains(document.activeElement)) {
+                    daterange_container.classList.remove('visible')
+                }
+            }, 10)
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function OnChangePattern(cbbPattern, cbbSerial) {
+        var selectedPattern = cbbPattern.value;
+        //console.log(selectedPattern);
+        var urlSerial =
+            "@Url.Action("GetSerialByPattern", "Inv", new { area = "Invoice" })?pattern=" + selectedPattern;
+        $.ajax({
+            type: "GET",
+            url: urlSerial,
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbSerial).empty();
+                //$(cbbSerial).append('<option value=""></option>');
+
+                $.each(response.Serials,
+                    function (index, item) {
+                        $.each(item,
+                            function (idx, serial) {
+                                $(cbbSerial).append('<option value="' + serial.Serial + '">' + serial.Serial + "</option>");
+                            });
+                    });
+
+                $(cbbSerial).selectpicker('refresh');
+            }
+        });
+    }
+</script>

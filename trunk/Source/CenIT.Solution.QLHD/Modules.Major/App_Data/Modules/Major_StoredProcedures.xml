@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Provider xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+     <StoredProcedures ProviderName="MCSProvider">
+
+          <Procedure Name="Major_Subject_Delete" Value="p_Major_Subject_Delete" />
+          <Procedure Name="Major_Subject_Get" Value="p_Major_Subject_Get" />
+          <Procedure Name="Major_Subject_GetById" Value="p_Major_Subject_GetById" />
+          <Procedure Name="Major_Subject_GetAll" Value="p_Major_Subject_GetAll" />
+          <Procedure Name="Major_Subject_Save" Value="p_Major_Subject_Save" />
+
+          <Procedure Name="Major_SubjectViolation_Delete" Value="p_Major_SubjectViolation_Delete" />
+          <Procedure Name="Major_SubjectViolation_Get" Value="p_Major_SubjectViolation_Get" />
+          <Procedure Name="Major_SubjectViolation_GetById" Value="p_Major_SubjectViolation_GetById" />
+          <Procedure Name="Major_SubjectViolation_GetBySubjectId" Value="p_Major_SubjectViolation_GetBySubjectId" />
+          <Procedure Name="Major_SubjectViolation_GetBehaviors" Value="p_Major_SubjectViolation_GetBehaviors" />
+          <Procedure Name="Major_SubjectViolation_Save" Value="p_Major_SubjectViolation_Save" />
+          <Procedure Name="Major_SubjectViolation_SaveBehaviors" Value="p_Major_SubjectViolation_SaveBehaviors" />
+
+          <Procedure Name="Major_Procedure_Delete" Value="p_Major_Procedure_Delete" />
+          <Procedure Name="Major_Procedure_Get" Value="p_Major_Procedure_Get" />
+          <Procedure Name="Major_Procedure_GetById" Value="p_Major_Procedure_GetById" />
+          <Procedure Name="Major_Procedure_Save" Value="p_Major_Procedure_Save" />
+          <Procedure Name="Major_Procedure_GetByUnionId" Value="p_Major_Procedure_GetByUnionId" />
+          <Procedure Name="Major_Procedure_Clone" Value="p_Major_Procedure_Clone" />
+          <Procedure Name="Major_Procedure_ToggleStatus" Value="p_Major_Procedure_ToggleStatus" />
+          
+          <Procedure Name="Major_Procedure_Step_Delete" Value="p_Major_Procedure_Step_Delete" />
+          <Procedure Name="Major_Procedure_Step_Get" Value="p_Major_Procedure_Step_Get" />
+          <Procedure Name="Major_Procedure_Step_GetById" Value="p_Major_Procedure_Step_GetById" />
+          <Procedure Name="Major_Procedure_Step_GetByKey" Value="p_Major_Procedure_Step_GetByKey" />
+          <Procedure Name="Major_Procedure_Step_Save" Value="p_Major_Procedure_Step_Save" />
+
+          <Procedure Name="Major_Procedure_Step_Handler_Get" Value="p_Major_Procedure_Step_Handler_Get" />
+          <Procedure Name="Major_Procedure_Step_Handler_GetById" Value="p_Major_Procedure_Step_Handler_GetById" />
+          <Procedure Name="Major_Procedure_Step_Handler_Save" Value="p_Major_Procedure_Step_Handler_Save" />
+
+          <Procedure Name="Major_Procedure_Step_HandlingTime_Get" Value="p_Major_Procedure_Step_HandlingTime_Get" />
+          <Procedure Name="Major_Procedure_Step_HandlingTime_GetById" Value="p_Major_Procedure_Step_HandlingTime_GetById" />
+          <Procedure Name="Major_Procedure_Step_HandlingTime_Save" Value="p_Major_Procedure_Step_HandlingTime_Save" />
+
+          <Procedure Name="Major_Procedure_Step_Situation_Get" Value="p_Major_Procedure_Step_Situation_Get" />
+          <Procedure Name="Major_Procedure_Step_Situation_GetById" Value="p_Major_Procedure_Step_Situation_GetById" />
+          <Procedure Name="Major_Procedure_Step_Situation_Save" Value="p_Major_Procedure_Step_Situation_Save" />
+
+          <Procedure Name="Major_Dossier_Delete" Value="p_Major_Dossier_Delete" />
+          <Procedure Name="Major_Dossier_Get" Value="p_Major_Dossier_Get" />
+          <Procedure Name="Major_Dossier_GetById" Value="p_Major_Dossier_GetById" />
+          <Procedure Name="Major_Dossier_Save" Value="p_Major_Dossier_Save" />
+          <Procedure Name="Major_Dossier_Approve" Value="p_Major_Dossier_Approve" />
+          <Procedure Name="Major_Dossier_Handle" Value="p_Major_Dossier_Handle" />
+          <Procedure Name="Major_Dossier_Complete" Value="p_Major_Dossier_Complete" />
+          <Procedure Name="Major_Dossier_UpdateProcConfig" Value="p_Major_Dossier_UpdateProcConfig" />
+          <Procedure Name="Major_Dossier_SaveRefFiles" Value="p_Major_Dossier_SaveRefFiles" />
+          
+          <Procedure Name="Major_Dossier_ChangeHandler" Value="p_Major_Dossier_ChangeHandler" />
+
+          <Procedure Name="Major_Dossier_Task_Delete" Value="p_Major_Dossier_Task_Delete" />
+          <Procedure Name="Major_Dossier_Task_Get" Value="p_Major_Dossier_Task_Get" />
+          <Procedure Name="Major_Dossier_Task_GetById" Value="p_Major_Dossier_Task_GetById" />
+          <Procedure Name="Major_Dossier_Task_Save" Value="p_Major_Dossier_Task_Save" />
+          <Procedure Name="Major_Dossier_Task_GetViaContract" Value="p_Major_Dossier_Task_GetViaContract" />
+          <Procedure Name="Major_Dossier_Task_Pause" Value="p_Major_Dossier_Task_Pause" />
+          <Procedure Name="Major_Dossier_Task_Continue" Value="p_Major_Dossier_Task_Continue" />
+          <Procedure Name="Major_Dossier_Task_SwitchHandler" Value="p_Major_Dossier_Task_SwitchHandler" />
+          <Procedure Name="Major_Dossier_Task_SaveRefFiles" Value="p_Major_Dossier_Task_SaveRefFiles" />
+          
+          <Procedure Name="Major_Contract_Delete" Value="p_Major_Contract_Delete" />
+          <Procedure Name="Major_Contract_Get" Value="p_Major_Contract_Get" />
+          <Procedure Name="Major_Contract_GetById" Value="p_Major_Contract_GetById" />
+          <Procedure Name="Major_Contract_Save" Value="p_Major_Contract_Save" />
+          <Procedure Name="Major_Contract_SaveRefFiles" Value="p_Major_Contract_SaveRefFiles" />
+          <Procedure Name="Major_Contract_GetViaKey" Value="p_Major_Contract_GetViaKey" />
+          <Procedure Name="Major_Contract_CheckLandMap" Value="p_Major_Contract_CheckLandMap" />
+          <Procedure Name="Major_Contract_Valid" Value="p_Major_Contract_Valid" />
+
+          <Procedure Name="Major_Contract_Payment_Delete" Value="p_Major_Contract_Payment_Delete" />
+          <Procedure Name="Major_Contract_Payment_GetById" Value="p_Major_Contract_Payment_GetById" />
+          <Procedure Name="Major_Contract_Payment_Save" Value="p_Major_Contract_Payment_Save" />
+
+          <Procedure Name="Major_Contract_Delete" Value="p_Major_Contract_Delete" />
+          <Procedure Name="Major_Contract_Get" Value="p_Major_Contract_Get" />
+          <Procedure Name="Major_Contract_GetById" Value="p_Major_Contract_GetById" />
+          <Procedure Name="Major_Contract_Save" Value="p_Major_Contract_Save" />
+          <Procedure Name="Major_Contract_SaveRefFiles" Value="p_Major_Contract_SaveRefFiles" />
+          <Procedure Name="Major_Contract_GetViaKey" Value="p_Major_Contract_GetViaKey" />
+          <Procedure Name="Major_Contract_CheckLandMap" Value="p_Major_Contract_CheckLandMap" />
+          <Procedure Name="Major_Contract_Valid" Value="p_Major_Contract_Valid" />
+          <Procedure Name="Major_Contract_Approve" Value="p_Major_Contract_Approve" />
+          <Procedure Name="Major_Contract_Reject" Value="p_Major_Contract_Reject" />
+          <Procedure Name="Major_Contract_UpdateInfo" Value="p_Major_Contract_UpdateInfo" />
+          <Procedure Name="Major_Contract_Acceptant" Value="p_Major_Contract_Acceptant" />
+          
+          <Procedure Name="Major_Contract_Dashboard" Value="p_Major_Contract_Dashboard" />
+
+          <Procedure Name="Major_Contract_Payment_Delete" Value="p_Major_Contract_Payment_Delete" />
+          <Procedure Name="Major_Contract_Payment_GetById" Value="p_Major_Contract_Payment_GetById" />
+          <Procedure Name="Major_Contract_Payment_Save" Value="p_Major_Contract_Payment_Save" />
+
+          <Procedure Name="Major_Contract_Task_GetViaContract" Value="p_Major_Contract_Task_GetViaContract" />
+          <Procedure Name="Major_Contract_Cus_GetViaContract" Value="p_Major_Contract_Cus_GetViaContract" />
+          <Procedure Name="Major_Contract_Payment_GetViaContract" Value="p_Major_Contract_Payment_GetViaContract" />
+
+          <Procedure Name="Major_Contract_Delete" Value="p_Major_Contract_Delete" />
+          <Procedure Name="Major_Contract_Get" Value="p_Major_Contract_Get" />
+          <Procedure Name="Major_Contract_GetById" Value="p_Major_Contract_GetById" />
+          <Procedure Name="Major_Contract_Save" Value="p_Major_Contract_Save" />
+          <Procedure Name="Major_Contract_SaveRefFiles" Value="p_Major_Contract_SaveRefFiles" />
+          <Procedure Name="Major_Contract_GetViaKey" Value="p_Major_Contract_GetViaKey" />
+          <Procedure Name="Major_Contract_CheckLandMap" Value="p_Major_Contract_CheckLandMap" />
+          <Procedure Name="Major_Contract_Valid" Value="p_Major_Contract_Valid" />
+          <Procedure Name="Major_Contract_Payment_CheckTypePayment" Value="p_Major_Contract_Payment_CheckTypePayment" />
+
+          <Procedure Name="Major_Contract_Payment_Delete" Value="p_Major_Contract_Payment_Delete" />
+          <Procedure Name="Major_Contract_Payment_GetById" Value="p_Major_Contract_Payment_GetById" />
+          <Procedure Name="Major_Contract_Payment_Save" Value="p_Major_Contract_Payment_Save" />
+
+          <Procedure Name="Cate_Regulation_Get" Value="p_Cate_Regulation_Get" />
+          <Procedure Name="Cate_Regulation_GetById" Value="p_Cate_Regulation_GetById" />
+          <Procedure Name="Cate_Regulation_Save" Value="p_Cate_Regulation_Save" />
+          <Procedure Name="Cate_Regulation_Delete" Value="p_Cate_Regulation_Delete" />
+
+          <Procedure Name="Cate_RemedialMeasure_Get" Value="p_Cate_RemedialMeasure_Get" />
+          <Procedure Name="Cate_RemedialMeasure_GetById" Value="p_Cate_RemedialMeasure_GetById" />
+          <Procedure Name="Cate_RemedialMeasure_Save" Value="p_Cate_RemedialMeasure_Save" />
+          <Procedure Name="Cate_RemedialMeasure_Delete" Value="p_Cate_RemedialMeasure_Delete" />
+
+          <Procedure Name="Cate_ConstructionParticipant_Get" Value="p_Cate_ConstructionParticipant_Get" />
+          <Procedure Name="Cate_ConstructionParticipant_GetById" Value="p_Cate_ConstructionParticipant_GetById" />
+          <Procedure Name="Cate_ConstructionParticipant_Save" Value="p_Cate_ConstructionParticipant_Save" />
+          <Procedure Name="Cate_ConstructionParticipant_Delete" Value="p_Cate_ConstructionParticipant_Delete" />
+
+          <Procedure Name="Cate_ViolationBehavior_Get" Value="p_Cate_ViolationBehavior_Get" />
+          <Procedure Name="Cate_ViolationBehavior_Save" Value="p_Cate_ViolationBehavior_Save" />
+          <Procedure Name="Cate_ViolationBehavior_GetById" Value="p_Cate_ViolationBehavior_GetById" />
+          <Procedure Name="Cate_ViolationBehavior_Delete" Value="p_Cate_ViolationBehavior_Delete" />
+
+          <Procedure Name="Cate_ViolationTypes_Get" Value="p_Cate_ViolationTypes_Get" />
+          <Procedure Name="Cate_ViolationTypes_Save" Value="p_Cate_ViolationTypes_Save" />
+          <Procedure Name="Cate_ViolationTypes_GetById" Value="p_Cate_ViolationTypes_GetById" />
+          <Procedure Name="Cate_ViolationTypes_Delete" Value="p_Cate_ViolationTypes_Delete" />
+
+          <Procedure Name="Cate_ViolatedConstruction_Get" Value="p_Cate_ViolatedConstruction_Get" />
+          <Procedure Name="Cate_ViolatedConstruction_Save" Value="p_Cate_ViolatedConstruction_Save" />
+          <Procedure Name="Cate_ViolatedConstruction_GetById" Value="p_Cate_ViolatedConstruction_GetById" />
+          <Procedure Name="Cate_ViolatedConstruction_Delete" Value="p_Cate_ViolatedConstruction_Delete" />
+
+          <Procedure Name="Cate_DeductionAccount_Get" Value="p_Cate_DeductionAccount_Get" />
+          <Procedure Name="Cate_DeductionAccount_GetById" Value="p_Cate_DeductionAccount_GetById" />
+          <Procedure Name="Cate_DeductionAccount_Save" Value="p_Cate_DeductionAccount_Save" />
+          <Procedure Name="Cate_DeductionAccount_Delete" Value="p_Cate_DeductionAccount_Delete" />
+
+          <Procedure Name="Cate_ViolationArea_Get" Value="p_Cate_ViolationArea_Get" />
+          <Procedure Name="Cate_ViolationArea_GetById" Value="p_Cate_ViolationArea_GetById" />
+          <Procedure Name="Cate_ViolationArea_Save" Value="p_Cate_ViolationArea_Save" />
+          <Procedure Name="Cate_ViolationArea_Delete" Value="p_Cate_ViolationArea_Delete" />
+
+          <Procedure Name="Major_Contract_GetFilterContract" Value="p_Major_Contract_GetFilterContract" />
+          <Procedure Name="Major_Task_GetByContractId" Value="p_Major_Task_GetByContractId" />
+          <Procedure Name="Major_Payment_GetByContractId" Value="p_Major_Payment_GetByContractId" />
+          <Procedure Name="Major_ContractRenderForm_GetByContractId" Value="p_Major_ContractRenderForm_GetByContractId" />
+
+          <Procedure Name="Major_Contract_GetByContractNo" Value="p_Major_Contract_GetByContractNo" />
+          <Procedure Name="Major_Contract_GetForQR" Value="p_Major_Contract_GetForQR" />
+          <Procedure Name="Major_Inv_Config_Save" Value="p_Major_Inv_Config_Save" />
+          <Procedure Name="Major_Inv_Config_Get" Value="p_Major_Inv_Config_Get" />
+          <Procedure Name="Major_Inv_Config_Delete" Value="p_Major_Inv_Config_Delete" />
+          <Procedure Name="Major_Inv_Config_GetById" Value="p_Major_Inv_Config_GetById" />
+          <Procedure Name="Major_Inv_Config_GetViaKey" Value="p_Major_Inv_Config_GetViaKey" />
+
+          <Procedure Name="Major_Inv_Pattern_Save" Value="p_Major_Inv_Pattern_Save" />
+          <Procedure Name="Major_Inv_Pattern_Get" Value="p_Major_Inv_Pattern_Get" />
+          <Procedure Name="Major_Inv_Pattern_Delete" Value="p_Major_Inv_Pattern_Delete" />
+          <Procedure Name="Major_Inv_Pattern_GetById" Value="p_Major_Inv_Pattern_GetById" />
+          <Procedure Name="Major_Inv_Pattern_GetByPattern" Value="p_Major_Inv_Pattern_GetByPattern" />
+
+          <Procedure Name="Major_Inv_ActionLog_Save" Value="p_Major_Inv_ActionLog_Save" />
+
+          <Procedure Name="Major_Inv_Save" Value="p_Major_Inv_Save" />
+          <Procedure Name="Major_Inv_Update" Value="p_Major_Inv_Update" />
+          <Procedure Name="Major_Inv_GetById" Value="p_Major_Inv_GetById" />
+          <Procedure Name="Major_Inv_Cancel" Value="p_Major_Inv_Cancel" />
+          <Procedure Name="Major_Inv_Get" Value="p_Major_Inv_Get" />
+          <Procedure Name="Major_Inv_GetByContractId" Value="p_Major_Inv_GetByContractId" />
+          <Procedure Name="Major_Inv_Adjust" Value="p_Major_Inv_Adjust" />
+          <Procedure Name="Major_Inv_GetByKey" Value="p_Major_Inv_GetByKey" />
+          <Procedure Name="Major_Inv_Rollback" Value="p_Major_Inv_Rollback" />
+          <Procedure Name="Major_Inv_Sync" Value="p_Major_Inv_Sync" />
+
+          <Procedure Name="Major_Inv_GetView" Value="p_Major_Inv_GetView" />
+          <Procedure Name="Major_Inv_SaveView" Value="p_Major_Inv_SaveView" />
+
+          <Procedure Name="Major_Inv_Cus_GetById" Value="p_Major_Inv_Cus_GetById" />
+          <Procedure Name="Major_Inv_Products_GetById" Value="p_Major_Inv_Products_GetById" />
+
+          <Procedure Name="Major_Inv_GetCusViaKey" Value="p_Major_Inv_GetCusViaKey" />
+          <Procedure Name="Major_Inv_GetProductsViaKey" Value="p_Major_Inv_GetProductsViaKey" />          
+
+          <Procedure Name="Major_Inv_Pending_Get" Value="p_Major_Inv_Pending_Get" />
+          
+          <Procedure Name="Major_ConfigSignature_Save" Value="p_Major_ConfigSignature_Save" />
+          <Procedure Name="Major_ConfigSignature_GetByUserName" Value="p_Major_ConfigSignature_GetByUserName" />
+
+          <Procedure Name="Major_Customers_Save" Value="p_Major_Customers_Save" />
+          <Procedure Name="Major_Customers_Get" Value="p_Major_Customers_Get" />
+          <Procedure Name="Major_Customers_Delete" Value="p_Major_Customers_Delete" />
+          <Procedure Name="Major_Customers_GetByID" Value="p_Major_Customers_GetById" />
+
+          <Procedure Name="Major_Message_Delete" Value="p_Major_Message_Delete" />
+          <Procedure Name="Major_Message_DeleteAll" Value="p_Major_Message_DeleteAll" />
+          <Procedure Name="Major_Message_Get" Value="p_Major_Message_Get" />
+          <Procedure Name="Major_Message_GetById" Value="p_Major_Message_GetById" />
+          <Procedure Name="Major_Message_Save" Value="p_Major_Message_Save" />
+          <Procedure Name="Major_Message_MaskAsRead" Value="p_Major_Message_MaskAsRead" />
+          <Procedure Name="Major_Message_MaskAllAsRead" Value="p_Major_Message_MaskAllAsRead" />
+          
+          <Procedure Name="Major_Inv_Adjust_Get" Value="p_Major_Inv_Adjust_Get" />
+		 
+          <Procedure Name="Major_Report_GetReportViaUser" Value="p_Major_Report_GetReportViaUser" />
+          <Procedure Name="Major_Report_SavePermit" Value="p_Major_Report_SavePermit" />
+
+     </StoredProcedures>
+
+</Provider>

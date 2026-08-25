@@ -1,0 +1,26 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = "Cập nhật Hành vi vi phạm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-edit"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Edit", "ViolationBehavior", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ViolationBehavior_OnProcessSuccess(data, 'EditViolationBehavior')"
+    }, new { @class = "form-horizontal", id = "EditViolationBehavior" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ViolationBehavior")
+        </div>
+    }
+}

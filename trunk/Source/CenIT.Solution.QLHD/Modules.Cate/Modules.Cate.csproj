@@ -1,0 +1,324 @@
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{365B1C55-8BF5-4862-B816-DDA39999D46D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Modules.Cate</RootNamespace>
+    <AssemblyName>Modules.Cate</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44342</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.1\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\dlls\EPPlus\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.9\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\Modules\Cate_StoredProcedures.xml" />
+    <Content Include="Areas\Cate\Views\Category\Category.js" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\ConstructionParticipant.js" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\DeductionAccount.js" />
+    <Content Include="Areas\Cate\Views\Regulation\Regulation.js" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\RemedialMeasure.js" />
+    <Content Include="Areas\Cate\Views\Union\Union.js" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\Construction.js" />
+    <Content Include="Areas\Cate\Views\ViolationArea\ViolationArea.js" />
+    <Content Include="Areas\Cate\Views\Field\Field.js" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\ViolationBehavior.js" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\ViolationTypes.js" />
+    <Content Include="Global.asax" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Cate\CateAreaRegistration.cs" />
+    <Compile Include="Areas\Cate\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ContentLandController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ContractFormController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ContractStatusController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ContractTypeController.cs" />
+    <Compile Include="Areas\Cate\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Cate\Controllers\DocController.cs" />
+    <Compile Include="Areas\Cate\Controllers\FieldController.cs" />
+    <Compile Include="Areas\Cate\Controllers\FlowContractController.cs" />
+    <Compile Include="Areas\Cate\Controllers\HolidayController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ImplementContentController.cs" />
+    <Compile Include="Areas\Cate\Controllers\LandAreaController.cs" />
+    <Compile Include="Areas\Cate\Controllers\LandCalculationController.cs" />
+    <Compile Include="Areas\Cate\Controllers\LandTypeController.cs" />
+    <Compile Include="Areas\Cate\Controllers\MainSectionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\PositionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\PriceController.cs" />
+    <Compile Include="Areas\Cate\Controllers\PurPoseController.cs" />
+    <Compile Include="Areas\Cate\Controllers\SubSectionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\UnionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\ViolationBehaviorController.cs" />
+    <Compile Include="Areas\Cate\Models\SearchCategoryModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchContentLandModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchContractTypeModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchCustomerModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchFieldModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchHolidayModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchImplementContentModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchLandCalculationModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchMainSectionModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchPositionModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchPurPoseModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchUnionModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchViolationBehaviorModel.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="Areas\Cate\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\Category\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\Category\_Category.cshtml" />
+    <Content Include="Areas\Cate\Views\Category\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\Category\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\Category\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\_ConstructionParticipant.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\ConstructionParticipant\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\_DeductionAccount.cshtml" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\DeductionAccount\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\Doc\_DeleteDoc.cshtml" />
+    <Content Include="Areas\Cate\Views\Doc\_DocViewer.cshtml" />
+    <Content Include="Areas\Cate\Views\Doc\_Viewer.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\_Regulation.cshtml" />
+    <Content Include="Areas\Cate\Views\Regulation\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\RemedialMeasure\_RemedialMeasure.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_AddManager.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_AddMember.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_AddUnion.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_DelBody.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_DeleteManager.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_DeleteMember.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_DeleteUnion.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_EditManager.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_EditMember.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_EditUnion.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Manager.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Managers.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Member.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Members.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_ToggleStatus.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_Union.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_UnionMember.cshtml" />
+    <Content Include="Areas\Cate\Views\Union\_UnionsBelong.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\_Construction.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolatedConstruction\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationArea\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationArea\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationArea\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationArea\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationArea\_ViolationArea.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationBehavior\_ViolationBehavior.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\ViolationTypes\_ViolationTypes.cshtml" />
+    <Content Include="Areas\Cate\Views\web.config" />
+    <Content Include="Areas\Cate\Views\_ViewStart.cshtml" />
+    <None Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\Cate\Views\Shared\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cores.Base\Cores.Base.csproj">
+      <Project>{3170EEC6-3DE7-4B91-A0FF-9617EA9EF9F2}</Project>
+      <Name>Cores.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Cate\Cores.Cate.csproj">
+      <Project>{10BF9925-7656-4F18-9181-9626D8ADDDF8}</Project>
+      <Name>Cores.Cate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.eContract\Cores.eContract.csproj">
+      <Project>{A5A845DF-55E7-4517-9806-1153C3CAFC0D}</Project>
+      <Name>Cores.eContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Sys\Cores.Sys.csproj">
+      <Project>{2D1B4978-0E30-4207-8CAA-A51634745941}</Project>
+      <Name>Cores.Sys</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TSFramework.App\TSFramework.App.csproj">
+      <Project>{0577F056-6B2C-4CDA-B85B-4E47AA37DDB4}</Project>
+      <Name>TSFramework.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TSFramework.Core\TSFramework.Core.csproj">
+      <Project>{04290B90-CB09-4C09-8F26-1BE6728ED3F7}</Project>
+      <Name>TSFramework.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>59479</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44342/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>Robocopy $(ProjectDir)App_Data\Modules $(SolutionDir)\CenIT.Solution.QLHD.WebApp\App_Data\Modules /s
+Robocopy $(ProjectDir)Areas\Cate\Views $(SolutionDir)\CenIT.Solution.QLHD.WebApp\Areas\Cate\Views /s
+xcopy /Y "$(ProjectName).dll" "$(SolutionDir)\CenIT.Solution.QLHD.WebApp\bin"</PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

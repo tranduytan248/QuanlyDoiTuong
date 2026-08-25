@@ -1,0 +1,37 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskSwitchHandlerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("Task_HandledBy")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddHandler", "Dossier", new { area = "Major", taskId = Model.TaskId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "StepHandler_OnProcessSuccess(data, 'AddHandler')"
+    }, new { @class = "form-horizontal", id = "AddHandler" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Handler")
+        </div>
+    }
+}
+
+@section SubmitControl{
+    <button type="submit" id="btnAdd" class="btn px-4 btn-outline-primary mb-1 disabled"><i class="fas fa-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Add")</button>
+}
+
+@*@section ContinueForm{
+
+    }*@

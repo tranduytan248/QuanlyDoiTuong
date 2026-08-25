@@ -1,0 +1,385 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVComplainModel
+
+@Html.AntiForgeryToken()
+
+<style type="text/css">
+    .ace-file-container {
+        max-height: calc(70vh);
+        overflow-x: auto;
+        width: 100%;
+    }
+</style>
+
+<div id="Complain">
+    <div class="col-12">
+        @*<div class="col-12 col-md-6">*@
+        @Html.HiddenFor(model => model.ComplainId)
+        @Html.HiddenFor(model => model.SourceId)
+
+        <div class="form-group row">
+            <div class="card ccard h-100 overflow-hidden col-12 shadow-none border-0">
+                <div class="card-header card-header-sm">
+                    @Html.TitleFor(model => model.TypeSenderObj, new { @class = "card-title text-500 col-form-label pr-0" })
+                </div>
+                <div class="card-body p-0 bgc-white flex-grow-1 mt-3">
+                    <div class="d-flex align-items-center justify-content-center flex-wrap h-100">
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.TypeSenderObj, (int)EnumTypeSender.Citizen, new { id = "Citizen" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeSender_Citizen"), new { @for = "Citizen" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.TypeSenderObj, (int)EnumTypeSender.Enterprise, new { id = "Enterprise" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeSender_Enterprise"), new { @for = "Enterprise" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.TypeSenderObj, (int)EnumTypeSender.Organization, new { id = "Organization" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeSender_Organization"), new { @for = "Organization" })
+                        </label>
+                        <label class="col-form-label col-3">
+                            @Html.RadioButtonFor(model => model.TypeSenderObj, (int)EnumTypeSender.Union, new { id = "Union" })
+                            @Html.Label(AppProcessor.Messagor.GetMessage("TypeSender_Union"), new { @for = "Union" })
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="input-floating-label col-12 text-danger-d2 brc-danger-m1">
+                @Html.TextBoxFor(model => model.SenderName, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Sender_Name") })
+                @Html.TitleFor(model => model.SenderName, new { @class = "floating-label text-grey-m3 text-500" })
+            </span>
+            @Html.ValidationMessageFor(model => model.SenderName, "", new { @class = "text-danger px-2" })
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <span class="has-float-label input-floating-label brc-danger-m1">
+                    @Html.DropDownListFor(model => model.ProvinceId, new SelectList(Model.Provinces, "Value", "Text"), "", new { @class = "form-control col-12", onchange = "_onChangeProvince(this, $('#Complain select#DistrictId'))" })
+                    @Html.HiddenFor(model => model.ProvinceName)
+                    @Html.TitleFor(model => model.ProvinceId, new { @class = "floating-label text-grey-m3 text-500" })
+                </span>
+                @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger px-2" })
+            </div>
+            <div class="col-4">
+                <span class="has-float-label input-floating-label brc-danger-m1">
+                    @Html.DropDownListFor(model => model.DistrictId, new SelectList(Model.Districts, "Value", "Text"), new { @class = "form-control col-12", onchange = "_onChangeDistrict(this, $('#Complain select#WardId'))" })
+                    @Html.HiddenFor(model => model.DistrictName)
+                    @Html.TitleFor(model => model.DistrictId, new { @class = "floating-label text-grey-m3 text-500" })
+                </span>
+                @Html.ValidationMessageFor(model => model.DistrictId, "", new { @class = "text-danger px-2" })
+            </div>
+            <div class="col-4">
+                <span class="has-float-label input-floating-label brc-danger-m1">
+                    @Html.DropDownListFor(model => model.WardId, new SelectList(Model.Wards, "Value", "Text"), new { @class = "form-control col-12", onchange = "_onChangeCombo(this, $('#Complain #WardName'), false)" })
+                    @Html.HiddenFor(model => model.WardName)
+                    @Html.TitleFor(model => model.WardId, new { @class = "floating-label text-grey-m3 text-500" })
+                </span>
+                @Html.ValidationMessageFor(model => model.WardId, "", new { @class = "text-danger px-2" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="input-floating-label col-12 text-danger-d2 brc-danger-m1">
+                @Html.TextBoxFor(model => model.AddressDetail, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Sender_AddressDetail") })
+                @Html.TitleFor(model => model.AddressDetail, new { @class = "floating-label text-grey-m3 text-500" })
+            </span>
+            @Html.ValidationMessageFor(model => model.AddressDetail, "", new { @class = "text-danger px-2" })
+        </div>
+
+        <div class="form-group row">
+            <span class="input-floating-label col-4 text-danger-d2 brc-danger-m1">
+                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Sender_Phone") })
+                @Html.TitleFor(model => model.Phone, new { @class = "floating-label text-grey-m3 text-500" })
+            </span>
+            <span class="input-floating-label col-4 text-danger-d2 brc-danger-m1">
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Sender_Email") })
+                @Html.TitleFor(model => model.Email, new { @class = "floating-label text-grey-m3 text-500" })
+            </span>
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger px-2 d-block col-12" })
+        </div>
+        <hr />
+        <div class="form-group row">
+            <span class="has-float-label input-floating-label col-12 text-danger-d2 brc-danger-m1">
+                @Html.TextAreaFor(model => model.Title, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Name") })
+                @Html.TitleFor(model => model.Title, new { @class = "floating-label text-grey-m3 text-500" })
+            </span>
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger px-2" })
+        </div>
+        <div class="form-group row">
+            <span class="has-float-label input-floating-label col-12 text-danger-d2 brc-danger-m1">
+                @Html.TextAreaFor(model => model.Contents, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Contents") })
+                @Html.TitleFor(model => model.Contents, new { @class = "floating-label text-grey-m3 text-500" })
+                @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger" })
+            </span>
+        </div>
+        
+        <div class="form-group row">
+	        <span class="has-float-label input-floating-label col-8 brc-danger-m1">
+		        @Html.SelectFor(model => model.ReflectBy, Model.ListUnionReflects, "", new { @class = "form-control col-11", placeholder = Html.DisplayNameFor(model => model.ReflectBy), onchange = "_onChangeCombo(this, '#Complain #ReflectName', true)" })
+		        @Html.TitleFor(model => model.ReflectBy, new { @class = "floating-label text-grey-m3 text-500" })
+	        </span>
+	        <div class="col-4"></div>
+            @Html.HiddenFor(model => model.ReflectName)
+            @Html.ValidationMessageFor(model => model.ReflectBy, "", new { @class = "text-danger px-3" })
+        </div>
+
+        @{
+            if (Model.ComplainId != null && Model.ComplainId != Guid.Empty)
+            {
+                <hr />
+                <div class="form-group row">
+                    <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+                        @Html.TextAreaFor(model => model.Reason, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                        @Html.TitleFor(model => model.Reason, new { @class = "floating-label text-grey-m3 text-500" })
+                    </span>
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger px-3" })
+                </div>
+            }
+        }
+        @*<div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+            </div>
+            <div class="col-12 col-md-6">*@
+        <hr />
+        <div class="form-group row">
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.RefImages, new { type = "file", multiple = true, @class = "ace-file-input" })
+            </div>
+        </div>
+        @{
+            if (Model.ListRefImgs.Count > 0)
+            {
+                <hr />
+                <div class="row mx-0">
+                    @{
+                        foreach (var k in Model.ListRefImgs.Keys)
+                        {
+                            int idx;
+                            if (k == 0)
+                            {
+                                idx = 0;
+                                    <!-- column 1 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                            <div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+                                                <div class="d-flex justify-content-center action-buttons text-110">
+                                                    <a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+                                                        <i class="fa fa-times text-danger-m2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+                            else if (k == 1)
+                            {
+                                idx = 0;
+                                    <!-- column 2 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                            <div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+                                                <div class="d-flex justify-content-center action-buttons text-110">
+                                                    <a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+                                                        <i class="fa fa-times text-danger-m2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+                            else if (k == 2)
+                            {
+                                idx = 0;
+                                    <!-- column 3 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                            <div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+                                                <div class="d-flex justify-content-center action-buttons text-110">
+                                                    <a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+                                                        <i class="fa fa-times text-danger-m2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+
+                        }
+                    }
+
+                </div>
+
+                        }
+        }
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // multiple with image preview
+        $('#RefImages').aceFileInput({
+            style: 'drop',
+            droppable: true,
+
+            container: 'border-1 border-dashed brc-grey-l1 brc-h-info-m2 shadow-sm table-responsive',
+
+            placeholderClass: 'text-125 text-600 text-grey-l1 my-2',
+            placeholderText: 'Kéo thả ảnh vào đây hoặc nhấn để chọn',
+            placeholderIcon: '<i class="fa fa-cloud-upload-alt fa-3x text-info-m2 my-2"></i>',
+
+            //previewSize: 64,
+            thumbnail: 'small',
+
+            //allowExt: 'gif|jpg|jpeg|png|webp|svg',
+            //allowMime: 'image/png|image/jpeg',
+            allowMime: 'image/*',
+
+            //maxSize: 100000,
+        });
+
+        let fileInput = document.getElementById('RefImages')
+        fileInput.addEventListener('changed.ace.file', function (e) {
+            $(this)[0].files = fileListFrom(e.$_selectedFiles.list);
+        })
+
+        //fileInput.addEventListener('invalid.ace.file', function (e) {
+        //    // console.log(e.$_fileErrors)
+        //})
+
+        //fileInput.addEventListener('preview_failed.ace.file', function (e) {
+        //    // console.log(e.$_previewError)
+        //    // if(e.$_previewError && e.$_previewError.code == 2) alert(e.$_previewError.filename + ' is not an image!')
+        //})
+
+        //fileInput.addEventListener('clear.ace.file', function (e) {
+        //    // e.preventDefault()
+        //})
+
+        // some available methods
+
+        // $('#RefFiles').aceFileInput('disable')
+        // $('#RefFiles').aceFileInput('startLoading')
+
+        // $('#RefFiles').aceFileInput('showFileList', [{name: 'avatar3.jpg', type: 'image', path: 'assets/image/avatar/avatar3.jpg'} , {name: 'avatar2.jpg', type: 'image', path: 'assets/image/avatar/avatar2.jpg'}])
+
+        // $('#ace-file-input1').aceFileInput('showFileList', [{name: '2.txt', type: 'document'}])
+        // $('#ace-file-input1').aceFileInput('resetInput');
+    });
+</script>
+
+<script type="text/javascript">
+
+    function Doc_OnProcessSuccess(response, formId) {
+        $("#ModalContent #modal_" + formId).modal("hide");
+        $("#ModalContent #modal_" + formId).on("hidden.bs.modal", function () {
+            if (response.status != undefined) {
+                eval(response.message);
+                $("#" + response.fileId).remove();
+                response.status = undefined;
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    //debugger;
+    var districtId = @Model.DistrictId;
+    var wardId = @Model.WardId;
+
+    function _onChangeProvince(cbbProvince, cbbDistrict) {
+        if ($("#Complain #ProvinceName").length > 0) {
+            $("#Complain #ProvinceName").val($(cbbProvince).children("option:selected").text());
+        }
+
+        var selectedProvince = $(cbbProvince).val();
+        var urlDistrictsViaProvince =
+            "@Url.Action("GetDistrictsBelongProvince", "Ajax", new { area = "Cate" })?provinceIds=" + selectedProvince;
+        $.ajax({
+            type: "GET",
+            url: urlDistrictsViaProvince,
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbDistrict).empty();
+                $(cbbDistrict).append('<option value=""></option>');
+
+                $.each(response.Districts,
+                    function (index, item) {
+                        $.each(item, function (idx, district) {
+                            $(cbbDistrict).append('<option value="' + district.DistrictId + '">' + district.DistrictName + "</option>");
+                        });
+                    });
+                if(districtId > 0){
+                    $(cbbDistrict).val(districtId);
+                    $(cbbDistrict).trigger("change");
+                }
+            }
+        });
+    }
+
+    function _onChangeDistrict(cbbDistrict, cbbWard) {
+        if ($("#Complain #DistrictName").length > 0) {
+            $("#Complain #DistrictName").val($(cbbDistrict).children("option:selected").text());
+        }
+
+        var selectedDistrict = districtId > 0 ? districtId : $(cbbDistrict).val();
+        var urlWardsViaDistrict =
+            "@Url.Action("GetWardsBelongDistrict", "Ajax", new { area = "Cate" })?districtIds=" + selectedDistrict;
+        $.ajax({
+            type: "GET",
+            url: urlWardsViaDistrict,
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbWard).empty();
+                $(cbbWard).append('<option value=""></option>');
+
+                $.each(response.Wards, function (index, item) {
+                    $.each(item, function (idx, ward) {
+                        $(cbbWard).append('<option value="' + ward.WardId + '">' + ward.WardName + "</option>");
+                    });
+                });
+                if(wardId > 0){
+                    $(cbbWard).val(wardId);
+                    $(cbbWard).trigger("change");
+                }
+            }
+        });
+    }
+
+    @*</script>
+
+<script type="text/javascript">*@
+    jQuery(function ($) {
+        _initGalary("#Complain");
+        _onChangeProvince($('#Complain select#ProvinceId'), $('#Complain select#DistrictId'))
+        if(districtId > 0){
+            _onChangeDistrict($('#Complain select#DistrictId'), $('#Complain select#WardId'))
+        }
+    });
+
+</script>
+

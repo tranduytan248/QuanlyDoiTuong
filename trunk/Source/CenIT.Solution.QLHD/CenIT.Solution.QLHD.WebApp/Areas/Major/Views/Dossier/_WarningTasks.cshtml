@@ -1,0 +1,46 @@
+﻿@using TSFramework.App.Processors
+@model List<Cores.Major.Models.SAVDossierModel>
+@{
+    if (Model != null)
+    {
+        <a class="nav-link dropdown-toggle @(Model.Count > 0?"pl-lg-3":"pl-lg-4") pr-lg-4" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" data_rel = "tooltip", title = "Xử lý trễ hạn">
+            <i class="fas fa-bullhorn text-110 @(Model.Count > 0?"icon-animated-bell":"") mr-lg-2"></i>
+            <span class="d-inline-block d-lg-none ml-2">@AppProcessor.Messagor.GetMessage("Message_Title")</span>
+            @if (Model.Count > 0)
+            {
+                <span id="id-navbar-badge1" class="badge badge-danger radius-round text-75">@Model.Count</span>
+            }
+            <i class="caret fa fa-angle-left d-block d-lg-none text-warning-d2"></i>
+        </a>
+        <div class="shadow dropdown-menu dropdown-animated dropdown-sm p-0 brc-primary-m3 border-b-2 bgc-white">
+            <!-- .nav-tabs -->
+            <!-- .tab-pane : notifications -->
+            <div class="tab-pane mh-none pl-md-2" id="messages" role="tabpanel">
+                <div data-ace-scroll='{"ignore": "mobile", "height": 300, "smooth":true}'>
+                    @{
+                        foreach (var msg in Model)
+                        {
+                            <a href="@Url.Action("Index")" msg-id="@msg.DossierId" class="d-flex mb-0 border-0 list-group-item list-group-item-action btn-h-lighter-secondary msg">
+                                <div>
+	                                <i class="fas fa-tasks"></i>
+	                                <span class="text-danger-d2 text-500">@Html.Raw(msg.Title)</span>
+                                    <br />
+                                    <span class="text-grey-m1 text-85">
+                                        <i class="far fa-clock"></i> @(msg.CreatedOn.Value.ToString("HH:mm:ss dd/MM/yyyy"))
+                                    </span>
+                                </div>
+                            </a>
+                            <hr class="my-1px brc-grey-l3" />
+                        }
+                    }
+                </div>
+                <!-- ace-scroll -->
+                @*<hr class="my-1px brc-secondary-l2 border-double" />
+                <a href="@Url.Action("All","Notification",new{area=""})" data-modal="true" data-modal-id="AllMessage" data-width="fullscreen" class="mb-0 py-3 border-0 list-group-item text-primary text-uppercase text-center text-85 font-bolder">
+                    @AppProcessor.Messagor.GetMessage("Message_ViewAll") <i class="ml-2 fa fa-arrow-right text-muted"></i>
+                </a>*@
+            </div>
+            <!-- .tab-pane : messages -->
+        </div>
+                        }
+}

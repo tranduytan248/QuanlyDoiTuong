@@ -1,0 +1,135 @@
+﻿@model Modules.Major.Areas.Major.Models.ViewFormStructureModel
+
+
+@using (Html.BeginForm("Export", "Dossier", new { area = "Major", id = Model.FormId, dossierId = Model.DossierId }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportForm", @class = "form-horizontal" }))
+{
+    <div id="form-@Model.FormId" class="mx-2">
+        @Html.Raw(Model.ViewName)
+    </div>
+}
+
+<script type="text/javascript">
+    //debugger;
+    function _previewForm(){
+        var formData = $("form#ExportForm").serializeArray();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Preview",new{id = Model.FormId, dossierId = Model.DossierId })",
+            data: formData,
+            success: function(response, textStatus, jqXHR) {
+                if (response.status != undefined && !response.status) {
+                    eval(response.message);
+                }else if (response != undefined){
+                    _showModal(response,"TmpExport", "fullscreen", "#ExportForm");
+                    _onFullscreen();
+                }
+            }
+        });
+    }    
+
+    function _saveFormData(fnc) {
+            var formData = $("form#ExportForm").serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: "@Html.Raw(Url.Action("SaveFormData",new{ stepId = Model.StepId, dossierId = Model.DossierId }))",
+                data: formData,
+                success: function (response, textStatus, jqXHR) {
+                    if (response.status != undefined && !response.status) {
+                        //eval(response.message);
+                    } else if (response != undefined) {
+
+                    }
+                }
+            });
+        }
+
+    function _onFullscreen() {
+        var iframe = document.querySelector('#DocViewer iframe');
+        // Do fullscreen
+        if (iframe.requestFullscreen) {
+            iframe.requestFullscreen();
+        } else if (iframe.webkitRequestFullscreen) {
+            iframe.webkitRequestFullscreen();
+        } else if (iframe.mozRequestFullScreen) {
+            iframe.mozRequestFullScreen();
+        } else if (iframe.msRequestFullscreen) {
+            iframe.msRequestFullscreen();
+        }
+    }
+</script>
+
+<script type="text/javascript">
+
+    var formData =  @(string.IsNullOrEmpty(Model.FormData) ? Html.Raw("[]") : Html.Raw(Model.FormData));
+    var mappingFormKeys = @(string.IsNullOrEmpty(Model.FormData) ? Html.Raw("{}") : Html.Raw(Model.MappingFormKeys));
+    var currentUser = "@Html.Raw(User.FullName)".split(' ');
+
+    formData["LuuVT"] = currentUser[currentUser.length - 1];
+
+    $(document).ready(function () {
+
+        var prevId = @(Model.PrevIdx ?? -1);
+        var nextId = @(Model.NextIdx ?? -1);
+
+        if(prevId == -1)
+        {
+            $("button#btnPrev").addClass("disabled");
+        }
+        else{
+            $("button#btnPrev").attr("onclick", "_detailForm('@Model.PrevForm', @Model.PrevIdx, '@Model.DossierId','@Model.SituationId')");
+            $("button#btnPrev").removeClass("disabled");
+        }
+        if(nextId == -1)
+        {
+            $("button#btnNext").addClass("disabled");
+        }
+        else{
+            $("button#btnNext").attr("onclick", "_detailForm('@Model.NextForm', @Model.NextIdx, '@Model.DossierId','@Model.SituationId')");
+            $("button#btnNext").removeClass("disabled");
+        }
+
+        $("#modal_ExportForm .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_ExportForm .modal-body").addClass("ace-scrollbar");
+
+        for (var key in formData) {
+            var lstKeysMapping = mappingFormKeys[key];
+
+            if(typeof lstKeysMapping != "undefined" && lstKeysMapping.length > 0){
+                $.each(lstKeysMapping, function(index, value){
+                    if(toString.call(value) == '[object Object]'){
+                        if(formData[key] != ''){
+                            $("#form-@Model.FormId [name='"+value.Key+"']").val(eval(value.Function.format(formData[key]))).trigger("change");
+                            $("#form-@Model.FormId [name='"+value.Key+"']:not(input)").html(eval(value.Function.format(formData[key])));
+                        }
+                    }else{
+                        if(formData[key] != ''){
+                            var $formEle = $("#form-@Model.FormId [name='"+value+"']");
+                            if($formEle.length <= 0) return;
+                            if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                                $formEle.filter('[value='+formData[key]+']').prop('checked', true);
+                            }
+                            else {
+                                $formEle.val(formData[key]).trigger("change");
+                                $("#form-@Model.FormId [name='"+value+"']:not(input)").html(formData[key]);
+                            }
+                        }
+                    }
+                });
+            }
+            if(formData[key] != ''){
+                var $formEle = $("#form-@Model.FormId [name='"+key+"']");
+                if($formEle.length <= 0) continue;
+                if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                    $formEle.filter('[value="'+formData[key]+'"]').prop('checked', true);
+                }
+                else {
+                    $formEle.val(formData[key]).trigger("change");
+                    $("#form-@Model.FormId [name='"+key+"']:not(input)").html(formData[key]);
+                }
+            }
+        }
+    });
+
+</script>

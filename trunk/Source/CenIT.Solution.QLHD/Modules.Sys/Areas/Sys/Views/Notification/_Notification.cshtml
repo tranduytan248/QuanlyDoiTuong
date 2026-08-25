@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Sys.SysNotificationModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.NotificationId)
+
+<div class="form-group row">
+    <div class="col-md-3">
+        @Html.TitleFor(model => model.ChannelType, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.DropDownListFor(model => model.ChannelType, new SelectList(Model.ChannelTypeList), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ChannelType, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-8">
+        @Html.TitleFor(model => model.NotificationCode, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.NotificationCode, new { type = "text", @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("NotificationCode_Label_Name") })
+        @Html.ValidationMessageFor(model => model.NotificationCode, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.Situation, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextAreaFor(model => model.Situation, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Situation_Label_Name"), rows = 3 })
+        @Html.ValidationMessageFor(model => model.Situation, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.Receiver, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.Receiver, new { value = "Khách hàng", type = "text", @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Receiver_Label_Name") })
+        @Html.ValidationMessageFor(model => model.Receiver, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.Content, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextAreaFor(model => model.Content, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Situation_Label_Name"), rows = 3 })
+        @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+    </div>
+</div>

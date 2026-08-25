@@ -1,0 +1,197 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVComplainModel
+
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("Complain_Title")} - <b>[{Model.ComplainCode} - {Model.Title}]</b>");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="fas fa-eye"></i>
+}
+
+@section FormBody{
+
+
+    <div id="Complain" class="">
+        <div class="row form-horizontal">
+            <div class="col-12 col-md-5 @(Model.SourceId == (int?)EnumComplainSourceType.ViaApi ? "" :"d-none")">
+                <div class="form-group row">
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.TypeSenderObjName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.TypeSenderObj, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                    <div class="col-8 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.SenderName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.SenderName, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+                        @Html.TextAreaFor(model => model.Title, new { @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+                        @Html.LabelFor(model => model.Title, new { @class = "floating-label text-grey-m3 text-500" })
+                    </span>
+                </div>
+	            <div class="form-group row">
+		            <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+			            @Html.TextAreaFor(model => model.Contents, new { rows = 10, @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+			            @Html.LabelFor(model => model.Contents, new { @class = "floating-label text-grey-m3 text-500" })
+		            </span>
+	            </div>
+	            <div class="form-group row">
+		            <div class="col-10 input-floating-label text-danger-d2 brc-danger-m1">
+			            @Html.TextBoxFor(model => model.Location, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+			            @Html.LabelFor(model => model.Location, new { @class = "floating-label text-grey-m3 text-500" })
+		            </div>
+	            </div>
+	            <div class="form-group row">
+		            <div class="col-8 input-floating-label text-blue-d2 brc-blue-m1">
+			            @Html.TextBoxFor(model => model.ReflectName, new { @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+			            @Html.LabelFor(model => model.ReflectName, new { @class = "floating-label text-grey-m3 text-500" })
+		            </div>
+	            </div>
+	            @{
+		            if (Model.ListRefDocs.Count > 0)
+		            {
+			            <hr/>
+			            @Html.LabelFor(model => model.ListRefDocs)
+
+			            <ul class="list-unstyled">
+				            @foreach (var doc in Model.ListRefDocs)
+				            {
+					            <li id="@doc.FileId">
+						            @*<a name="DownloadRefDoc" onclick="_onDownloadDoc(this);" href="javascript:void(0);"
+	                                   data-href="/Cate/Doc/RefDoc?fileId=@doc.FileId">
+		                                <i class="fa fa-paperclip"></i> @doc.FileName
+	                                </a>*@
+						            @Html.Button(true, "ViewRefDoc", Url.Action("ViewDoc", "Doc", new { area = "Cate", fileId = doc.FileId }), "<i class='fa fa-paperclip'></i>", doc.FileName, new { @class = "", data_width = "fullscreen" })
+					            </li>
+				            }
+			            </ul>
+		            }
+	            }
+                @{if (Model.ListRefImgs.Count > 0)
+                    {
+                        <hr />
+                        <div class="row mx-0">
+                            @{foreach (var k in Model.ListRefImgs.Keys)
+                                {
+                                    int idx;
+                                    if (k == 0)
+                                    {
+                                        idx = 0;
+									<!-- column 1 -->
+                                        <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                            @foreach (var img in Model.ListRefImgs[k])
+                                            {
+                                                <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                    <a href="#" class="show-lightbox">
+                                                        <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                    </a>
+                                                </div>
+                                                idx += 1;
+                                            }
+                                        </div>
+                                    }
+                                    else if (k == 1)
+                                    {
+                                        idx = 0;
+									<!-- column 2 -->
+                                        <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                            @foreach (var img in Model.ListRefImgs[k])
+                                            {
+                                                <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                    <a href="#" class="show-lightbox">
+                                                        <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                    </a>
+                                                </div>
+                                                idx += 1;
+                                            }
+                                        </div>
+                                    }
+                                    else if (k == 2)
+                                    {
+                                        idx = 0;
+									<!-- column 3 -->
+                                        <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                            @foreach (var img in Model.ListRefImgs[k])
+                                            {
+                                                <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                    <a href="#" class="show-lightbox">
+                                                        <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                    </a>
+                                                </div>
+                                                idx += 1;
+                                            }
+                                        </div>
+                                    }
+
+                                }
+                            }
+
+                        </div>
+                                }
+                }
+                <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+            </div>
+	        <div class="col-12 @(Model.SourceId == (int?)EnumComplainSourceType.ViaApi ? "col-md-7 " : "")">
+
+		        <div class="form-group row">
+			        <div class="col-5 input-floating-label text-danger-d2 brc-danger-m1">
+				        @Html.TextBoxFor(model => model.Conclusion.UnitCreatedName, new { @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+				        @Html.LabelFor(model => model.Conclusion.UnitCreatedName, new { @class = "floating-label text-danger-m3 text-500" })
+			        </div>
+			        <div class="col-5 input-floating-label text-danger-d2 brc-danger-m1">
+				        @Html.TextBoxFor(model => model.Conclusion.ProcessingDate, "{0:HH:mm:ss dd/MM/yyyy}", new { @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+				        @Html.LabelFor(model => model.Conclusion.ProcessingDate, new { @class = "floating-label text-danger-m3 text-500" })
+			        </div>
+		        </div>
+
+		        <div class="form-group row">
+			        <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+				        @Html.TextAreaFor(model => model.Conclusion.Contents, new { rows = 15, @class = "form-control shadow-none text-primary-d2", placeholder = "", disabled = true })
+				        @Html.LabelFor(model => model.Conclusion.Contents, new { @class = "floating-label text-danger-m3 text-500" })
+			        </span>
+		        </div>
+		        @{
+			        if (Model.ListRefFilesConclusion.Count > 0)
+			        {
+				        <hr/>
+				        @Html.LabelFor(model => model.ListRefFilesConclusion)
+
+				        <ul class="list-unstyled">
+					        @foreach (var doc in Model.ListRefFilesConclusion)
+					        {
+						        <li id="@doc.FileId">
+							        @*<a name="DownloadRefDoc" onclick="_onDownloadDoc(this);" href="javascript:void(0);"
+	                                   data-href="/Cate/Doc/RefDoc?fileId=@doc.FileId">
+		                                <i class="fa fa-paperclip"></i> @doc.FileName
+	                                </a>*@
+							        @Html.Button(true, "ViewRefDoc", Url.Action("ViewDoc", "Doc", new { area = "Cate", fileId = doc.FileId }), "<i class='fa fa-paperclip'></i>", doc.FileName, new { @class = "", data_width = "fullscreen" })
+						        </li>
+					        }
+				        </ul>
+			        }
+		        }
+
+	        </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        jQuery(function ($) {
+            _initGalary("#Complain");
+        });
+
+    </script>
+}
+
+@section SubmitControl{
+
+}

@@ -1,0 +1,105 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVRegulationViolationsModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.RegulationViolationsId)
+@Html.HiddenFor(model => model.FieldViolateId)
+@Html.HiddenFor(model => model.FieldViolatedCode)
+
+<div class="form-group row">
+    @Html.TitleFor(model => model.ConstructionParticipantId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.ConstructionParticipantId, new SelectList(Model.ConstructionParticipants, "ConstructionParticipantId", "ConstructionParticipantName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.ConstructionParticipantId) })
+        @Html.ValidationMessageFor(model => model.ConstructionParticipantId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.ViolationBehaviorId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.ViolationBehaviorId, new SelectList(Model.ViolationBehaviors, "ViolationBehaviorId", "ViolationBehaviorName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.ViolationBehaviorId) })
+        @Html.ValidationMessageFor(model => model.ViolationBehaviorId, "", new { @class = "text-danger" })
+    </div>
+</div>
+@if (Model.FieldViolatedCode == "LVVP-XD")
+{
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ViolatedConstructionId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.ViolatedConstructionId, new SelectList(Model.ViolatedConstructions, "ViolatedConstructionId", "ViolatedConstructionName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.ViolatedConstructionId) })
+            @Html.ValidationMessageFor(model => model.ViolatedConstructionId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+@if (Model.FieldViolatedCode == "LVVP-DD")
+{
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ViolationAreaId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.ViolationAreaId, new SelectList(Model.ViolationAreas, "ViolationAreaId", "ViolationAreaName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.ViolationAreaId) })
+            @Html.ValidationMessageFor(model => model.ViolationAreaId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+
+<div class="form-group row">
+    @Html.TitleFor(model => model.AuthorizationLevelId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.AuthorizationLevelId, new SelectList(Model.AuthorizationLevels, "CateId", "CateName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.AuthorizationLevelId) })
+        @Html.ValidationMessageFor(model => model.AuthorizationLevelId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.RegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.RegulationId, new SelectList(Model.Regulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.RegulationId) })
+        @Html.ValidationMessageFor(model => model.RegulationId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.RemedialMeasureId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.RemedialMeasureId, new SelectList(Model.RemedialMeasures, "RemedialMeasureId", "ContentOfRemedialMeasure"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.RemedialMeasureId) })
+        @Html.ValidationMessageFor(model => model.RemedialMeasureId, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.RemediationRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.RemediationRegulationId, new SelectList(Model.RemediationRegulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.RemediationRegulationId) })
+        @Html.ValidationMessageFor(model => model.RemediationRegulationId, "", new { @class = "text-danger" })
+    </div>
+</div>
+@if (Model.FieldViolatedCode == "LVVP-DD")
+{
+    <div class="form-group row">
+        @Html.TitleFor(model => model.DeductionAccountId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.DeductionAccountId, new SelectList(Model.DeductionAccounts, "DeductionAccountId", "DeductionAccountName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.DeductionAccountId) })
+            @Html.ValidationMessageFor(model => model.DeductionAccountId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.DeductionRegulationId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.DeductionRegulationId, new SelectList(Model.DeductionRegulations, "RegulationId", "RegulationName"), "", new { @class = "form-control col-12", placeholder = Html.DisplayNameFor(model => model.DeductionRegulationId) })
+            @Html.ValidationMessageFor(model => model.DeductionRegulationId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+
+<div class="form-group row">
+    @Html.TitleFor(model => model.FineAmountMin, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.FineAmountMin, new { type = "number", @class = "form-control col-md-12 fine-amount", placeholder = AppProcessor.Messagor.GetMessage("FineAmountMin_Title") })
+        @Html.ValidationMessageFor(model => model.FineAmountMin, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.FineAmountMax, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.FineAmountMax, new { type = "number", @class = "form-control col-md-12 fine-amount", placeholder = AppProcessor.Messagor.GetMessage("FineAmountMax_Title") })
+        @Html.ValidationMessageFor(model => model.FineAmountMax, "", new { @class = "text-danger" })
+    </div>
+</div>
+

@@ -1,0 +1,118 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Form_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@model Cores.Major.Models.SAVProcStepSituationModel
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Procedure_OnProcessSuccess(data, 'AddSituationForm')"
+    }, new { @class = "form-horizontal", id = "AddSituationForm" }))
+    {
+        <div id="bodyForm">
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Forms, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.SelectFor(model => model.SelectedForms, Model.ListForms, "", new { @class = "form-control col-md-12", onchange = "_onSelectForm(this);" })
+                </div>
+            </div>
+            <div class="d-none" id="chkRequireDocNo">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold"></label>
+                    <div class="col-4">
+                        <label>
+                            <input type="checkbox" class="mr-2" name="RequireDocNo">
+                            Bắt buộc nhập Số văn bản
+                        </label>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row mb-0">
+                    <div class="col-sm-3 col-form-label text-sm-right pr-0">
+                        <button type="button" onclick="_onSaveSituationForm()" id="btnAdd" class="btn px-3 btn-outline-primary mb-1"><i class="fas fa-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Add")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+        //debugger;
+
+        function _onSelectForm(cbb) {
+            var selectedForm = $(cbb).val();
+            if (selectedForm != null && selectedForm != undefined && selectedForm != "") {
+                $("#chkRequireDocNo").removeClass('d-none');
+            } else {
+                $("#chkRequireDocNo").addClass('d-none');
+            }
+        }
+
+        var requireDocNoTemplate = '<div class="px-1 mt-n1"><label><input type="checkbox" class="mr-2" name="RequireDocNo" {1} onchange=\'_onCheckRequireDocNo(this,"{0}")\'><span class="{2}">Bắt buộc nhập Số văn bản</span></label></div>';
+        
+        var selectedFormTemplate = '<div class="form-item mb-25 radius-3px bgc-secondary-l4 px-2 pt-3 pb-2 pos-rel" formId="{0}" {3}><div class="pl-1"><div class="text-600 text-blue-d2 text-95">{1}</div></div><div class="d-flex"><div class="mt-2 mb-1"></div><div class="ml-auto align-self-end"></div><div class="py-2 position-tr mt-n2 mr-n1"><div class="dropdown dd-backdrop dd-backdrop-none-md"><a class="btn btn-outline-default btn-h-outline-primary btn-brc-tp btn-xs dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a><div class="dropdown-menu mw-auto dropdown-caret dropdown-menu-right dropdown-animated animated-1 dd-appear-center dd-slide-none-md"><div class="dropdown-inner"><a class="dropdown-item" href="javascript:void(0);" onclick="_removeSelectedForm(\'{0}\')" title="Xoá" data-toggle="tooltip" data-placement="left" data-template=\'<div class="tooltip" role="tooltip"><div class="arrow brc-danger"></div><div class="tooltip-inner text-110 pb-2 bgc-danger"></div></div>\'><i class="fa fa-trash text-danger mx-1"></i><span class="d-md-none">Xoá</span></a></div></div></div></div></div>{2}</div>';
+
+        function _onSaveSituationForm() {
+            var selectedFormId = $('#AddSituationForm #SelectedForms').val();
+            var selectedFormName = $('#AddSituationForm #SelectedForms option:selected').text();
+            var requireDocNo = $('#chkRequireDocNo [name="RequireDocNo"]').is(':checked');
+
+            $('#StepSituation #lstSituationForms').append(selectedFormTemplate.format(selectedFormId, selectedFormName, requireDocNoTemplate.format(selectedFormId, (requireDocNo ? 'checked="checked"' : ''), (requireDocNo ? 'badge badge-danger' : '')), (requireDocNo ? "requiredno" : "")));
+
+            $('#AddSituationForm #SelectedForms option:selected').remove();
+            _initSelect('#AddSituationForm #SelectedForms');
+            $("#chkRequireDocNo").addClass('d-none');
+            $("form#AddSituationForm")[0].reset();
+        }
+
+        $(function () {
+            $('#modal_AddSituationForm').on({
+                'shown.bs.modal': function () {
+                    var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+                    var arrSelectedForms = selectedForms.split(';');
+                    var arrSelectedFormIds = $.map(arrSelectedForms, function(form, idx){
+                        var arrInfoForms = form.split('_');
+                        return arrInfoForms[0];
+                    });
+                    $('#AddSituationForm #SelectedForms option').each(function (idx, opt) {
+                        if ($.inArray($(opt).val(), arrSelectedFormIds) >= 0) {
+                            $(opt).remove();
+                        }
+                    });
+                    _initSelect('#AddSituationForm #SelectedForms');
+                },
+                'hidden.bs.modal': function () {
+                    var arrSelectedForms = [];
+                    $('#lstSituationForms .form-item').each(function (index, el) {
+                        var formId = $(el).attr('formid');
+                        var requiredNo = $(el).attr('requiredno');
+                        if (typeof requiredNo !== 'undefined' && requiredNo !== false) {
+                            var selectedForm = "{0}_{1}_{2}".format(formId, index, 1);
+                            arrSelectedForms.push(selectedForm);
+                        } else {
+                            var selectedForm = "{0}_{1}_{2}".format(formId, index, 0);
+                            arrSelectedForms.push(selectedForm);
+                        }
+                    });
+                    $("[type='hidden'][id='SelectedForms']").val(arrSelectedForms.join(';'));
+                },
+            });
+        });
+
+    </script>
+}
+@section SubmitControl{
+
+}

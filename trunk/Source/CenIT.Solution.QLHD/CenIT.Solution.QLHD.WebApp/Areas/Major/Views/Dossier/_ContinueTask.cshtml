@@ -1,0 +1,51 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Message_Title_Continue"), $"{AppProcessor.Messagor.GetMessage("Dossier_Task_Title")} [{Model.InStepName}]");
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormBody{
+    @*@using (Ajax.BeginForm("ContinueTask", "Dossier", new { area = "Major" }, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnSuccess = "Dossier_OnProcessSuccess(data, 'ContinueTask')"
+        }, new { @class = "form-horizontal", id = "ContinueTask" }))*@
+    @using (Html.BeginForm("ContinueTask", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ContinueTask", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ContinueTaskBody")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#ContinueTask').ajaxForm({
+            beforeSubmit: function () {
+                _onWaiting();
+            },
+            success: function (response) {
+                var formId = "ContinueTask";
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_" + formId + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+            }
+        });
+
+    </script>
+}

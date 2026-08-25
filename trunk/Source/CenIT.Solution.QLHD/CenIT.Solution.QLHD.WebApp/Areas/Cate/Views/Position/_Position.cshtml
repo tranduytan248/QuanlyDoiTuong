@@ -1,0 +1,18 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CatePositionModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.PositionID)
+<div class="form-group row">
+    <div class="col-md-4">
+        @Html.TitleFor(model => model.PositionCode, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.PositionCode, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Position_Label_Code") })
+        @Html.ValidationMessageFor(model => model.PositionCode, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-8">
+        @Html.TitleFor(model => model.PositionName, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.PositionName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Position_Label_Name") })
+        @Html.ValidationMessageFor(model => model.PositionName, "", new { @class = "text-danger" })
+    </div>
+</div>

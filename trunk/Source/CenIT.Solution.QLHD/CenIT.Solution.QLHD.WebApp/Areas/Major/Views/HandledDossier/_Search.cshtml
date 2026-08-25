@@ -1,0 +1,43 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchDossierModel
+<div class="card dcard">
+    <div class="card-body p-0 collapse show form-horizontal ">
+        <div class="col-md-12 mt-3" id="Search">
+            <div class="form-row form-group">
+                <div class="col-2 col-form-label text-sm-right pr-0 font-bold mr-3">@AppProcessor.Messagor.GetMessage("Dossier_Status")</div>
+                @{
+                    var arrStatus = new Dictionary<string, string> { /*{ "0", "info" },*/ { "1", "primary" }, { "2", "warning" }, { "3", "success" } };
+
+                    foreach (var status in Model.ListHandleStatus)
+                    {
+                        if (status.Value != "0")
+                        {
+                            <div class="col-2">
+                                <label class="mb-0 mt-1">
+                                    <input type="checkbox" name="HandleStatus" class="mr-2" value="@status.Value" @(status.Selected ? "checked" : "") onchange="_onSearch();">
+                                    <span class="badge badge-@arrStatus[status.Value] badge-lg arrowed arrowed-in-right">@status.Text</span>
+                                </label>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <div class="form-row form-group">
+                <div class="col-2 col-form-label text-sm-right pr-0 font-bold mr-3">@AppProcessor.Messagor.GetMessage("FieldViolated_Title")</div>
+                @{
+                    var statusColor = "danger";
+                    foreach (var field in Model.ListFieldViolateds)
+                    {
+                        <div class="col-3">
+                            <label class="mb-0 mt-1">
+                                <input data-color="@statusColor" type="checkbox" name="FieldViolateds" class="mr-2" value="@field.Value" @(field.Selected ? "checked" : "") onchange="_onSearch();">
+                                <span class="badge badge-@statusColor badge-lg arrowed arrowed-in-right">@field.Text</span>
+                            </label>
+                        </div>
+                        statusColor = "info";
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

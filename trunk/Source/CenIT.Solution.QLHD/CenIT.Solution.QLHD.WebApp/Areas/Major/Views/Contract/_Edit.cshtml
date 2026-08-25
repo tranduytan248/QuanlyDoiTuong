@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Contract_Title")} - {Model.ContractTypeName} - {AppProcessor.Messagor.GetMessage("Contract_ContractNo")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fas fa-user-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Edit", "Contract", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Contract_OnProcessSuccess(data, 'EditContract')",
+        OnBegin = "_onWaiting()"
+    }, new { @class = "form-horizontal", id = "EditContract" }))
+    {
+        <div id="bodyForm">
+            @Html.HiddenFor(model => model.IsNew)
+            @Html.Partial("_Contract")
+        </div>
+    }
+}

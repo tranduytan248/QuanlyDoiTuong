@@ -1,0 +1,49 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVHandlingDossierModel
+@{
+	ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_HandlingProccess"), $"{AppProcessor.Messagor.GetMessage("Dossier_Title")} - {Model.DossierTitle}");
+	Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+	purple
+}
+
+@section FormIcon{
+	<i class="fas fa-tasks"></i>
+}
+
+@section FormBody{
+
+	@using (Html.BeginForm("HandlingProcess", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "HandlingProcess", @class = "form-horizontal" }))
+	{
+		<div id="bodyForm">
+			@Html.Partial("_HandlingProcess")
+		</div>
+	}
+
+	<script type="text/javascript">
+        $('form#HandlingProcess').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_HandlingProcess").modal("hide");
+                    $("#ModalContent #modal_HandlingProcess").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                //_tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_HandlingProcess" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+
+@section SubmitControl{
+	<button type="submit" id="btnConfirm" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-user-check"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Confirm")</button>
+}
+

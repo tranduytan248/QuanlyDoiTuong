@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataDashboardContract" targetNamespace="http://tempuri.org/DataDashboardContract.xsd" xmlns:mstns="http://tempuri.org/DataDashboardContract.xsd" xmlns="http://tempuri.org/DataDashboardContract.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataDashboardContract" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataDashboardContract" msprop:Generator_UserDSName="DataDashboardContract">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DashboardContract" msprop:Generator_TableClassName="DashboardContractDataTable" msprop:Generator_TableVarName="tableDashboardContract" msprop:Generator_TablePropName="DashboardContract" msprop:Generator_RowDeletingName="DashboardContractRowDeleting" msprop:Generator_RowChangingName="DashboardContractRowChanging" msprop:Generator_RowEvHandlerName="DashboardContractRowChangeEventHandler" msprop:Generator_RowDeletedName="DashboardContractRowDeleted" msprop:Generator_UserTableName="DashboardContract" msprop:Generator_RowChangedName="DashboardContractRowChanged" msprop:Generator_RowEvArgName="DashboardContractRowChangeEvent" msprop:Generator_RowClassName="DashboardContractRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ContractId" msprop:Generator_ColumnVarNameInTable="columnContractId" msprop:Generator_ColumnPropNameInRow="ContractId" msprop:Generator_ColumnPropNameInTable="ContractIdColumn" msprop:Generator_UserColumnName="ContractId" type="xs:string" minOccurs="0" />
+              <xs:element name="ContractNoInfo" msprop:Generator_ColumnVarNameInTable="columnContractNoInfo" msprop:Generator_ColumnPropNameInRow="ContractNoInfo" msprop:Generator_ColumnPropNameInTable="ContractNoInfoColumn" msprop:Generator_UserColumnName="ContractNoInfo" type="xs:string" minOccurs="0" />
+              <xs:element name="ConfirmOn" msprop:Generator_ColumnVarNameInTable="columnConfirmOn" msprop:Generator_ColumnPropNameInRow="ConfirmOn" msprop:Generator_ColumnPropNameInTable="ConfirmOnColumn" msprop:Generator_UserColumnName="ConfirmOn" type="xs:string" minOccurs="0" />
+              <xs:element name="GiveResultOn" msprop:Generator_ColumnVarNameInTable="columnGiveResultOn" msprop:Generator_ColumnPropNameInRow="GiveResultOn" msprop:Generator_ColumnPropNameInTable="GiveResultOnColumn" msprop:Generator_UserColumnName="GiveResultOn" type="xs:string" minOccurs="0" />
+              <xs:element name="CusName" msprop:Generator_ColumnVarNameInTable="columnCusName" msprop:Generator_ColumnPropNameInRow="CusName" msprop:Generator_ColumnPropNameInTable="CusNameColumn" msprop:Generator_UserColumnName="CusName" type="xs:string" minOccurs="0" />
+              <xs:element name="PurposeName" msprop:Generator_ColumnVarNameInTable="columnPurposeName" msprop:Generator_ColumnPropNameInRow="PurposeName" msprop:Generator_ColumnPropNameInTable="PurposeNameColumn" msprop:Generator_UserColumnName="PurposeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Address" msprop:Generator_ColumnVarNameInTable="columnAddress" msprop:Generator_ColumnPropNameInRow="Address" msprop:Generator_ColumnPropNameInTable="AddressColumn" msprop:Generator_UserColumnName="Address" type="xs:string" minOccurs="0" />
+              <xs:element name="Status" msprop:Generator_ColumnVarNameInTable="columnStatus" msprop:Generator_ColumnPropNameInRow="Status" msprop:Generator_ColumnPropNameInTable="StatusColumn" msprop:Generator_UserColumnName="Status" type="xs:string" minOccurs="0" />
+              <xs:element name="StatusName" msprop:Generator_ColumnVarNameInTable="columnStatusName" msprop:Generator_ColumnPropNameInRow="StatusName" msprop:Generator_ColumnPropNameInTable="StatusNameColumn" msprop:Generator_UserColumnName="StatusName" type="xs:string" minOccurs="0" />
+              <xs:element name="RemainingTime" msprop:Generator_ColumnVarNameInTable="columnRemainingTime" msprop:Generator_ColumnPropNameInRow="RemainingTime" msprop:Generator_ColumnPropNameInTable="RemainingTimeColumn" msprop:Generator_UserColumnName="RemainingTime" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

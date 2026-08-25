@@ -1,0 +1,188 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVFormModel
+
+@Html.AntiForgeryToken()
+
+<div class="col-12" id="Form">
+	<div class="form-group row">
+		<label class="col-sm-2 col-form-label text-sm-right pr-0 font-bold" for="DossierId">Vi phạm</label>
+		<div class="col-md-10">
+			@Html.DropDownListFor(model => model.DossierId, new SelectList(Model.ListDossiers, "Value", "Text"), "", new { @class = "form-control col-md-11", onchange = "_onChangeDossier(this, '#Form #SampleFormData');" })
+			@Html.ValidationMessageFor(model => model.DossierId, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<div class="form-group row">
+		@Html.TitleFor(model => model.SampleFormData, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+		<div class="col-md-10">
+			@Html.TextAreaFor(model => model.SampleFormData, new { rows = 4, @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Form_SampleFormData") })
+		</div>
+	</div>
+	<hr/>
+	<div class="form-group row">
+		@Html.TitleFor(model => model.FormType, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.FormType, new SelectList(Model.ListFormTypes, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "_onChangeFormType(this, '#Form #ListSelectedForms')" })
+			@Html.ValidationMessageFor(model => model.FormType, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<div class="form-group row">
+		@Html.TitleFor(model => model.ListSelectedForms, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+		<div class="col-md-10">
+			@Html.SelectFor(model => model.ListSelectedForms, Model.ListForms, "", new { @class = "form-control col-md-11", onchange = "_onSelectForm(this);" })
+		</div>
+	</div>
+	@Html.HiddenFor(model => model.SelectedForms)
+	<div id="lstSelectedForms" class="d-block h-100 bgc-white pt-2 px-25 border-1 radius-1 brc-secondary-l2 pos-rel shadow-sm" style="max-height: calc(50vh);overflow: auto;">
+
+	</div>
+</div>
+
+<script type="text/javascript">
+    //debugger;
+
+    //$(document).ready(function () {
+    //    //_initListForms('#TestForm select#SelectedForms');
+    //});
+
+    function _initListForms(cbbEle) {
+        var ele = $(cbbEle)[0];
+        $(ele).select2({
+            allowClear: true,
+            placeholder: "Chọn 1 giá trị",
+            width: "element",
+            dropdownParent: $(cbbEle).parent(),
+            dropdownAutoWidth: true,
+            language: "vi"
+        });
+    }
+
+    function _onSelectForm(cbb) {
+        var selectedFormId = $(cbb).val();
+        var selectedFormName = $(cbb).children("optgroup").children("option:selected").text();
+
+        $('#lstSelectedForms').append(selectedFormTemplate.format(selectedFormId, selectedFormName));
+
+        var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+        var arrSelectedForms = selectedForms.split(';');
+        arrSelectedForms.push(selectedFormId);
+        $("[type='hidden'][id='SelectedForms']").val(arrSelectedForms.join(';'));
+
+        $('#TestForm #ListSelectedForms option:selected').remove();
+        _initListForms('#TestForm select#ListSelectedForms');
+        _updateUrlAction();
+
+        //$("form#TestForm")[0].reset();
+    }
+
+    function _removeSelectedForm(formId) {
+        $('[formId="' + formId + '"]').remove();
+
+        var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+        var arrSelectedForms = selectedForms.split(';');
+        var arrResultForms = $.grep(arrSelectedForms, function (form, idx) {
+            var arrInfoForms = form.split('_');
+            return arrInfoForms[0] != formId
+        }).filter(function (el) {
+            return el != null && el.length > 0;
+        });
+
+        $("[type='hidden'][id='SelectedForms']").val(arrResultForms.join(';'));
+
+        _updateUrlAction();
+        var formType = $("#Form [id='FormType']").val();
+        var urlGetListForms =
+                "@Url.Action("GetListForms", "Form", new { area = "Major" })?formType=" + formType + "&selectedForms=" + arrResultForms.join(';');
+        var $cbbForms = $('#TestForm select#ListSelectedForms');
+
+        $.ajax({
+            type: "GET",
+            url: urlGetListForms,
+            dataType: "JSON",
+            success: function (response) {
+                $cbbForms.empty();
+                $cbbForms.append('<option value=""></option>');
+
+                $cbbForms.select2({
+                    allowClear: true,
+                    placeholder: "Chọn 1 giá trị",
+                    width: "element",
+                    dropdownParent: $cbbForms.parent(),
+                    dropdownAutoWidth: true,
+                    language: "vi",
+                    data: response
+                });
+            }
+        });
+    }
+
+    function _updateUrlAction() {
+        var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+        var dossierId = $("#TestForm select#DossierId").val();
+
+        var href = "@Url.Action("ViewForms", new { area = "Major" })?dossierId={0}&forms={1}".format(dossierId, selectedForms);
+        $('[data-modal-id="ViewForms"]').attr('href', href);
+    }
+
+    function _onChangeDossier(cbb, txtFormData) {
+        var dossierId = $(cbb).val();
+        if (dossierId == undefined || dossierId.length <= 0) {
+            $('[data-modal-id="ViewForms"]').addClass('disabled');
+            return;
+        }
+        $('[data-modal-id="ViewForms"]').removeClass('disabled');
+        _updateUrlAction();
+        var urlFormDataViaDossier =
+                "@Url.Action("GetFormDataViaDossier", "Form", new { area = "Major" })?dossierId=" + dossierId;
+        var $txtFormData = $(txtFormData);
+
+        $.ajax({
+            type: "GET",
+            url: urlFormDataViaDossier,
+            dataType: "JSON",
+            success: function (response) {
+                $txtFormData.empty();
+                $txtFormData.val(response)
+            }
+        });
+    }
+
+    function _onChangeFormType(cbb, cbbForms) {
+        var formType = $(cbb).val();
+        if (formType == undefined || formType.length <= 0) {
+            return;
+        }
+
+        var selectedForms = $("[type='hidden'][id='SelectedForms']").val();
+        var arrSelectedForms = selectedForms.split(';');
+        var arrResultForms = arrSelectedForms.filter(function (el) {
+            return el != null && el.length > 0;
+        });
+
+        var urlGetListForms =
+               "@Url.Action("GetListForms", "Form", new { area = "Major" })?formType=" + formType + "&selectedForms=" + arrResultForms.join(';');
+        var $cbbForms = $(cbbForms);
+
+        $.ajax({
+            type: "GET",
+            url: urlGetListForms,
+            dataType: "JSON",
+            success: function (response) {
+                $cbbForms.empty();
+                $cbbForms.append('<option value=""></option>');
+
+                $cbbForms.select2({
+                    allowClear: true,
+                    placeholder: "Chọn 1 giá trị",
+                    width: "element",
+                    dropdownParent: $cbbForms.parent(),
+                    dropdownAutoWidth: true,
+                    language: "vi",
+                    data: response
+                });
+            }
+        });
+    }
+
+    var selectedFormTemplate = '<div class="form-item mb-25 radius-3px bgc-secondary-l4 px-2 pt-3 pb-2 pos-rel" formId="{0}" {3}><div class="pl-1"><div class="text-600 text-blue-d2 text-95">{1}</div></div><div class="d-flex"><div class="mt-2 mb-1"></div><div class="ml-auto align-self-end"></div><div class="py-2 position-tr mt-n2 mr-n1"><div class="dropdown dd-backdrop dd-backdrop-none-md"><a class="btn btn-outline-default btn-h-outline-primary btn-brc-tp btn-xs dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a><div class="dropdown-menu mw-auto dropdown-caret dropdown-menu-right dropdown-animated animated-1 dd-appear-center dd-slide-none-md"><div class="dropdown-inner"><a class="dropdown-item" href="javascript:void(0);" onclick="_removeSelectedForm(\'{0}\')" title="Xoá" data-toggle="tooltip" data-placement="left" data-template=\'<div class="tooltip" role="tooltip"><div class="arrow brc-danger"></div><div class="tooltip-inner text-110 pb-2 bgc-danger"></div></div>\'><i class="fa fa-trash text-danger mx-1"></i><span class="d-md-none">Xoá</span></a></div></div></div></div></div></div>';
+
+</script>

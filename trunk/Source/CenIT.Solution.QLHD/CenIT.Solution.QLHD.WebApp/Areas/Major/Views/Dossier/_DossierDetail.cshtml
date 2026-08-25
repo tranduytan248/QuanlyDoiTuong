@@ -1,0 +1,930 @@
+﻿@using Modules.Major.Cores.Models
+@using Cores.Major.Models
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+<style type="text/css">
+    #suggestionsContainer {
+        position: absolute !important;
+        z-index: 1000 !important;
+    }
+
+    #suggestionsList {
+        display: block !important;
+        max-height: 200px !important; /* Điều chỉnh chiều cao tối đa nếu cần thiết */
+        overflow-y: auto !important;
+    }
+
+    .dz-remove {
+        z-index: 999;
+        position: absolute;
+        display: block;
+        top: 0%;
+        left: 100%;
+        margin-left: 5px;
+        /*margin-top: -15px;*/
+    }
+    .dz-remove span{
+        cursor: pointer !important;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/dropzone/dist/dropzone.css")">
+
+<ul class="w-100 nav nav-tabs nav-tabs-simple bgc-blue-d2 radius-t-1 pt-2 pl-2" role="tablist">
+    <li class="nav-item mr-3px">
+        <a class="@(Model.ActiveTab == "#infoDossier" ? "active":"") btn btn-brc-tp btn-outline-white btn-h-light-blue btn-h-text-dark btn-a-text-blue btn-a-white px-3 px-lg-4 py-25 border-0 radius-b-0" id="conplain-tab-btn" data-toggle="tab" href="#infoDossier" role="tab" aria-controls="infoDossier" aria-selected="true">
+            Thông tin vi phạm
+        </a>
+    </li>
+
+    <li class="nav-item mr-3px">
+        <a class="@(Model.ActiveTab == "#handlingDossier" ? "active":"") btn btn-brc-tp btn-outline-white btn-h-light-blue btn-h-text-dark btn-a-text-blue btn-a-white px-3 px-lg-4 py-25 border-0 radius-b-0" id="dossier-tab-btn" data-toggle="tab" href="#handlingDossier" role="tab" aria-controls="handlingDossier" aria-selected="false">
+            Xử lý vi phạm
+        </a>
+    </li>
+</ul>
+
+<div id="Dossier" class="">
+    <div class="tab-content tab-sliding ace-scrollbar px-1 px-md-3 text-grey-d3 border-1 border-t-0 radius-b-1 brc-primary-l2">
+        <div class="tab-pane @(Model.ActiveTab == "#infoDossier" ? "show active" : "") p-2" id="infoDossier" role="tabpanel" aria-labelledby="conplain-tab-btn">
+
+            @Html.HiddenFor(model => model.ActiveTab)
+            @Html.HiddenFor(model => model.DossierId)
+            @Html.HiddenFor(model => model.TaskId)
+            @Html.HiddenFor(model => model.SourceId)
+            @Html.HiddenFor(model => model.ComplainId)
+            @Html.HiddenFor(model => model.FieldViolatedId)
+            @Html.HiddenFor(model => model.FieldViolatedName)
+            @Html.HiddenFor(model => model.FieldViolatedCode)
+            @*@Html.HiddenFor(model => model.ProcedureId)
+                @Html.HiddenFor(model => model.ProcedureName)
+                @Html.HiddenFor(model => model.InStep)
+                @Html.HiddenFor(model => model.InStepName)
+                @Html.HiddenFor(model => model.HandleInStep)
+                @Html.HiddenFor(model => model.HandleBy)
+                @Html.HiddenFor(model => model.ProcessedTime)*@
+            @Html.HiddenFor(model => model.Reason)
+
+            @Html.HiddenFor(model => model.UnionId)
+            @Html.HiddenFor(model => model.UnionName)
+            
+            @Html.HiddenFor(model => model.Lat)
+            @Html.HiddenFor(model => model.Long)
+
+            <div class="row">
+                <div class="col-12 col-md-6 col-xs-12" id="DossierInfo">
+                    <div class="acard card row">
+                        <div class="card-header pb-15">
+                            <h5 class="card-title">
+                                Biên bản vi phạm hành chính
+                            </h5>
+                        </div>
+
+                        <div class="card-body pb-0">
+	                        <div class="form-group row mb-0">
+		                        <div class="col-3 text-danger-d2 brc-danger-m1">
+			                        <span class="text-danger-m3 text-500">
+				                        Biên bản số (*)
+			                        </span>
+			                        <input required="" type="text" placeholder="Số biên bản" class="form-control shadow-none" id="BBVPHC_SoBB" name="BBVPHC_SoBB"/>
+		                        </div>
+		                        <div class="col-5 text-danger-d2 brc-danger-m1">
+			                        <span class="text-danger-m3 text-500">
+				                        Lập biên bản lúc (*)
+			                        </span>
+			                        <input required="" type="text" placeholder="Lập biên bản lúc" class="form-control shadow-none datetimepicker" id="BBVPHC_ThoiGianLapBB" name="BBVPHC_ThoiGianLapBB"/>
+		                        </div>
+	                        </div>
+                        </div>
+                    </div>
+
+                    <div class="acard card row">
+                        <div class="card-header pb-15">
+                            <h5 class="card-title">
+                                @AppProcessor.Messagor.GetMessage("OwnerInfo_Title")
+                            </h5>
+                        </div>
+
+                        <div class="card-body">
+                            @Html.Partial("_OwnerInfo")
+                            <hr />
+                            @Html.Partial(Model.ViewName)
+                        </div>
+                    </div>
+                    <hr class="brc-danger-m1" />
+
+                    <div class="form-group row">
+                        <label for="" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">Địa chỉ vi phạm</label>
+                        <div class="col-md-8 text-blue-d2 brc-blue-m1">
+                            <div class="input-group">
+                                <input id="searchInput" type="text" class="form-control" placeholder="Địa chỉ vi phạm..." />
+                                <div class="input-group-append">
+                                    <button id="searchButton" class="btn btn-outline-primary" type="button">Tìm kiếm</button>
+                                </div>
+                            </div>
+                            <!-- Container cho danh sách gợi ý -->
+                            <div id="suggestionsContainer" class="dropdown">
+                                <ul id="suggestionsList" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <!-- Danh sách gợi ý sẽ được hiển thị ở đây -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <!-- Bản đồ sẽ được hiển thị ở đây -->
+                            <div id='map_canvas' class="m-2 border border-1 brc-black-m1" style="height: 300px;"></div>
+                            <!-- Thêm hai thẻ div để hiển thị tọa độ -->
+                            <div class="col-md-12 row mt-3 mb-3 font-bold">
+                                <div class="col-md-12 text-center" id="latitudeDisplay">Vĩ độ: </div>
+                                <div class="col-md-12 text-center" id="longitudeDisplay">Kinh độ: </div>
+                            </div>
+                            <div class="col-md-12 justify-content-center">
+                                <button type="button" class="btn btn-outline-primary col-md" id="viewOnGoogleMapsBtn">Xem địa chỉ đã chọn trên Google Maps</button>
+                            </div>
+                            <p class="my-3 pl-2 text-500 text-danger">* Hướng dẫn: Giữ và kéo điểm đánh dấu đến vị trí để thực hiện lấy tọa độ </p>
+                        </div>
+                    </div>
+
+                    <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+
+                </div>
+
+                <div class="col-12 col-md-6 col-xs-12">
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.ImageCurrentStatusFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_ImageCurrentStatusFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <input required="true" type="hidden" name="DossierDocRef.ImageCurrentStatusFiles" />
+                    </div>
+                    <hr class="brc-danger-m1" />
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.DocCurrentStatusFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_DocCurrentStatusFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <input required="true" type="hidden" name="DossierDocRef.DocCurrentStatusFiles" />
+                    </div>
+                    <hr class="brc-danger-m1" />
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.DocDossierFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_DocDossierFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <input required="true" type="hidden" name="DossierDocRef.DocDossierFiles" />
+                    </div>
+                    <hr class="brc-danger-m1" />
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.ConstructionContractFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_ConstructionContractFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="brc-danger-m1" />
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.LandTechnicalProfileFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_LandTechnicalProfileFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="brc-danger-m1" />
+                    <div class="form-group my-3">
+                        @Html.TitleFor(model => model.DossierDocRef.OtherRelatedProfileFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                        <div id="DossierDocRef_OtherRelatedProfileFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                            <div class="fallback d-none" enctype="multipart/form-data">
+                                <input name="lstRefFiles" type="file" multiple />
+                            </div>
+
+                            <div class="dz-default dz-message my-0">
+                                <span class="text-120 text-grey-d2">
+                                    <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                    <br />
+                                    <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane @(Model.ActiveTab == "#handlingDossier" ? "show active":"") p-2" id="handlingDossier" role="tabpanel" aria-labelledby="dossier-tab-btn">
+            <div class="row">
+                <div class="col-12 col-md-5">
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.TypeProcedure, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.TypeProcedure, new SelectList(Model.ListTypeProcedures, "Value", "Text"), new { @class = "form-control col-md-12", onchange = "_onTypeProcedure(this, '#Dossier #TypeProcedureName')" })
+                            @Html.ValidationMessageFor(model => model.TypeProcedure, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.TypeProcedureName)
+                        </div>
+                    </div>
+                    <hr class="brc-danger-m1" />
+
+                    <div id="ProcDetail">
+
+                    </div>
+
+                    <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+                </div>
+
+                <div class="col-12 col-md-7" id="DecisionPenalizeInfo">
+                    @Html.Partial("_DecisionPenalize")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- the `html` of this element will be used by dropzone instance for previewing files/images -->
+<div id="preview-template" class="d-none">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-image">
+            <img alt="Dropzone placeholder" data-dz-thumbnail="" />
+        </div>
+
+        <div class="dz-details">
+            <div class="dz-size">
+                <span data-dz-size=""></span>
+            </div>
+
+            <div class="dz-filename">
+                <span data-dz-name=""></span>
+            </div>
+        </div>
+
+        <div class="dz-progress progress border-1 brc-yellow-tp2" style="height: 0.75rem;">
+            <div class="progress-bar bgc-success dz-upload " role="progressbar" data-dz-uploadprogress=""></div>
+        </div>
+
+        <div class="dz-error-message">
+            <span data-dz-errormessage=""></span>
+        </div>
+
+        <div class="dz-success-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-white"></i>
+                <i class="fa fa-check fa-stack-1x fa-inverse text-success-m1"></i>
+            </span>
+        </div>
+
+        <div class="dz-error-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-danger-m3"></i>
+                <i class="fas fa-exclamation fa-stack-1x fa-inverse text-white"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/dropzone/dist/dropzone.js")"></script>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    var configAuthorityViaFineAmount = @Html.Raw(ViewData["CONFIG_KEY_AUTHORITY_VIA_FINE_AMOUNT"]);
+
+    var arrMappingViolator = @Html.Raw(Model.MappingTypeViolator);
+
+    function _onLoadViewViolator(viewName){
+        var urlLoadViewViolator = "@Url.Action("LoadContentInfoViolator", "Dossier")?viewName=" + viewName;
+        $.ajax({
+            type: "GET",
+            url: urlLoadViewViolator,
+            dataType: "html",
+            success: function (response) {
+                $("#ViolatorInfo").html(response);
+                for (var key in formData) {
+                    var formValue = formData[key];
+                    if($("#ViolatorInfo [name='"+key+"']").is(':radio') || $("#ViolatorInfo [name='"+key+"']").is(':checkbox')){
+                        $("#ViolatorInfo [name='"+key+"'][value='"+formValue+"']").prop('checked', true);
+                    }
+                    else{
+                        $("#ViolatorInfo [name='"+key+"']").val(formValue);
+                    }
+                }
+            }
+        });
+    }
+
+    function _onTypeProcedure(cbb, eleName) {
+        $(eleName).val($(cbb).children("option:selected").text());
+        var procType = $(cbb).val();
+
+        $('[data-type="Situation"]').removeClass('d-none');
+        $('[data-type="Situation"]').removeClass('disabled');
+
+        $("#handlingDossier #ProcDetail").empty();
+
+        if (procType != null && procType.length > 0) {
+            //$('[data-type="Situation"][procType!=' + procType + ']').addClass('d-none');
+            var typeViolator = arrMappingViolator[procType.toUpperCase()];
+            _onLoadViewViolator(typeViolator);
+            var $cbb = $(cbb);
+            $cbb.prop("disabled", true);
+            _onWaiting();
+            $("#handlingDossier #ProcDetail").load("@Url.Action("ProcDetail")?procType=" + procType + "&dossierId=@Model.DossierId", function(){
+                $cbb.removeAttr("disabled");
+                _endWaiting();
+            });
+        }
+        else {
+            $('[data-type="Situation"]').addClass('disabled');
+            $('[data-type="Situation"]').find('input[type="radio"]').prop('checked', false);
+        }
+    }
+
+    function _onCheckSituation(situationDesc) {
+        $("#Dossier input[type='hidden'][id='SituationDesc']").val(situationDesc);
+    }
+
+    $(document).ready(function(){
+
+        var situationId = "@(Html.Raw(Model.SituationId == null || Model.SituationId == Guid.Empty ? "" : $"{Model.SituationId}"))";
+        if(situationId.length > 0){
+            $("input[type='radio'][id='Situation_"+situationId+"']").prop("checked", true).trigger("change");
+        }
+
+        //_onTypeProcedure($("#Dossier #TypeProcedure"), '#Dossier #TypeProcedureName');
+    });
+
+    $(function(){
+        $("#Dossier #TypeProcedure").trigger("change");
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    //debugger;
+    Dropzone.autoDiscover = false;
+
+    $(function () {
+        initDropzoneUpload("#DossierDocRef_ImageCurrentStatusFiles","@DossierDocRefModel.IMAGE_CURRENT_STATUS");
+        initDropzoneUpload("#DossierDocRef_DocCurrentStatusFiles","@DossierDocRefModel.DOC_CURRENT_STATUS");
+        initDropzoneUpload("#DossierDocRef_DocDossierFiles","@DossierDocRefModel.DOC_DOSSIER");
+        initDropzoneUpload("#DossierDocRef_ConstructionContractFiles","@DossierDocRefModel.CONSTRUCTION_CONTRACT");
+        initDropzoneUpload("#DossierDocRef_LandTechnicalProfileFiles","@DossierDocRefModel.LAND_TECHNICAL_PROFILE");
+        initDropzoneUpload("#DossierDocRef_OtherRelatedProfileFiles","@DossierDocRefModel.OTHER_RELATED_PROFILE");
+    });
+
+    function initDropzoneUpload(ele, sTypeObject) {
+
+        try {
+
+            $(ele).addClass('dropzone');
+            var myDropzone = new Dropzone(ele, {
+
+                url:"@Url.Action("UploadFile", new{ dossierId = Model.DossierId })&taskId=@Model.TaskId&sTypeObject="+sTypeObject,
+                method:"POST",
+                parallelUploads:2,
+                autoProcessQueue:true,
+                paramName:"refFile",
+
+                previewTemplate: $('#preview-template').html(),
+
+                thumbnailHeight: 120,
+                thumbnailWidth: 120,
+                maxFilesize: 15,
+                filesizeBase: 1000,
+
+                addRemoveLinks: true,
+
+                acceptedFiles:"image/*,application/pdf",
+                init: function() {
+
+                    thisDropzone = this;
+                    this.on("success", function(file, responseText) {
+                        var hiddenEle = ele.replace('_','.').replace("#",'');
+                        if(!responseText.status){
+                            file.previewElement.classList.toggle('dz-error');
+                            file.previewElement.classList.toggle('dz-success');
+
+                            var errorDisplay = file.previewElement.querySelectorAll('[data-dz-errormessage]');
+                            errorDisplay[0].innerHTML = responseText.msg;
+                        }
+                        else if(responseText.status){
+                            $('[name="{0}"]'.format(hiddenEle)).removeAttr('required');
+                            file._removeLink.remove();
+
+                            var fileId = responseText.data.fileId;
+                            var fileExt = responseText.data.fileExt;
+
+                            var divEle = document.createElement('div');
+                            divEle.className = 'text-center w-100 mt-1 tools';
+
+                            var viewButton = document.createElement('a');
+                            viewButton.setAttribute("fileId",fileId);
+                            viewButton.setAttribute("fileExt",fileExt);
+                            viewButton.setAttribute("data-modal",true);
+                            viewButton.setAttribute("data-modal-id","ViewRefFile");
+                            viewButton.setAttribute("data_width","1024px");
+
+                            viewButton.className = 'btn btn-outline-primary btn-xs mr-1 viewUploadFile';
+                            viewButton.href = "@Url.Action("ViewDoc","Doc", new{area = "Cate"})?fileId=" + fileId;
+                            viewButton.innerHTML = '<i class="far fa-eye"></i>&nbsp;Xem';
+                            divEle.appendChild(viewButton);
+
+                            var _this = this;
+
+                            var delButton = document.createElement('a');
+                            delButton.setAttribute("fileId",fileId);
+                            delButton.setAttribute("fileExt",fileExt);
+
+                            delButton.className = 'btn btn-outline-danger btn-xs mr-1 delUploadFile';
+                            delButton.href = "javascript:void(0);";
+                            delButton.innerHTML = '<i class="fas fa-trash-alt"></i>&nbsp;Xoá';
+                            delButton.onclick = function(){
+                                var fileId = this.getAttribute('fileid');
+                                var fileExt = this.getAttribute('fileext');
+                                $.ajax({
+                                    url: "@Url.Action("DelUploadFile")",
+                                    data: {
+                                        fileId: fileId
+                                    },
+                                    type: 'POST',
+                                    success: function (data) {
+                                        if (data.status) {
+                                            toastr.success(data.msg);
+                                            _this.removeFile(file);
+                                            if(_this.files.length <=0 ){
+                                                $('[name="{0}"]'.format(hiddenEle)).attr('required', true);
+                                            }
+                                        } else {
+                                            toastr.error(data.msg);
+                                        }
+                                    },
+                                    error: function (data) {
+                                        toastr.error(data.msg);
+                                    }
+                                });
+                            }
+                            divEle.appendChild(delButton);
+                            file.previewTemplate.appendChild(divEle);
+                        }
+                    });
+                    this.on("error", function(file, errormessage, xhr){
+                        if(xhr) {
+                            var response = JSON.parse(xhr.responseText);
+                            alert(response.message);
+                        }
+                    });
+                },
+                thumbnail: function (file, dataUrl) {
+                    if (file.previewElement) {
+                        $(file.previewElement).removeClass("dz-file-preview");
+                        $(file.previewElement).find("[data-dz-thumbnail]").each(function () {
+                            var thumbnailElement = this;
+                            thumbnailElement.alt = file.name;
+                            thumbnailElement.src = dataUrl;
+                        })
+
+                        setTimeout(function () { $(file.previewElement).addClass("dz-image-preview") }, 1)
+                    }
+                }
+            });// new Dropzone
+
+            myDropzone.options.dictDefaultMessage = "Thả tệp vào đây để tải lên";
+            myDropzone.options.dictFallbackMessage = "Trình duyệt của bạn không hỗ trợ kéo và thả tệp để tải lên.";
+            myDropzone.options.dictFallbackText = "Vui lòng sử dụng biểu mẫu dự phòng bên dưới để tải tệp của bạn lên.";
+            myDropzone.options.dictFileTooBig = "Tệp quá lớn ({{filesize}}MiB). Kích thước tệp tối đa: {{maxFilesize}}MiB.";
+            myDropzone.options.dictInvalidFileType = "Bạn không thể tải lên các tệp thuộc loại này.";
+            myDropzone.options.dictResponseError = "Máy chủ phản hồi mã {{statusCode}}.";
+            myDropzone.options.dictCancelUpload = "Hủy tải lên";
+            myDropzone.options.dictCancelUploadConfirmation = "Bạn có chắc chắn muốn hủy việc tải lên này không?";
+            //myDropzone.options.dictRemoveFile = "Xóa tập tin";
+            myDropzone.options.dictRemoveFile = "<span class='fa fa-trash text-danger text-150'></span>";
+
+            myDropzone.options.dictMaxFilesExceeded = "Bạn không thể tải lên bất kỳ tập tin nào nữa.";
+
+            myDropzone.on('addedfile', function(file) {
+                $(file.previewElement).attr('data-rel', "tooltip");
+                $(file.previewElement).attr('title', file.name);
+                var ext = file.name.split('.').pop();
+
+                if (ext == "pdf") {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/pdf.png");
+                } else if (ext.indexOf("doc") != -1 || ext.indexOf("docx") != -1) {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/word.png");
+                } else if (ext.indexOf("xls") != -1 || ext.indexOf("xlsx") != -1) {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/excel.png");
+                }
+                $('[data-rel="tooltip"]').tooltip({ trigger: 'hover' });
+            });
+            myDropzone.on('removedfile', function(file) {
+                $("[role='tooltip']").remove();
+            });
+
+        } catch (err) {
+            $(ele).addClass('p-0')
+            .find('.fallback').removeClass('d-none')
+            .end().find('.dz-default').addClass('d-none')
+            .end().find('input[type=file]').aceFileInput({
+                style: 'drop',
+                droppable: true,
+
+                container: 'border-0 py-3',
+
+                placeholderClass: 'text-120 text-grey-d2',
+                placeholderText: 'Kéo thả hoặc nhấn chọn tệp để tải lên',
+                placeholderIcon: '<i class="fa fa-cloud-upload-alt fa-3x text-info-m2 my-2"></i>',
+
+                //previewSize: 64,
+                thumbnail: 'large'
+            })
+        }
+
+        $(ele).parents('.modal').on('hide.bs.modal', function(e){
+            if(e.namespace === 'bs.modal'){
+                var dossierId = "@Model.DossierId";
+                $.ajax({
+                    url: "@Url.Action("DelUploadFileViaDossier", new { dossierId = Model.DossierId })",
+                    data: {
+                        sTypeObject: sTypeObject
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        //if (data.status) {
+                        //    toastr.success(data.msg);
+                        //} else {
+                        //    toastr.error(data.msg);
+                        //}
+                    },
+                    error: function (data) {
+                        toastr.error(data.msg);
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    //debugger;
+    var formData =  @(string.IsNullOrEmpty(Model.FormData)? Html.Raw("[]") : Html.Raw(Model.FormData));
+
+    $(document).ready(function () {
+        for (var key in formData) {
+            var formValue = formData[key];
+            var arrKeys = ['NguoiViPham_HoTen', 'NguoiDaiDien_HoTen', 'DoiTuongViPham_Ten'];
+
+            var nguoiViPhamDanhXung = formData['NguoiViPham_DanhXung'];
+            var nguoiDaiDienDanhXung = formData['NguoiDaiDien_DanhXung'];
+
+            if($.inArray(key, arrKeys) >= 0){
+                while(formValue.includes(nguoiViPhamDanhXung)){
+                    formValue = formValue.replaceAll(nguoiViPhamDanhXung, "");
+                }
+
+                while(formValue.includes(nguoiDaiDienDanhXung)){
+                    formValue = formValue.replaceAll(nguoiDaiDienDanhXung, "");
+                }
+            }
+            formData[key] = formValue;
+
+            //$("#DecisionPenalize [name='"+key+"']").val(formData[key]);
+            if($("#Dossier [name='"+key+"']").is(':radio') || $("#Dossier [name='"+key+"']").is(':checkbox')){
+                $("#Dossier [name='"+key+"'][value='"+formValue+"']").prop('checked', true);
+            }
+            else{
+                $("#Dossier [name='"+key+"']").val(formValue);
+            }
+        }
+
+        @*$('[role="tablist"] li').on("click",_onChangeTab);
+        if("@Model.ActiveTab".length <= 0) $('[role="tablist"] li:first a').click();*@
+
+        $("#DecisionPenalize").parents('.modal').on("shown.bs.modal", function(){
+            $('[role="tablist"] li').on("click",_onChangeTab);
+            if("@Model.ActiveTab".length <= 0) $('[role="tablist"] li:first a').click();
+        });
+    });
+
+    function _onChangeTab(tab){
+        if($(tab.target).hasClass('active')) return;
+        var hrefActiveTab = $(tab.target).attr("href");
+        $("#Dossier input[type=hidden][id='ActiveTab']").val(hrefActiveTab);
+    }
+</script>
+
+<script type="text/javascript">
+    // Khóa API từ Google Cloud Platform
+    var googleMapsAPIKey = "AIzaSyBSfrxuLaMDEe0Nn5hhqaq0C0eDh7Jzhxk";
+
+    // Địa chỉ mặc định để hiển thị trên bản đồ
+    var defaultAddress = "04 Lê Lợi, Xương Huân, Nha Trang, Khánh Hòa 650000, Việt Nam";
+
+    // Biến để lưu trữ tọa độ
+    var _Latitude;
+    var _Longitude;
+
+    // Biến global để lưu trữ hiển thị tọa độ
+    var latitudeDisplay = document.getElementById('latitudeDisplay');
+    var longitudeDisplay = document.getElementById('longitudeDisplay');
+
+    // Sự kiện xảy ra khi trang web đã được tải xong
+    $(document).ready(function () {
+        // Gọi hàm để thiết lập và hiển thị bản đồ
+        initializeMap();
+
+        // Lắng nghe sự kiện click trên toàn bộ trang web
+        document.addEventListener('click', function (event) {
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            var searchInput = document.getElementById('searchInput');
+
+            // Kiểm tra xem phần tử có tồn tại không
+            if (!suggestionsContainer || !searchInput) {
+                return;
+            }
+
+            // Kiểm tra xem sự kiện click có xảy ra trong input hay phần tử chứa danh sách gợi ý hay không
+            var isClickInsideInput = searchInput.contains(event.target);
+            var isClickInsideSuggestions = suggestionsContainer.contains(event.target);
+
+            // Nếu không phải là input hoặc phần tử chứa danh sách gợi ý, ẩn danh sách gợi ý
+            if (!isClickInsideInput && !isClickInsideSuggestions) {
+                hideSuggestions();
+            }
+        });
+
+        // Hàm để thiết lập và hiển thị bản đồ
+        function initializeMap() {
+            hideSuggestions();
+            // Gọi hàm để lấy tọa độ từ địa chỉ
+            getCoordinatesFromAddress(defaultAddress);
+        }
+
+        // Hàm để lấy tọa độ từ địa chỉ sử dụng Google Geocoding API
+        function getCoordinatesFromAddress(address) {
+            // Tạo URL query để gửi lời gọi API
+            var queryURL = 'https://maps.googleapis.com/maps/api/geocode/json?key=' + googleMapsAPIKey + '&address=' + address;
+
+            // Gửi lời gọi API sử dụng jQuery
+            $.getJSON(queryURL, function (data) {
+                // Kiểm tra xem lời gọi API có thành công không
+                if (data.status === 'OK') {
+                    // Lấy thông tin vị trí từ kết quả API
+                    var locationData = data.results[0];
+                    var latitude = locationData.geometry.location.lat;
+                    var longitude = locationData.geometry.location.lng;
+
+                    // Gọi hàm để hiển thị bản đồ với tọa độ đã lấy được
+                    displayMap(latitude, longitude);
+                } else {
+                    // Hiển thị thông báo nếu có lỗi khi lấy tọa độ
+                    console.error('Lỗi khi lấy tọa độ từ địa chỉ: ' + data.status);
+                }
+            });
+        }
+
+        // Hàm để cập nhật tọa độ và hiển thị
+        function updateCoordinates(latitude, longitude) {
+            // Cập nhật hiển thị tọa độ
+            latitudeDisplay.textContent = 'Vĩ độ: ' + latitude;
+            longitudeDisplay.textContent = 'Kinh độ: ' + longitude;
+
+            //Cập nhật giá trị tọa độ
+            _Latitude = latitude;
+            _Longitude = longitude;
+
+            // Cập nhật giá trị tọa độ cho hidden fields
+            $('input[type="hidden"][id="Lat"]').val(latitude);
+            $('input[type="hidden"][id="Long"]').val(longitude);
+        }
+
+        // Hàm để hiển thị bản đồ với tọa độ được cung cấp
+        function displayMap(latitude, longitude) {
+
+            // Gọi hàm cập nhật tọa độ và hiển thị
+            updateCoordinates(latitude, longitude);
+
+            // Tạo đối tượng bản đồ
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                zoom: 18,
+                center: new google.maps.LatLng(latitude, longitude),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // Tạo điểm đánh dấu có thể kéo
+            var draggableMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(latitude, longitude),
+                draggable: true
+            });
+
+            // Lắng nghe sự kiện khi điểm đánh dấu được kéo
+            google.maps.event.addListener(draggableMarker, 'dragend', function (event) {
+
+                var newLatitude = event.latLng.lat();
+                var newLongitude = event.latLng.lng();
+
+                $('input[type="hidden"][id="Lat"]').val(newLatitude);
+                $('input[type="hidden"][id="Long"]').val(newLongitude);
+
+                // Gọi hàm cập nhật tọa độ và hiển thị
+                updateCoordinates(newLatitude, newLongitude);
+            });
+
+            // Đặt điểm đánh dấu lên bản đồ
+            draggableMarker.setMap(map);
+
+            // Thêm thanh tìm kiếm địa chỉ
+            var searchInput = document.getElementById('searchInput');
+            var searchBox = new google.maps.places.SearchBox(searchInput);
+
+            // Lắng nghe sự kiện khi người dùng chọn một địa chỉ từ thanh tìm kiếm
+            searchBox.addListener('places_changed', function () {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                var newLatitude = places[0].geometry.location.lat();
+                var newLongitude = places[0].geometry.location.lng();
+
+                $('input[type="hidden"][id="Lat"]').val(newLatitude);
+                $('input[type="hidden"][id="Long"]').val(newLongitude);
+
+                map.setCenter(new google.maps.LatLng(newLatitude, newLongitude));
+                draggableMarker.setPosition(new google.maps.LatLng(newLatitude, newLongitude));
+            });
+
+            // Lắng nghe sự kiện khi người dùng nhập vào trường tìm kiếm
+            searchInput.addEventListener('input', function (e) {
+                var searchQuery = searchInput.value;
+
+                if (searchQuery.trim() !== '') {
+                    getSuggestions(searchQuery);
+                } else {
+                    hideSuggestions();
+                }
+            });
+
+            // Lắng nghe sự kiện click trên nút tìm kiếm
+            document.getElementById('searchButton').addEventListener('click', function () {
+                var searchQuery = document.getElementById('searchInput').value.trim();
+
+                if (searchQuery !== '') {
+                    // Gọi hàm để lấy tọa độ từ địa chỉ
+                    getCoordinatesFromAddress(searchQuery);
+
+                    // Đồng thời tắt phần gợi ý
+                    hideSuggestions();
+                }
+            });
+
+            // Lắng nghe sự kiện click của nút đi đến google map
+            document.getElementById('viewOnGoogleMapsBtn').addEventListener('click', function () {
+                // Tạo liên kết và mở trong một tab mới
+                var googleMapsLink = createGoogleMapsLink(_Latitude, _Longitude);
+                window.open(googleMapsLink, '_blank');
+            });
+
+            // Lắng nghe sự kiện keydown trên ô tìm kiếm
+            searchInput.addEventListener('keydown', function (e) {
+                // Kiểm tra nếu phím bấm là "Enter"
+                if (e.key === 'Enter') {
+                    // Lấy giá trị từ ô tìm kiếm
+                    var searchQuery = searchInput.value.trim();
+
+                    // Kiểm tra xem ô tìm kiếm có giá trị không
+                    if (searchQuery !== '') {
+                        // Gọi hàm để lấy tọa độ từ địa chỉ
+                        getCoordinatesFromAddress(searchQuery);
+
+                        // Đồng thời tắt phần gợi ý
+                        hideSuggestions();
+                    }
+                }
+            });
+        }
+
+        // Hàm để lấy danh sách gợi ý từ Google Places AutocompleteService
+        function getSuggestions(query) {
+            // Tạo yêu cầu để lấy danh sách gợi ý
+            var request = {
+                input: query,
+                types: ['geocode'],
+            };
+
+            // Sử dụng AutocompleteService để lấy danh sách gợi ý
+            var service = new google.maps.places.AutocompleteService();
+            service.getPlacePredictions(request, function (predictions, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // Hiển thị danh sách gợi ý nếu thành công
+                    showSuggestions(predictions);
+                } else {
+                    // Hiển thị thông báo lỗi nếu có vấn đề
+                    console.error('Lỗi khi lấy danh sách gợi ý: ' + status);
+                }
+            });
+        }
+
+        // Hàm để hiển thị danh sách gợi ý
+        function showSuggestions(predictions) {
+            var suggestionsList = document.getElementById('suggestionsList');
+
+            // Xóa nội dung cũ của danh sách
+            suggestionsList.innerHTML = '';
+
+            // Tạo mục gợi ý cho mỗi kết quả
+            predictions.forEach(function (prediction) {
+                var suggestionItem = document.createElement('li');
+
+                // Giới hạn độ dài của địa chỉ và thêm "..." nếu quá dài
+                var displayText = prediction.description.length > 60
+                    ? prediction.description.substring(0, 60) + '...'
+                    : prediction.description;
+
+                suggestionItem.textContent = displayText;
+                suggestionItem.title = prediction.description; // Hiển thị toàn bộ địa chỉ khi di chuột qua
+
+                suggestionItem.className = 'dropdown-item';
+
+                // Lắng nghe sự kiện khi người dùng chọn một gợi ý
+                suggestionItem.addEventListener('click', function () {
+                    getCoordinatesFromAddress(prediction.description);
+
+                    // Đồng thời tắt phần gợi ý
+                    hideSuggestions();
+
+                    // Đặt giá trị cho ô tìm kiếm
+                    document.getElementById('searchInput').value = prediction.description;
+                });
+
+                // Thêm mục gợi ý vào danh sách
+                suggestionsList.appendChild(suggestionItem);
+            });
+
+            // Hiển thị container chứa danh sách gợi ý
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.style.display = 'block';
+        }
+
+        // Hàm để ẩn danh sách gợi ý
+        function hideSuggestions() {
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.style.display = 'none';
+        }
+
+        // Hàm để tạo liên kết đến Google Maps
+        function createGoogleMapsLink(latitude, longitude) {
+            return 'https://www.google.com/maps/search/?api=1&query=' + latitude + ',' + longitude;
+        }
+    });
+
+</script>

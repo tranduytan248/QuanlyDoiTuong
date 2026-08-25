@@ -1,0 +1,87 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("Contract_Title")} - {Model.ContractTypeName}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Add", "Contract", new { area = "Major", typeContract = Model.ContractTypeId }, FormMethod.Post, new { encType = "multipart/form-data", id = "CreateContract", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Contract")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('form#CreateContract').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                _onWaiting();
+            },
+            success: function (response) {
+                //debugger;
+
+                if (response.status != undefined) {
+                    if (response.status) {
+                        var hrefViewContractModal = "@Url.Action("ViewContract", new { area = "Major" })?contractId=" + encodeURIComponent(response.contractId);
+                        var htmlButtonViewContract = '@Html.Button(true, "ViewContract", Url.Action("ViewContract", new { area = "Major" }), "<i class=\"fas fa-eye\"></i>", AppProcessor.Messagor.GetMessage("Button_View"), new { @class = "", data_width = "fullscreen", data_scrollbars_inside="true" })';
+
+                        var eleButtonViewContract = $.parseHTML(htmlButtonViewContract);
+                        $(eleButtonViewContract[0]).attr('href', hrefViewContractModal);
+                        document.body.appendChild(eleButtonViewContract[0]);
+                        $(eleButtonViewContract).click().remove();
+                    }
+                    if ($("#ModalContent #modal_CreateContract #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableContracts.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_CreateContract form").attr("action");
+                            $("#ModalContent #modal_CreateContract #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElements(this);
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_CreateContract").modal("hide");
+                        $("#ModalContent #modal_CreateContract").on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableContracts.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_CreateContract #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+
+            }
+        });
+
+    </script>
+
+    @*<script type="text/javascript">
+        debugger;
+        $(function () {
+            @{
+                if (Model.IsNew && Model.ContractTypeId != (int)EnumContractType.Indefinite)
+                {
+                    @Html.Raw("var btnSubmit = $('#ContractContents').parents('.modal-content').find('button[type=\"submit\"]')[0];$(btnSubmit).addClass('disabled');")
+                }
+
+            }
+        });
+    </script>*@
+}

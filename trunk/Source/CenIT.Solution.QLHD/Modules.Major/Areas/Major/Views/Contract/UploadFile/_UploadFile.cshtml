@@ -1,0 +1,64 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.UploadFileModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Upload"), $"{AppProcessor.Messagor.GetMessage("Contract_RefFile")}[{Model.ContractNo} - {Model.CusName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-cloud-upload-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("UploadFile", "Contract", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "UploadFile", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("UploadFile/_UploadFileBody")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('form#UploadFile').ajaxForm({
+            beforeSubmit: function () {
+                _onWaiting();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_UploadFile #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableContracts.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_UploadFile form").attr("action");
+                            $("#ModalContent #modal_UploadFile #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElements(this);
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_UploadFile").modal("hide");
+                        $("#ModalContent #modal_UploadFile").on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableContracts.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_UploadFile #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+            }
+        });
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnApprove" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-cloud-upload-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Upload")</button>
+}

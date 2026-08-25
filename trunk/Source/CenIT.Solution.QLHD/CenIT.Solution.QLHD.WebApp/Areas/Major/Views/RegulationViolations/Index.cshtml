@@ -1,0 +1,107 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchRegulationViolationsModel
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("RegulationViolations_Title");
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @*@Html.Button(true, "AddRegulationViolations", Url.Action("Add", new { area = "Major" }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1024px" })*@
+
+    <div class="dropdown d-inline-block mb-1">
+        <button class="btn btn-primary btn-h-outline-primary btn-a-outline-primary radius-3 py-2 text-600 text-90 pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class='fa fa-plus'></i>
+            @($"{AppProcessor.Messagor.GetMessage("Button_Add")} {AppProcessor.Messagor.GetMessage("RegulationViolations_Title")}")
+        </button>
+        <div class="dropdown-menu dropdown-caret dropdown-menu-right">
+            @{
+                foreach (var f in Model.ListFieldViolateds)
+                {
+                    @Html.Button(true, "AddRegulationViolations", Url.Action("Add", new { area = "Major", fieldViolatedId = f.Value }), "", f.Text, new { @class = "dropdown-item", data_width = "fullscreen" })
+                }
+            }
+
+        </div>
+    </div>
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="col-sm-12 table-responsive-md">
+            <table id="DSRegulationViolations" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr id="tableHeaders">
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Function to update table headers based on FieldViolateId
+        function updateTableHeaders() {
+            var fieldViolateId = $("input[name='SearchFieldViolateId']:checked").val();
+            var tableHeaders = $("#tableHeaders");
+
+            // Clear existing headers
+            tableHeaders.empty();
+
+            if (fieldViolateId == "8d0e3621-5bab-4b1f-85cb-e47f0be4bc86") {
+                // Display headers for the first condition
+                tableHeaders.html(`
+                    <th>@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("ViolationBehavior_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("ViolatedConstruction_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Cate_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Regulation_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("RemedialMeasure_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("RemediationRegulation_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("FineAmount_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                `);
+            } else if (fieldViolateId == "693e1da5-05ea-447e-8da6-22a962c80a02") {
+                // Display headers for the second condition
+                tableHeaders.html(`
+                    <th>@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("ViolationBehavior_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("ViolationArea_Label_Name")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Cate_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Regulation_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("RemedialMeasure_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("RemediationRegulation_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("DeductionAccount_Label_Name")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("DeductionAccount_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("FineAmount_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                `);
+            }
+        }
+
+        // Initial update based on default checked radio button
+        updateTableHeaders();
+
+        // Handle radio button change event
+        $("input[name='SearchFieldViolateId']").change(function () {
+            _tableRegulationViolations.clear().destroy();
+            updateTableHeaders();
+            initTableRegulationViolations();
+            _tableRegulationViolations.ajax.reload(null, false);
+        });
+
+    });
+</script>
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Major/Views/RegulationViolations/RegulationViolations.js")"></script>
+}

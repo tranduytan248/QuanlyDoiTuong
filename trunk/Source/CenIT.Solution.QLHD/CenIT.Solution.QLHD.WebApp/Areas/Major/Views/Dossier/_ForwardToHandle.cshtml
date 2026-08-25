@@ -1,0 +1,55 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Dossier_ForwardToHandle")} {AppProcessor.Messagor.GetMessage("Dossier_Title")} - [{Model.Title}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    warning
+}
+
+@section FormIcon{
+    <i class="fas fa-random"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ForwardToHandle", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ForwardToHandle", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            <div class="card-body p-0">
+                @Html.Partial("_DossierInfo")
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#ForwardToHandle').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                if (!$('form#ForwardToHandle').valid()) {
+                    return false;
+                }
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_ForwardToHandle").modal("hide");
+                    $("#ModalContent #modal_ForwardToHandle").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_ForwardToHandle" + " #bodyForm").html(response);
+                }
+            }
+        });
+
+        $("#modal_ForwardToHandle .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_ForwardToHandle .modal-body").addClass("ace-scrollbar");
+    </script>
+}

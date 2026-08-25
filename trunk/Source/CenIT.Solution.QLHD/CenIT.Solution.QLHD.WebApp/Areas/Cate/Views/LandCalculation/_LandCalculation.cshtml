@@ -1,0 +1,91 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateLandCalculationModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.LandCalculationId)
+<div id="LandCalculation">
+    <div class="form-group row">
+        <div class="col-md-5">
+        @Html.TitleFor(model => model.TypeContract, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.TypeContract, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "onChangeTypeContract(this, '#LandCalculation #TypeContractName', '#LandCalculation #ContentLandId')" })
+            @Html.ValidationMessageFor(model => model.TypeContract, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.TypeContractName)
+        </div>
+    
+        <div class="col-md-7">
+            @Html.TitleFor(model => model.ContentLandId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.ContentLandId, new SelectList(Model.ListContentLands, "ContentLandId", "ContractTypeAndContentLand"), "", new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.ContentLandId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @*<div class="form-group row">
+            @Html.TitleFor(model => model.Condition, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Condition, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Condition_Label_Name"), @rows = 1 })
+                @Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+    <div class="form-group row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.Condition, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.Condition, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Condition_Label_Name"), rows = 2 })
+            @Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-9">
+            @Html.TitleFor(model => model.Recipe, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Recipe, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Recipe_Label_Name") })
+            @Html.ValidationMessageFor(model => model.Recipe, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.TitleFor(model => model.Percentage, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Percentage, new { type = "number", @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Percentage_Label_Name") })
+            @Html.ValidationMessageFor(model => model.Percentage, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(function () {
+        @{
+            if (Model.TypeContract > 0)
+            {
+                @Html.Raw($"$('#LandCalculation #TypeContract').val({Model.TypeContract}).trigger('change');");
+            }
+        }
+    });
+
+    function onChangeTypeContract(cbbTypeContract, eleTypeContractName, cbbContentLand) {
+        if ($(eleTypeContractName).length > 0) {
+            $(eleTypeContractName).val($(cbbTypeContract).children("option:selected").text());
+        }
+
+        var selectedTypeContract = $(cbbTypeContract).val();
+        var urlContentLandsViaTypeContract = "@Url.Action("GetContentLandsViaTypeContract", "ContentLand", new { area = "Cate" })?typeContract=" + selectedTypeContract;
+        $.ajax({
+            type: "GET",
+            url: urlContentLandsViaTypeContract,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbContentLand).empty();
+                $(cbbContentLand).append('<option value=""></option>');
+
+                $.each(response.ContentLands,function (index, contentLand) {
+                    $(cbbContentLand).append('<option value="' + contentLand.Value + '">' + contentLand.Text + "</option>");
+                });
+
+                @{
+                    if (Model.ContentLandId != null)
+                    {
+                        @Html.Raw($"$(cbbContentLand).val('{Model.ContentLandId}').trigger('change');");
+                    }
+                }
+            }
+        });
+    }
+
+</script>

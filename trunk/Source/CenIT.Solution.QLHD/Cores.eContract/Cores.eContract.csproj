@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A5A845DF-55E7-4517-9806-1153C3CAFC0D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cores.eContract</RootNamespace>
+    <AssemblyName>Cores.eContract</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Consts\ConstsAuthGrantTypes.cs" />
+    <Compile Include="Consts\ConstsContentTypes.cs" />
+    <Compile Include="Consts\ConstsContractStatus.cs" />
+    <Compile Include="Consts\ConstsCusType.cs" />
+    <Compile Include="Consts\ConstsEContractServices.cs" />
+    <Compile Include="Consts\ConstsPartnerTypes.cs" />
+    <Compile Include="Consts\ConstsSignForms.cs" />
+    <Compile Include="Consts\ConstsSignTurns.cs" />
+    <Compile Include="Models\ContractModel.cs" />
+    <Compile Include="Models\CustomerModel.cs" />
+    <Compile Include="Models\FlowContractModel.cs" />
+    <Compile Include="Models\PositionSignatureModel.cs" />
+    <Compile Include="Models\Request\ReqAuthModel.cs" />
+    <Compile Include="Models\Request\ReqAuthUserModel.cs" />
+    <Compile Include="Models\Request\ReqCancelContractModel.cs" />
+    <Compile Include="Models\Request\ReqContractDownloadModel.cs" />
+    <Compile Include="Models\Request\ReqContractModel.cs" />
+    <Compile Include="Models\Request\ReqContractSentModel.cs" />
+    <Compile Include="Models\Request\ReqContractWithIdentificationModel.cs" />
+    <Compile Include="Models\Request\ReqDigitalSignModel.cs" />
+    <Compile Include="Models\Request\ReqFileModel.cs" />
+    <Compile Include="Models\Request\ReqListFlowContractModel.cs" />
+    <Compile Include="Models\Request\ReqSearchContractTypeModel.cs" />
+    <Compile Include="Models\Request\ReqSearchDepartmentModel.cs" />
+    <Compile Include="Models\Request\ReqSearchModel.cs" />
+    <Compile Include="Models\Response\BaseResponseModel.cs" />
+    <Compile Include="Models\Response\ResAuthModel.cs" />
+    <Compile Include="Models\Response\ResDetailTemplateContractModel.cs" />
+    <Compile Include="Models\Response\ResListFlowContractModel.cs" />
+    <Compile Include="Models\Response\ResListPositionSignatureModel.cs" />
+    <Compile Include="Models\Response\ResTemplateContractModel.cs" />
+    <Compile Include="Models\SignFlowModel.cs" />
+    <Compile Include="Models\SignFrameModel.cs" />
+    <Compile Include="Models\SignInfoModel.cs" />
+    <Compile Include="Models\TemplateContractModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TSFramework.App\TSFramework.App.csproj">
+      <Project>{0577F056-6B2C-4CDA-B85B-4E47AA37DDB4}</Project>
+      <Name>TSFramework.App</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,369 @@
+﻿@using Cores.Cate.Enum
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractTaskModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.TypeContractId)
+@Html.HiddenFor(model => model.TypeContractName)
+@Html.HiddenFor(model => model.Ordinal)
+
+<div id="Task">
+    @{
+        if (Model.TypeContractId == (int)EnumContractType.MeasureDraw || Model.TypeContractId == (int)EnumContractType.Indefinite || Model.TypeContractId == (int)EnumContractType.Expertise || Model.TypeContractId == (int)EnumContractType.UpdateZoning)
+        {
+            <div class="form-row">
+                @Html.TitleFor(model => model.Contents, new { @class = "col-form-label pr-0 font-bold" })
+                @Html.TextAreaFor(model => model.Contents, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Contents") })
+                @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.SectionId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.SectionId, new SelectList(Model.ListTypeLands, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeTypeLand(this, '#Task #TypeLandName', '#Task #SubSectionId')" })
+                    @Html.ValidationMessageFor(model => model.SectionId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.TypeLandName)
+                </div>
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.Area, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.SubSectionId, new SelectList(Model.ListSubSections, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeArea(this, '#Task #Area', '#Task #Price', '#Task #Unit')" })
+                    @Html.ValidationMessageFor(model => model.SubSectionId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Area)
+                </div>
+            </div>
+        }
+        else if (Model.TypeContractId == (int)EnumContractType.BoundaryMarkers)
+        {
+            <div class="form-group row">
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.Contents, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.ContentId, new SelectList(Model.ListContents, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeContent(this, '#Task #Contents', '#Task #SubSectionId')" })
+                    @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Contents)
+                </div>
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.SubSectionName, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.SubSectionId, new SelectList(Model.ListSubSections, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeDetail(this, '#Task #SubSectionName', '#Task #Price', '#Task #Unit')" })
+                    @Html.ValidationMessageFor(model => model.SubSectionId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.SubSectionName)
+                </div>
+            </div>
+        }
+    }
+
+
+    <div class="form-row">
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Price, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormattedPrice, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Price") })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Price, new { onchange = "_onCalcTotal('#Task #Total','#Task #Price','#Task #Amount','#Task #Rate')" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Amount, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Amount, new
+            {
+                type = "number",
+                min = 1,
+                step = 1,
+                @class = "form-control col-md-12",
+                placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Amount"),
+                onchange = "_onCalcTotal('#Task #Total','#Task #Price',this,'#Task #Rate')"
+            })
+            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Unit, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.Unit, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Unit") })
+            @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.ContentLandId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.ContentLandId, new SelectList(Model.ListContentLands, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeContentLand(this, '#Task #LandCalculationId', '#Task #Rate')" })
+            @Html.ValidationMessageFor(model => model.ContentLandId, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.LandCalculationId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.LandCalculationId, new SelectList(Model.ListConditions, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCondition(this, '#Task #Rate', '#Task #RateFormula')" })
+            @Html.ValidationMessageFor(model => model.LandCalculationId, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Rate, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormattedRate, new { @readonly = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Rate") })
+                <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+        </div>
+        @Html.HiddenFor(model => model.Rate, new { onchange = "_onCalcTotal('#Task #Total','#Task #Price','#Task #Amount','#Task #Rate')" })
+        @Html.HiddenFor(model => model.RateFormula)
+    </div>
+    <hr class="border-none border-t-3 brc-grey-l2 border-double" />
+    <div class="form-row">
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.Total, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormattedTotal, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right", placeholder = AppProcessor.Messagor.GetMessage("ContractTask_Total") })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.Total, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Total)
+        </div>
+    </div>
+</div>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    $(document).ready(function () {
+        $('#Task [name="FormattedPrice"],#Task [name="FormattedTotal"]').maskNumber({ integer: true });
+        @{
+            if (Model.SectionId > 0)
+            {
+                @Html.Raw($"$(\"#Task [name='SectionId']\").val({Model.SectionId}).trigger('change');");
+            }
+
+            if (Model.ContentLandId != null && Model.ContentLandId != Guid.Empty)
+            {
+                @Html.Raw($"$(\"#Task [name='ContentLandId']\").val('{Model.ContentLandId}').trigger('change');");
+            }
+
+            if (Model.ContentId > 0)
+            {
+                @Html.Raw($"$(\"#Task [name='ContentId']\").val({Model.ContentId}).trigger('change');");
+            }
+        }
+
+    });
+
+    var isEdit = @(Model.IsEdit ? 1 : 0) == 1;
+
+    function _onChangeTypeLand(cbbTypeLands, eleTypeLandName, cbbAreas) {
+
+        $('#Task [name="Price"]').val(0).trigger('change');
+        $('#Task [name="FormattedPrice"]').val(0).trigger('keyup');
+
+        if ($(eleTypeLandName).length > 0) {
+            $(eleTypeLandName).val($(cbbTypeLands).children("option:selected").text());
+        }
+
+        var selectedTypeLand = $(cbbTypeLands).val();
+
+        var urlAreasViaTypeLand =            "@Url.Action("GetAreasViaTypeLand", "SubSection", new { area = "Cate" })?typeLandId=" + selectedTypeLand;
+        $.ajax({
+            type: "GET",
+            url: urlAreasViaTypeLand,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbAreas).empty();
+                $(cbbAreas).append('<option value=""></option>');
+
+                $.each(response.Areas,
+                    function(index, item) {
+                        $(cbbAreas).append('<optgroup label="' + index + '">');
+                        $.each(item,
+                            function (idx, area) {
+                                $(cbbAreas).append('<option value="' + area.SubSectionId + '">' + area.SubSectionName + "</option>");
+                            });
+                        $(cbbAreas).append('</optgroup>');
+                    });
+
+                @{
+                    if (Model.SubSectionId > 0)
+                    {
+                        @Html.Raw($"$(cbbAreas).val({Model.SubSectionId}).trigger('change');");
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeContent(cbbContents, eleContentName, cbbDetails) {
+
+        $('#Task [name="Price"]').val(0).trigger('change');
+        $('#Task [name="FormattedPrice"]').val(0).trigger('keyup');
+
+        if ($(eleContentName).length > 0) {
+            $(eleContentName).val($(cbbContents).children("option:selected").text());
+        }
+
+        var selectedContentId = $(cbbContents).val();
+
+        var urlDetailViaTypeLand = "@Html.Raw(Url.Action("GetAreasViaTypeLand", "Contract", new { area = "Major", contractId=Model.ContractId }))&typeLandId=" + selectedContentId + "&isEdit=" + isEdit;
+
+        $.ajax({
+            type: "GET",
+            url: urlDetailViaTypeLand,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbDetails).empty();
+                $(cbbDetails).append('<option value=""></option>');
+
+                $.each(response.Areas,
+                    function(index, item) {
+                        $(cbbDetails).append('<optgroup label="' + index + '">');
+                        $.each(item,
+                            function (idx, area) {
+                                $(cbbDetails).append('<option value="' + area.SubSectionId + '">' + area.SubSectionName + "</option>");
+                            });
+                        $(cbbDetails).append('</optgroup>');
+                    });
+
+                @{
+                    if (Model.TypeContractId == (int)EnumContractType.BoundaryMarkers && Model.SubSectionId > 0)
+                    {
+                        @Html.Raw($"$(cbbDetails).val({Model.SubSectionId}).trigger('change');")
+                    }
+                    else if ((Model.TypeContractId == (int)EnumContractType.MeasureDraw || Model.TypeContractId == (int)EnumContractType.Expertise || Model.TypeContractId == (int)EnumContractType.UpdateZoning)
+                    || Model.ContentId > 0)
+                    {
+                        @Html.Raw($"$(cbbDetails).val({Model.ContentId}).trigger('change');")
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeArea(cbbAreas, eleAreaName, elePrice, eleUnit) {
+        $(elePrice).val(0).trigger('change');
+        $('#Task [name="FormattedPrice"]').val(0).trigger('keyup');
+
+        if ($(eleAreaName).length > 0) {
+            $(eleAreaName).val($(cbbAreas).children("option:selected").text());
+        }
+        var selectedArea = $(cbbAreas).val();
+        var urlDetailAreaViaId =            "@Url.Action("GetDetailAreaViaId", "SubSection", new { area = "Cate" })?areaId=" + selectedArea;
+        $.ajax({
+            type: "GET",
+            url: urlDetailAreaViaId,
+            dataType: "JSON",
+            success: function (response) {
+                if (response != null && response != undefined) {
+                    var area = response.Area;
+                    if (area != null && area != undefined) {
+                        $(elePrice).val(area.Price).trigger('change');
+                        $('#Task [name="FormattedPrice"]').val(area.Price).trigger('keyup');
+                        $(eleUnit).val(area.Unit);
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeDetail(cbbDetails, eleAreaName, elePrice, eleUnit) {
+        $(elePrice).val(0).trigger('change');
+        $('#Task [name="FormattedPrice"]').val(0).trigger('keyup');
+
+        if ($(eleAreaName).length > 0) {
+            $(eleAreaName).val($(cbbDetails).children("option:selected").text());
+        }
+        var selectedArea = $(cbbDetails).val();
+        var urlDetailAreaViaId = "@Url.Action("GetDetailAreaViaId", "SubSection", new { area = "Cate" })?areaId=" + selectedArea;
+        $.ajax({
+            type: "GET",
+            url: urlDetailAreaViaId,
+            dataType: "JSON",
+            success: function (response) {
+                if (response != null && response != undefined) {
+                    var area = response.Area;
+                    if (area != null && area != undefined) {
+                        $(elePrice).val(area.Price).trigger('change');
+                        $('#Task [name="FormattedPrice"]').val(area.Price).trigger('keyup');
+                        $(eleUnit).val(area.Unit);
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeContentLand(cbbContentLands, cbbConditions, eleRate) {
+        $(eleRate).val(0).trigger('change');
+        $('#Task [name="FormattedRate"]').val(0).trigger('keyup');
+
+        var selectedContentLand = $(cbbContentLands).val();
+
+        var urlConditionsViaContentLand = "@Url.Action("GetConditionsViaContentLand", "LandCalculation", new { area = "Cate" })?contentLandId=" + selectedContentLand;
+        $.ajax({
+            type: "GET",
+            url: urlConditionsViaContentLand,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbConditions).empty();
+                $(cbbConditions).append('<option value=""></option>');
+
+                $.each(response.Conditions,
+                    function(index, item) {
+                        $(cbbConditions).append('<optgroup label="' + index + '">');
+                        $.each(item,
+                            function (idx, condition) {
+                                $(cbbConditions).append('<option value="' + condition.LandCalculationId + '">' + condition.Condition + "</option>");
+                            });
+                        $(cbbConditions).append('</optgroup>');
+                    });
+
+                @{
+                    if (Model.LandCalculationId != null && Model.LandCalculationId != Guid.Empty)
+                    {
+                        @Html.Raw($"$(cbbConditions).val('{Model.LandCalculationId}').trigger('change');");
+                    }
+                }
+            }
+        });
+    }
+
+    function _onChangeCondition(cbbConditions, eleRate, eleRateFormula) {
+        $(eleRate).val(0).trigger('change');
+        $('#Task [name="FormattedRate"]').val(0).trigger('keyup');
+
+        var selectedCondition = $(cbbConditions).val();
+        var urlDetailConditionViaId = "@Url.Action("GetDetailConditionViaId", "LandCalculation", new { area = "Cate" })?conditionId=" + selectedCondition;
+        $.ajax({
+            type: "GET",
+            url: urlDetailConditionViaId,
+            dataType: "JSON",
+            success: function (response) {
+                if (response != null && response != undefined) {
+                    var condition = response.Condition;
+                    if (condition != null && condition != undefined) {
+                        $(eleRate).val(condition.Percentage).trigger('change');
+                        $('#Task [name="FormattedRate"]').val(condition.Percentage * 100).trigger('keyup');
+                        $(eleRateFormula).val(condition.Recipe);
+                    }
+                }
+            }
+        });
+    }
+
+    function _onCalcTotal(eleTotal, elePrice, eleAmount, eleRate) {
+        var price = $(elePrice).val();
+        var amount = $(eleAmount).val();
+        var rate = $(eleRate).val();
+
+        price = price == null || price == undefined ? 0 : price;
+        amount = amount == null || amount == undefined ? 0 : amount;
+        rate = rate == null || rate == undefined ? 0 : rate;
+
+        var total = Math.round(price * amount * rate);
+        //var total = price * amount * rate;
+        $(eleTotal).val(total);
+        $('#Task [name="FormattedTotal"]').val(total).trigger('keyup');
+    }
+
+</script>

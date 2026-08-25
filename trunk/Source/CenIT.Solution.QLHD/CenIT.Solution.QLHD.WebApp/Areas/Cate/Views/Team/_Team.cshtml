@@ -1,0 +1,87 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Cate.CateTeamModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.TeamId)
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+@{
+    if (Model.TeamId > 0)
+    {
+        <div class="form-group row">
+            @Html.TitleFor(model => model.ProvinceId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.DropDownListFor(model => model.ProvinceId, new SelectList(Model.Provinces, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "OnChangeProvince(this, $('select#WardId'))" })
+                @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group row">
+            @Html.TitleFor(model => model.ProvinceId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.DropDownListFor(model => model.ProvinceId, new SelectList(Model.Provinces, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "OnChangeProvince(this, $('select#WardId'))" })
+                @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+}
+
+<div class="form-group row">
+    @Html.TitleFor(model => model.WardId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.WardId, new SelectList(Model.Wards, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "OnChangeCombo(this, '#WardName');" })
+        @Html.ValidationMessageFor(model => model.WardId, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.WardName)
+    </div>
+</div>
+
+@{
+    if (Model.TeamId > 0)
+    {
+        <div class="form-group row">
+            @Html.TitleFor(model => model.TeamCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.TeamCode, new { @class = "form-control col-md-8", @readonly = "readonly" })
+            </div>
+        </div>
+    }
+}
+<div class="form-group row">
+    @Html.TitleFor(model => model.TeamName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.TeamName, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Team_Label_Name") })
+        @Html.ValidationMessageFor(model => model.TeamName, "", new { @class = "text-danger" })
+    </div>
+</div>
+<script type="text/javascript">
+
+    function OnChangeProvince(cbbProvince, cbbWard) {
+        if ($("#ProvinceName").length > 0) {
+            $("#ProvinceName").val($(cbbProvince).children("option:selected").text());
+        }
+
+        var selectedProvince = $(cbbProvince).val();
+        var urlWardsViaProvince =
+            "@Url.Action("GetWardsBelongProvinceId", "Ajax", new { area = "Cate" })?provinceId=" + selectedProvince;
+        $.ajax({
+            type: "GET",
+            url: urlWardsViaProvince,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbWard).empty();
+                $(cbbWard).append('<option value=""></option>');
+
+                $.each(response.Wards, function (index, item) {
+                    $(cbbWard).append('<optgroup label="' + index + '">');
+                    $.each(item, function (idx, ward) {
+                        $(cbbWard).append('<option value="' + ward.WardId + '">' + ward.WardName + "</option>");
+                    });
+                    $(cbbWard).append('</optgroup>');
+                });
+            }
+        });
+    }
+
+</script>

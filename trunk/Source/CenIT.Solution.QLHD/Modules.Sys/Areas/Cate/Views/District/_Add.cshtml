@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("District_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "District", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "District_OnProcessSuccess(data, 'AddDistrict')"
+    }, new { @class = "form-horizontal", id = "AddDistrict" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_District")
+        </div>
+    }
+}
+
+@section ContinueForm{
+
+}

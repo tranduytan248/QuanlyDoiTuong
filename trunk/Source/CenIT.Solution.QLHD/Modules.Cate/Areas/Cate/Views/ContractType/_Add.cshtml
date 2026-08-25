@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("ContractType_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "ContractType", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ContractType_OnProcessSuccess(data, 'AddContractType')"
+    }, new { @class = "form-horizontal", id = "AddContractType" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ContractType")
+        </div>
+    }
+}

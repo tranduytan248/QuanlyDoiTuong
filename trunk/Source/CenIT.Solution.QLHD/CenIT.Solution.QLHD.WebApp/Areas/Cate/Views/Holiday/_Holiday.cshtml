@@ -1,0 +1,78 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateHolidayModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.HolidayId)
+
+<div class="form-group row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.Date, new { @class = "col-form-label pr-0 font-bold" })
+        <div class="row">
+            <div class="col-md-2">
+                @Html.DropDownListFor(model => model.Day, Model.Days.Select(x => new SelectListItem
+                {
+                    Text = x.ToString(),
+                    Value = x.ToString()
+                }), "Ngày", new { @class = "form-control col-md-12", id = "dayDropdown" })
+            </div>
+
+            <div class="col-md-2">
+                @Html.DropDownListFor(model => model.Month, Model.Months.Select(x => new SelectListItem
+                {
+                    Text = x.ToString(),
+                    Value = x.ToString()
+                }), "Tháng", new { @class = "form-control col-md-12", id = "monthDropdown" })
+            </div>
+
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Year, new { @class = $"form-control {(Model.IsPermanent ? "d-none" : "")}", placeholder = "Năm" })
+            </div>
+            <div class="col-md-4 my-auto">
+                <label class="col-md-12">
+                    @Html.CheckBoxFor(model => model.IsPermanent, new { @class = "checkbox mr-2", onchange = $"_onChangePermanent(this, '#{Html.IdFor(model => model.Year)}');" })
+                    @Html.LabelFor(model => model.IsPermanent, new { @class = "badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1" })
+                </label>
+                @Html.ValidationMessageFor(model => model.IsPermanent, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.ValidationMessageFor(model => model.Day, "", new { @class = "text-danger" })
+        @Html.ValidationMessageFor(model => model.Month, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <label class="px-0 pt-2">
+            @Html.RadioButtonFor(model => model.IsLunarCalendar, true, new { })
+            <span class="badge bgc-info brc-info text-white badge-lg arrowed arrowed-in-right">
+                <span class="px-3">@AppProcessor.Messagor.GetMessage("Holiday_LunarCalendar")</span>
+            </span>
+        </label>
+        <label class="px-0 pt-2">
+            @Html.RadioButtonFor(model => model.IsLunarCalendar, false, new { })
+            <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right">
+                <span class="px-3">@AppProcessor.Messagor.GetMessage("Holiday_Calendar")</span>
+            </span>
+        </label>
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.HolidayName, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextBoxFor(model => model.HolidayName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Holiday_Label_HolidayName") })
+        @Html.ValidationMessageFor(model => model.HolidayName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function _onChangePermanent(chk, eleYear) {
+        if (chk.checked) {
+            $(eleYear).addClass('d-none');
+        } else {
+            $(eleYear).removeClass('d-none');
+        }
+    }
+</script>

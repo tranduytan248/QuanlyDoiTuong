@@ -1,0 +1,66 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.DossierId)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.UnionHandle)
+@Html.HiddenFor(model => model.HandledBy)
+@Html.HiddenFor(model => model.PositionId)
+@Html.HiddenFor(model => model.HandlingTime)
+@Html.HiddenFor(model => model.Status)
+@Html.HiddenFor(model => model.StatusName)
+
+<div id="HandleDossier">
+    <div class="card ccard">
+        <ul class="nav nav-tabs nav-tabs-simple nav-tabs-scroll border-b-1 brc-dark-l3 mx-0 mx-md-0 px-3 px-md-1 pt-2px" role="tablist">
+            <li class="nav-item mr-1">
+                <a class="nav-link active p-3 bgc-h-info-l4 radius-0" id="infor-contract" data-toggle="tab" href="#infor-contract-pane" role="tab" aria-controls="infor-contract-pane" aria-selected="true">
+                    <i class="fas fa-info-circle text-info mr-3px"></i>Thông tin hợp đồng
+                </a>
+            </li>
+
+            <li class="nav-item mr-1">
+                <a class="nav-link brc-success-m1 d-style p-3 bgc-h-success-l4 radius-0" id="handle-dossier" data-toggle="tab" href="#handle-dossier-pane" role="tab" aria-controls="handle-dossier-pane" aria-selected="false">
+                    <i class="fas fa-user-edit text-success mr-3px"></i>
+                    <span class="d-n-active">
+                        Xử lý công việc
+                    </span>
+                    <span class="d-active text-success-d1">
+                        Xử lý công việc
+                    </span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="card-body px-0 py-2">
+            <div class="tab-content tab-sliding border-0 px-0">
+                <div class="tab-pane show active text-95 px-25" id="infor-contract-pane" role="tabpanel" aria-labelledby="infor-contract">
+                    @{ Html.RenderAction("ViewContract", "Contract", new { area = "Major", contractId = Model.DossierId });}
+                </div>
+
+                <div class="tab-pane text-95 px-25" id="handle-dossier-pane" role="tabpanel" aria-labelledby="handle-dossier">
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.Partial("_ListViewSteps", Model)
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                @Html.TitleFor(model => model.InStepName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.InStepName, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Task_InStep") })
+                                    @Html.ValidationMessageFor(model => model.InStepName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /.card -->
+</div>

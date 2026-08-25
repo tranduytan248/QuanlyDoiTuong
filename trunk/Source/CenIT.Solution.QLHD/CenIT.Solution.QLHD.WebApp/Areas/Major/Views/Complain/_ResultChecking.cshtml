@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVComplainModel
+
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("Complain_ResultChecking")} - <b>[{Model.ComplainCode} - {AppProcessor.Messagor.GetMessage("Complain_Title")} {Model.Title}]</b>");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-tasks"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ResultChecking", "Complain", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ResultChecking", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ResultDetail")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#ResultChecking').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_ResultChecking").modal("hide");
+                    $("#ModalContent #modal_ResultChecking").on('hidden.bs.modal', function () {
+                        eval(response.message);
+                        _tableComplain.ajax.reload(null, false);
+                        response.status = undefined;
+                    });
+                } else {
+                    $("#ModalContent #modal_ResultChecking" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

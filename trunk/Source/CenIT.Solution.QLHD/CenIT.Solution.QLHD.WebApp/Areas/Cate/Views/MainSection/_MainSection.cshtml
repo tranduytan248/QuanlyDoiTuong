@@ -1,0 +1,49 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateMainSectionModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.MainSectionId)
+<div id="MainSection">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.MainSectionName, new { @class = "col-md-12 col-form-label pr-0 font-bold" })
+        <div class="col-md-12">
+            @Html.TextBoxFor(model => model.MainSectionName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("MainSection_Label_Name") })
+            @Html.ValidationMessageFor(model => model.MainSectionName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Cate_ContractTypeId, new { @class = "col-md-12 col-form-label pr-0 font-bold" })
+        <div class="col-md-9">
+            @*@Html.DropDownListFor(model => model.Cate_ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "col-md-10" })*@
+
+            <select id="Cate_ContractTypeId" name="Cate_ContractTypeId" class="form-control none-select2 selectpicker show-menu-arrow" data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("ContractType")" data-selected-text-format="count > 4">
+                @{
+                    var arrTypeContracts = new Dictionary<string, string> { { "1", "primary" }, { "2", "success" }, { "3", "info" }, { "4", "warning" }, { "5", "purple" } };
+
+                    foreach (var typeContract in Model.ListTypeContracts)
+                    {
+                        <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right my-auto mb-1 bgc-@arrTypeContracts[typeContract.Value] brc-@arrTypeContracts[typeContract.Value] '>@typeContract.Text</span>" value="@typeContract.Value">@typeContract.Text</option>
+                    }
+                }
+            </select>
+
+            @Html.ValidationMessageFor(model => model.Cate_ContractTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        @{
+            if (Model.Cate_ContractTypeId > 0)
+            {
+                @Html.Raw($"var typeContract = '{Model.Cate_ContractTypeId}';$('#Cate_ContractTypeId').selectpicker('val', typeContract);")
+            }
+            else
+            {
+                @Html.Raw("$('#Cate_ContractTypeId').selectpicker('refresh');")
+            }
+        }
+
+    });
+</script>

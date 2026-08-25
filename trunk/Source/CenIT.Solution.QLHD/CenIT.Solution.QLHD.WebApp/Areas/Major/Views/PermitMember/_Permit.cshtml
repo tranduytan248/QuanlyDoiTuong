@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Permission"), AppProcessor.Messagor.GetMessage("Manager_FieldViolated_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="fas fa-list-ol"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Permit", "PermitMember", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "PermitFieldViolation", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_PermitFieldViolation")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#PermitFieldViolation').ajaxForm({
+            success: function(response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_PermitFieldViolation").modal("hide");
+                    $("#ModalContent #modal_PermitFieldViolation").on('hidden.bs.modal',
+                        function() {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_PermitFieldViolation" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

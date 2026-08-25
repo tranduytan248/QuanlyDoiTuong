@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Modal_Title_CancelInv")} [{Model.InvNo}-{Model.Pattern}/{Model.Serial}]";
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Cancel", "Inv", new { area = "Invoice" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Inv_OnProcessSuccess(data, 'CancelInv')"
+    }, new { @class = "form-horizontal", id = "CancelInv" }))
+    {
+        <div id="bodyForm">
+	        @Html.Partial("_CancelInvBody")
+        </div>
+    }
+}

@@ -1,0 +1,56 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("LegislationDoc_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Add", "LegislationDoc", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "AddLegislationDoc", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_LegislationDoc")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#AddLegislationDoc').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_AddLegislationDoc #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableLegislationDoc.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_AddLegislationDoc form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_AddLegislationDoc").modal("hide");
+                        $("#ModalContent #modal_AddLegislationDoc").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableLegislationDoc.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_AddLegislationDoc" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+
+@section ContinueForm{
+
+}

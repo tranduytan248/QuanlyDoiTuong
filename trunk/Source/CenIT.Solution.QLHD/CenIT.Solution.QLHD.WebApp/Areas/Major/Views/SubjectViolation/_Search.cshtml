@@ -1,0 +1,53 @@
+﻿@using TSFramework.App.Processors
+@using Cores.Cate.Models
+@using Cores.Major.Models
+@model Modules.Major.Areas.Major.Models.SearchSubjectViolationModel
+@{
+    var listFields = ViewBag.ListFields as List<CateFieldModel> ?? new List<CateFieldModel>();
+    var listSubjects = ViewBag.ListSubjects as List<MajorSubjectModel> ?? new List<MajorSubjectModel>();
+}
+<div class="card dcard">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-row form-group align-items-center">
+                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Đối tượng:</div>
+                <div class="col-md-3">
+                    <select class="form-control" id="Search_SubjectId" name="SubjectId">
+                        <option value="">-- Tất cả đối tượng --</option>
+                        @foreach (var s in listSubjects)
+                        {
+                            <option value="@s.SubjectId">@s.FullName (@s.IdentityCardNumber)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Lĩnh vực:</div>
+                <div class="col-md-2">
+                    <select class="form-control" id="Search_FieldId" name="FieldId">
+                        <option value="">-- Tất cả lĩnh vực --</option>
+                        @foreach (var f in listFields)
+                        {
+                            <option value="@f.FieldId">[@f.FieldCode] @f.FieldName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-1 col-form-label text-sm-right pr-0 font-bold">Từ khóa:</div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.Key, new { @class = "form-control", placeholder = "Từ khóa..." })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableSubjectViolation.ajax.reload(null, false);"><i class="fa fa-search"></i>&nbsp;Tìm kiếm vi phạm</button>
+            </div>
+        </div>
+    </div>
+</div>

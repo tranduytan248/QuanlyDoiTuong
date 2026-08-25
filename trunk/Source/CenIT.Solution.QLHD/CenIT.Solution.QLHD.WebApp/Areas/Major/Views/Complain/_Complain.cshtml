@@ -1,0 +1,558 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVComplainModel
+
+@Html.AntiForgeryToken()
+
+<style type="text/css">
+    .ace-file-container {
+        max-height: calc(70vh);
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    #suggestionsContainer {
+        position: absolute !important;
+        z-index: 1000 !important;
+    }
+
+    #suggestionsList {
+        display: block !important;
+        max-height: 200px !important; /* Điều chỉnh chiều cao tối đa nếu cần thiết */
+        overflow-y: auto !important;
+    }
+</style>
+
+<div id="Complain" class="row">
+	<div class="col-12 col-md-6">
+		@Html.HiddenFor(model => model.ComplainId)
+		@Html.HiddenFor(model => model.SourceId)
+
+        @* lưu tọa độ *@
+        @*@Html.HiddenFor(model => model.Latitude, new { @id = "Latitude" })
+        @Html.HiddenFor(model => model.Longitude, new { @id = "Longitude" })*@
+
+		<div class="form-group row">
+			<span class="has-float-label input-floating-label col-12 text-danger-d2 brc-danger-m1">
+				@Html.TextAreaFor(model => model.Title, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Name") })
+				@Html.TitleFor(model => model.Title, new { @class = "floating-label text-grey-m3 text-500" })
+			</span>
+			@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger col-12" })
+		</div>
+		<div class="form-group row">
+			<span class="has-float-label input-floating-label col-12 text-danger-d2 brc-danger-m1">
+				@Html.TextAreaFor(model => model.Contents, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Complain_Contents") })
+				@Html.TitleFor(model => model.Contents, new { @class = "floating-label text-grey-m3 text-500" })
+			</span>
+            @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger col-12" })
+		</div>
+		
+		<div class="form-group row">
+			<span class="has-float-label input-floating-label col-8 brc-danger-m1">
+				@Html.SelectFor(model => model.ReflectBy, Model.ListUnionReflects, "", new { disabled = true, @class = "form-control col-11", placeholder = Html.DisplayNameFor(model => model.ReflectBy), onchange = "_onChangeCombo(this, '#Complain #ReflectName', true)" })
+				@Html.TitleFor(model => model.ReflectBy, new { @class = "floating-label text-grey-m3 text-500" })
+			</span>
+			<div class="col-4"></div>
+			@Html.HiddenFor(model => model.ReflectBy)
+			@Html.HiddenFor(model => model.ReflectName)
+		</div>
+
+		@{
+			if (Model.ComplainId != null && Model.ComplainId != Guid.Empty)
+			{
+				<hr />
+				<div class="form-group row">
+					<span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+						@Html.TextAreaFor(model => model.Reason, new { @class = "form-control shadow-none", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+						@Html.TitleFor(model => model.Reason, new { @class = "floating-label text-grey-m3 text-500" })
+					</span>
+					@Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger px-3" })
+				</div>}
+		}
+		
+		<hr />
+		<div class="form-group row">
+			<div class="col-md-12">
+				@Html.TextBoxFor(model => model.RefImages, new { type = "file", multiple = true, @class = "ace-file-input" })
+			</div>
+		</div>
+		@{
+			if (Model.ListRefImgs.Count > 0)
+			{
+				<hr />
+				<div class="row mx-0">
+					@{
+						foreach (var k in Model.ListRefImgs.Keys)
+						{
+							int idx;
+							if (k == 0)
+							{
+								idx = 0;
+								<!-- column 1 -->
+								<div class="col-6 col-sm-4 col-md-3 text-center px-2">
+									@foreach (var img in Model.ListRefImgs[k])
+									{
+										<div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+											<a href="#" class="show-lightbox">
+												<img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+											</a>
+											<div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+												<div class="d-flex justify-content-center action-buttons text-110">
+													<a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+														<i class="fa fa-times text-danger-m2"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+										idx += 1;
+									}
+								</div>
+							}
+							else if (k == 1)
+							{
+								idx = 0;
+								<!-- column 2 -->
+								<div class="col-6 col-sm-4 col-md-3 text-center px-2">
+									@foreach (var img in Model.ListRefImgs[k])
+									{
+										<div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+											<a href="#" class="show-lightbox">
+												<img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+											</a>
+											<div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+												<div class="d-flex justify-content-center action-buttons text-110">
+													<a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+														<i class="fa fa-times text-danger-m2"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+										idx += 1;
+									}
+								</div>
+							}
+							else if (k == 2)
+							{
+								idx = 0;
+								<!-- column 3 -->
+								<div class="col-6 col-sm-4 col-md-3 text-center px-2">
+									@foreach (var img in Model.ListRefImgs[k])
+									{
+										<div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+											<a href="#" class="show-lightbox">
+												<img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+											</a>
+											<div class="mt-hover position-tl w-100 bgc-black-tp5 p-25">
+												<div class="d-flex justify-content-center action-buttons text-110">
+													<a href="/Cate/Doc/DeleteDoc?fileId=@img.FileId" class="mx-2" data-modal="true" data-modal-id="DeleteDoc">
+														<i class="fa fa-times text-danger-m2"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+										idx += 1;
+									}
+								</div>
+							}
+
+						}
+					}
+
+				</div>
+
+			}
+		}
+
+	</div>
+	<div class="col-12 col-md-6">
+		<div class="form-group row">
+			<label for="Status" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Complain_ResultChecking")</label>
+			<label class="col-form-label col-4">
+				@Html.RadioButtonFor(model => model.Status, (int)EnumComplainHandleStatus.ForwardToHandle, new { disabled = true, id = "ForwardToHandle", onchange = "_onChangeStatus(this);" })
+				@Html.Label(AppProcessor.Messagor.GetMessage("HandleComplain_ForwardToHandle"), new { @for = "ForwardToHandle" })
+			</label>
+		</div>
+		<div class="form-group row">
+			@Html.TitleFor(model => model.Note, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+			<div class="col-md-8">
+				@Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Complain_Note") })
+				@Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="RefFiles" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold text-danger">@AppProcessor.Messagor.GetMessage("Doc_Ref") (*)</label>
+			<div class="col-md-8">
+				@Html.FileFor(model => model.RefFiles, ".doc,.docx,.pdf", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+				@Html.ValidationMessageFor(model => model.RefFiles, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+        <div class="form-group row">
+            <label for="" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold mt-2">Địa chỉ vi phạm</label>
+            <div class="col-md-8 input-floating-label text-blue-d2 brc-blue-m1">
+                <input id="searchInput" type="text" placeholder="Tìm kiếm địa chỉ..." class="form-control shadow-none" />
+                <span class="floating-label text-grey-m3">
+                    Tìm kiếm địa chỉ... 
+                </span>
+                <!-- Container cho danh sách gợi ý -->
+                <div id="suggestionsContainer" class="dropdown">
+                    <ul id="suggestionsList" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <!-- Danh sách gợi ý sẽ được hiển thị ở đây -->
+                    </ul>
+                </div>
+            </div>
+            @*<div class="col-md-3 mt-3">
+                <button id="searchButton" class="btn btn-outline-primary" type="button">Tìm kiếm</button>
+            </div>*@
+            @*<span class="col-sm-3"></span>*@
+            <div class="col-md-12 mt-3 border border-2 brc-black-m2">
+                <!-- Bản đồ sẽ được hiển thị ở đây -->
+                <div id='map_canvas' style="width:100%; height: 300px;"></div>
+                <!-- Thêm hai thẻ div để hiển thị tọa độ -->
+                <div class="col-md-12 row mt-3 mb-3 font-bold">
+                    <div class="col-md-6 text-center" id="latitudeDisplay">Vĩ độ: </div>
+                    <div class="col-md-6 text-center" id="longitudeDisplay">Kinh độ: </div>
+                </div>
+                <div class="col-md-12 justify-content-center">
+                    <button type="button" class="btn btn-outline-primary col-md" id="viewOnGoogleMapsBtn">Xem địa chỉ đã chọn trên Google Maps</button>
+                </div>
+                <p class="mt-3">* Hướng dẫn: Giữ và kéo điểm đánh dấu đến vị trí để thực hiện lấy tọa độ </p>
+            </div>
+        </div>
+
+	</div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script type="text/javascript">
+    //debugger;
+    $(function () {
+        // multiple with image preview
+        $('#RefImages').aceFileInput({
+            style: 'drop',
+            droppable: true,
+
+            container: 'border-1 border-dashed brc-grey-l1 brc-h-info-m2 shadow-sm table-responsive',
+
+            placeholderClass: 'text-125 text-600 text-grey-l1 my-2',
+            placeholderText: 'Kéo thả ảnh vào đây hoặc nhấn để chọn',
+            placeholderIcon: '<i class="fa fa-cloud-upload-alt fa-3x text-info-m2 my-2"></i>',
+
+            //previewSize: 64,
+            thumbnail: 'small',
+
+            //allowExt: 'gif|jpg|jpeg|png|webp|svg',
+            //allowMime: 'image/png|image/jpeg',
+            allowMime: 'image/*',
+
+            //maxSize: 100000,
+        });
+
+        let fileInput = document.getElementById('RefImages')
+        fileInput.addEventListener('changed.ace.file', function (e) {
+            // get dropped/selected files
+            $(this)[0].files = fileListFrom(e.$_selectedFiles.list);
+             //console.log(e.$_selectedFiles.method)
+             //console.log(e.$_selectedFiles.list)
+        })
+
+        //fileInput.addEventListener('invalid.ace.file', function (e) {
+        //    // console.log(e.$_fileErrors)
+        //})
+
+        //fileInput.addEventListener('preview_failed.ace.file', function (e) {
+        //    // console.log(e.$_previewError)
+        //    // if(e.$_previewError && e.$_previewError.code == 2) alert(e.$_previewError.filename + ' is not an image!')
+        //})
+
+        //fileInput.addEventListener('clear.ace.file', function (e) {
+        //    // e.preventDefault()
+        //})
+
+        // some available methods
+
+        // $('#RefFiles').aceFileInput('disable')
+        // $('#RefFiles').aceFileInput('startLoading')
+
+        // $('#RefFiles').aceFileInput('showFileList', [{name: 'avatar3.jpg', type: 'image', path: 'assets/image/avatar/avatar3.jpg'} , {name: 'avatar2.jpg', type: 'image', path: 'assets/image/avatar/avatar2.jpg'}])
+
+        // $('#ace-file-input1').aceFileInput('showFileList', [{name: '2.txt', type: 'document'}])
+        // $('#ace-file-input1').aceFileInput('resetInput');
+    });   
+
+</script>
+
+<script type="text/javascript">
+
+    function Doc_OnProcessSuccess(response, formId) {
+        $("#ModalContent #modal_" + formId).modal("hide");
+        $("#ModalContent #modal_" + formId).on("hidden.bs.modal", function () {
+            if (response.status != undefined) {
+                eval(response.message);
+                $("#" + response.fileId).remove();
+                response.status = undefined;
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    jQuery(function ($) {
+        _initGalary("#Complain");
+    });
+
+</script>
+
+
+<script>
+    // Khóa API từ Google Cloud Platform
+    var googleMapsAPIKey = "AIzaSyBSfrxuLaMDEe0Nn5hhqaq0C0eDh7Jzhxk";
+
+    // Địa chỉ mặc định để hiển thị trên bản đồ
+    var defaultAddress = "04 Lê Lợi, Xương Huân, Nha Trang, Khánh Hòa 650000, Việt Nam";
+
+    // Biến để lưu trữ tọa độ
+    var _Latitude;
+    var _Longitude;
+
+    // Biến global để lưu trữ hiển thị tọa độ
+    var latitudeDisplay = document.getElementById('latitudeDisplay');
+    var longitudeDisplay = document.getElementById('longitudeDisplay');
+
+    // Sự kiện xảy ra khi trang web đã được tải xong
+    $(document).ready(function () {
+        // Gọi hàm để thiết lập và hiển thị bản đồ
+        initializeMap();
+
+        // Lắng nghe sự kiện click trên toàn bộ trang web
+        document.addEventListener('click', function (event) {
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            var searchInput = document.getElementById('searchInput');
+
+            // Kiểm tra xem phần tử có tồn tại không
+            if (!suggestionsContainer || !searchInput) {
+                return;
+            }
+
+            // Kiểm tra xem sự kiện click có xảy ra trong input hay phần tử chứa danh sách gợi ý hay không
+            var isClickInsideInput = searchInput.contains(event.target);
+            var isClickInsideSuggestions = suggestionsContainer.contains(event.target);
+
+            // Nếu không phải là input hoặc phần tử chứa danh sách gợi ý, ẩn danh sách gợi ý
+            if (!isClickInsideInput && !isClickInsideSuggestions) {
+                hideSuggestions();
+            }
+        });
+
+        // Hàm để thiết lập và hiển thị bản đồ
+        function initializeMap() {
+            hideSuggestions();
+            // Gọi hàm để lấy tọa độ từ địa chỉ
+            getCoordinatesFromAddress(defaultAddress);
+        }
+
+        // Hàm để lấy tọa độ từ địa chỉ sử dụng Google Geocoding API
+        function getCoordinatesFromAddress(address) {
+            // Tạo URL query để gửi lời gọi API
+            var queryURL = 'https://maps.googleapis.com/maps/api/geocode/json?key=' + googleMapsAPIKey + '&address=' + address;
+
+            // Gửi lời gọi API sử dụng jQuery
+            $.getJSON(queryURL, function (data) {
+                // Kiểm tra xem lời gọi API có thành công không
+                if (data.status === 'OK') {
+                    // Lấy thông tin vị trí từ kết quả API
+                    var locationData = data.results[0];
+                    var latitude = locationData.geometry.location.lat;
+                    var longitude = locationData.geometry.location.lng;
+
+                    // Gọi hàm để hiển thị bản đồ với tọa độ đã lấy được
+                    displayMap(latitude, longitude);
+                } else {
+                    // Hiển thị thông báo nếu có lỗi khi lấy tọa độ
+                    console.error('Lỗi khi lấy tọa độ từ địa chỉ: ' + data.status);
+                }
+            });
+        }
+
+        // Hàm để cập nhật tọa độ và hiển thị
+        function updateCoordinates(latitude, longitude) {
+            // Cập nhật hiển thị tọa độ
+            latitudeDisplay.textContent = 'Vĩ độ: ' + latitude;
+            longitudeDisplay.textContent = 'Kinh độ: ' + longitude;
+
+            //Cập nhật giá trị tọa độ
+            _Latitude = latitude;
+            _Longitude = longitude;
+
+            // Cập nhật giá trị tọa độ cho hidden fields
+            $('#Latitude').val(latitude);
+            $('#Longitude').val(longitude);
+        }
+
+        // Hàm để hiển thị bản đồ với tọa độ được cung cấp
+        function displayMap(latitude, longitude) {
+            // Gọi hàm cập nhật tọa độ và hiển thị
+            updateCoordinates(latitude, longitude);
+
+            // Tạo đối tượng bản đồ
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                zoom: 18,
+                center: new google.maps.LatLng(latitude, longitude),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // Tạo điểm đánh dấu có thể kéo
+            var draggableMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(latitude, longitude),
+                draggable: true
+            });
+
+            // Lắng nghe sự kiện khi điểm đánh dấu được kéo
+            google.maps.event.addListener(draggableMarker, 'dragend', function (event) {
+                var newLatitude = event.latLng.lat();
+                var newLongitude = event.latLng.lng();
+
+                // Gọi hàm cập nhật tọa độ và hiển thị
+                updateCoordinates(newLatitude, newLongitude);
+            });
+
+            // Đặt điểm đánh dấu lên bản đồ
+            draggableMarker.setMap(map);
+
+            // Thêm thanh tìm kiếm địa chỉ
+            var searchInput = document.getElementById('searchInput');
+            var searchBox = new google.maps.places.SearchBox(searchInput);
+
+            // Lắng nghe sự kiện khi người dùng chọn một địa chỉ từ thanh tìm kiếm
+            searchBox.addListener('places_changed', function () {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                var newLatitude = places[0].geometry.location.lat();
+                var newLongitude = places[0].geometry.location.lng();
+
+                $('#Latitude').val(newLatitude);
+                $('#Longitude').val(newLongitude);
+                
+                map.setCenter(new google.maps.LatLng(newLatitude, newLongitude));
+                draggableMarker.setPosition(new google.maps.LatLng(newLatitude, newLongitude));
+            });
+
+            // Lắng nghe sự kiện khi người dùng nhập vào trường tìm kiếm
+            searchInput.addEventListener('input', function (e) {
+                var searchQuery = searchInput.value;
+
+                if (searchQuery.trim() !== '') {
+                    getSuggestions(searchQuery);
+                } else {
+                    hideSuggestions();
+                }
+            });
+
+            // Lắng nghe sự kiện click của nút tìm kiếm
+            document.getElementById('viewOnGoogleMapsBtn').addEventListener('click', function () {
+                // Tạo liên kết và mở trong một tab mới
+                var googleMapsLink = createGoogleMapsLink(_Latitude, _Longitude);
+                window.open(googleMapsLink, '_blank');
+            });
+
+            // Lắng nghe sự kiện keydown trên ô tìm kiếm
+            searchInput.addEventListener('keydown', function (e) {
+                // Kiểm tra nếu phím bấm là "Enter"
+                if (e.key === 'Enter') {
+                    // Lấy giá trị từ ô tìm kiếm
+                    var searchQuery = searchInput.value.trim();
+
+                    // Kiểm tra xem ô tìm kiếm có giá trị không
+                    if (searchQuery !== '') {
+                        // Gọi hàm để lấy tọa độ từ địa chỉ
+                        getCoordinatesFromAddress(searchQuery);
+
+                        // Đồng thời tắt phần gợi ý
+                        hideSuggestions();
+                    }
+                }
+            });
+        }
+
+        // Hàm để lấy danh sách gợi ý từ Google Places AutocompleteService
+        function getSuggestions(query) {
+            // Tạo yêu cầu để lấy danh sách gợi ý
+            var request = {
+                input: query,
+                types: ['geocode'],
+            };
+
+            // Sử dụng AutocompleteService để lấy danh sách gợi ý
+            var service = new google.maps.places.AutocompleteService();
+            service.getPlacePredictions(request, function (predictions, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // Hiển thị danh sách gợi ý nếu thành công
+                    showSuggestions(predictions);
+                } else {
+                    // Hiển thị thông báo lỗi nếu có vấn đề
+                    console.error('Lỗi khi lấy danh sách gợi ý: ' + status);
+                }
+            });
+        }
+
+        // Hàm để hiển thị danh sách gợi ý
+        function showSuggestions(predictions) {
+            var suggestionsList = document.getElementById('suggestionsList');
+
+            // Xóa nội dung cũ của danh sách
+            suggestionsList.innerHTML = '';
+
+            // Tạo mục gợi ý cho mỗi kết quả
+            predictions.forEach(function (prediction) {
+                var suggestionItem = document.createElement('li');
+
+                // Giới hạn độ dài của địa chỉ và thêm "..." nếu quá dài
+                var displayText = prediction.description.length > 60
+                    ? prediction.description.substring(0, 60) + '...'
+                    : prediction.description;
+
+                suggestionItem.textContent = displayText;
+                suggestionItem.title = prediction.description; // Hiển thị toàn bộ địa chỉ khi di chuột qua
+
+                suggestionItem.className = 'dropdown-item';
+
+                // Lắng nghe sự kiện khi người dùng chọn một gợi ý
+                suggestionItem.addEventListener('click', function () {
+                    getCoordinatesFromAddress(prediction.description);
+
+                    // Đồng thời tắt phần gợi ý
+                    hideSuggestions();
+
+                    // Đặt giá trị cho ô tìm kiếm
+                    document.getElementById('searchInput').value = prediction.description;
+                });
+
+                // Thêm mục gợi ý vào danh sách
+                suggestionsList.appendChild(suggestionItem);
+            });
+
+            // Hiển thị container chứa danh sách gợi ý
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.style.display = 'block';
+        }
+
+        // Hàm để ẩn danh sách gợi ý
+        function hideSuggestions() {
+            var suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.style.display = 'none';
+        }
+
+        // Hàm để tạo liên kết đến Google Maps
+        function createGoogleMapsLink(latitude, longitude) {
+            return 'https://www.google.com/maps/search/?api=1&query=' + latitude + ',' + longitude;
+        }
+    });
+
+</script>

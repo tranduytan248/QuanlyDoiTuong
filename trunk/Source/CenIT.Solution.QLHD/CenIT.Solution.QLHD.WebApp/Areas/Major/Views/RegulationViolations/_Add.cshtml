@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("RegulationViolations_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "RegulationViolations", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "RegulationViolations_OnProcessSuccess(data, 'AddRegulationViolations')"
+    }, new { @class = "form-horizontal", id = "AddRegulationViolations" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_RegulationViolations")
+        </div>
+    }
+}
+
+@section ContinueForm{
+
+}

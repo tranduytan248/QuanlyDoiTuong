@@ -1,0 +1,183 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SelectViolationModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("RegulationViolations_Title");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("SelectViolation", "RegulationViolations", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "SelectViolation", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial(Model.ViolationViewName)
+        </div>
+    }
+
+    <script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+    <script type="text/javascript">
+
+        //debugger;
+
+        $(document).ready(function () {
+
+            var fieldViolateId = '@Model.FieldViolatedId';
+
+            $('[name="FineAmountFormatter"],[name="FineAmountMin"],[name="FineAmountMax"]').maskNumber({ integer: true });
+
+            //var violatedConstructionId = $('#Construction #Construction_ViolatedConstructionId').val();
+            //if (violatedConstructionId != undefined && violatedConstructionId != '') {
+            //    $("#SelectViolation select#ViolatedConstructionId").val(violatedConstructionId).trigger('change.select2');
+            //}
+
+            _initConstructionParticipant(fieldViolateId); // Trường hợp vi phạm
+
+            var isProcessing = false;
+
+            $('[name="FineAmountFormatter"]').on("focusout", function () {
+                if (isProcessing) return;
+                isProcessing = true;
+                var minFineAmount = $('#FineAmountMin').val().replace(/\D/g, '');
+                var maxFineAmount = $('#FineAmountMax').val().replace(/\D/g, '');
+
+                minFineAmount = minFineAmount != null && minFineAmount != undefined && minFineAmount.length > 0 ? parseFloat(minFineAmount) : 0;
+                maxFineAmount = maxFineAmount != null && maxFineAmount != undefined && maxFineAmount.length > 0 ? parseFloat(maxFineAmount) : 0;
+
+                var value = $(this).val();
+                value = value.replace(/\D/g, '');
+
+                var fineAmount = value != null && value != undefined && value.length > 0 ? parseFloat(value) : 0;
+
+                if (fineAmount < minFineAmount) {
+                    fineAmount = minFineAmount;
+                }
+                if (fineAmount > maxFineAmount) {
+                    fineAmount = maxFineAmount;
+                }
+
+                $('[name="FineAmount"]').val(fineAmount);
+                $("#SelectViolation [name=FineAmountFormatter]").val(fineAmount).trigger('keyup');
+                isProcessing = false;
+            });
+        });
+
+        function _initConstructionParticipant(fieldViolateId) {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ListConstructionParticipant", "RegulationViolations")?fieldViolateId=" + fieldViolateId,
+                dataType: "JSON",
+                success: function (response) {
+                    $("#SelectViolation select#ConstructionParticipantId").empty();
+                    $("#SelectViolation select#ConstructionParticipantId").append('<option value=""></option>');
+                    $.each(response, function (index, item) {
+                        $("#SelectViolation select#ConstructionParticipantId").append('<option value="' + item.Value + '">' + item.Text + "</option>");
+                    });
+
+                    if (typeof selectedConstructionParticipant != "undefined") {
+                        $("#SelectViolation select#ConstructionParticipantId").val(selectedConstructionParticipant).trigger('change');
+                    }
+                }
+            });
+        }
+
+        function _initViolationBehavior(constructionParticipantId) {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ListViolationBehavior", "RegulationViolations")?constructionParticipantId=" + constructionParticipantId,
+                dataType: "JSON",
+                success: function (response) {
+                    $("#SelectViolation select#ViolationBehaviorId").empty();
+                    $("#SelectViolation select#ViolationBehaviorId").append('<option value=""></option>');
+                    $.each(response, function (index, item) {
+                        $("#SelectViolation select#ViolationBehaviorId").append('<option value="' + item.Value + '">' + item.Text + "</option>");
+                    });
+                }
+            });
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        function _onChangeConstructionParticipant(cbb, eleName) {
+            $(eleName).val($(cbb).children("option:selected").text());
+            var constructionParticipant = $(cbb).val();
+            if (constructionParticipant == null || constructionParticipant == undefined || constructionParticipant.length <= 0) return;
+
+            $("#SelectViolation select#ViolationBehaviorId").empty();
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ListViolationBehavior", "RegulationViolations")?constructionParticipantId=" + constructionParticipant,
+                dataType: "JSON",
+            success: function (response) {
+                $("#SelectViolation select#ViolationBehaviorId").append('<option value=""></option>');
+                $.each(response, function (index, item) {
+                    $("#SelectViolation select#ViolationBehaviorId").append('<option value="' + item.Value + '">' + item.Text + "</option>");
+                });
+            }
+        });
+        }
+
+        function _onChangeSelect2(cbb, eleName, isOptgroup) {
+            if (isOptgroup) {
+                $(eleName).val($(cbb).children("optgroup").children("option:selected").text());
+            } else {
+                $(eleName).val($(cbb).children("option:selected").text());
+            }
+            _initRegulation();
+        }
+
+        function _saveViolationInfo() {
+            /*
+            Thông tin cần lưu
+                - HanhViViPham
+                - QuyDinh
+                - ConstructionParticipantId
+                - TruongHopViPham
+                - ViolatedConstructionId
+                - CongTrinhViPham
+                - RegulationId
+            */
+
+            $("#DecisionPenalize [name=HanhViViPham]").val($("#SelectViolation [name=ViolationBehavior]").val().replace(/[\r\n]/g, "")).trigger("keyup");
+            $("#DecisionPenalize [name=QuyDinhXPHC]").val($("#SelectViolation [name=RegulationName]").val()).trigger("keyup");
+            $("#DecisionPenalize [name=ConstructionParticipantId]").val($("#SelectViolation [name=ConstructionParticipantId]").val());
+            $("#DecisionPenalize [name=TruongHopViPham]").val($("#SelectViolation [name=ConstructionParticipant]").val());
+            $("#DecisionPenalize [name=ViolatedConstructionId]").val($("#SelectViolation [name=ViolatedConstructionId]").val());
+
+            var violatedConstruction = $("#SelectViolation [name=ViolatedConstruction]").val();
+            if (violatedConstruction != null && violatedConstruction != undefined) {
+                $("#DecisionPenalize [name=CongTrinhViPham]").val(violatedConstruction.replace(/[\r\n]/g, ""));
+            }
+
+            $("#Construction #Construction_ViolatedConstructionId").val($("#SelectViolation [name=ViolatedConstructionId]").val()).trigger('change');
+            $("#Construction #Construction_ViolatedConstructionName").val($("#SelectViolation [name=ViolatedConstruction]").val());
+
+            $("#DecisionPenalize [name=RegulationId]").val($("#SelectViolation [name=RegulationId]").val());
+            $("#DecisionPenalize [name=TienPhat_Number]").val($("#SelectViolation [name=FineAmount]").val());
+
+            $("#DecisionPenalize [name=KhacPhucHauQua]").val($("#SelectViolation [name=RemedialMeasure]").val());
+            $("#DecisionPenalize [name=QDKhacPhucHauQua]").val($("#SelectViolation [name=RemediationRegulationName]").val());
+            $("#DecisionPenalize [name=CCKhauTruTaiKhoan]").val($("#SelectViolation [name=DeductionAccount]").val());
+            $("#DecisionPenalize [name=QuyDinhCCKhauTruTaiKhoan]").val($("#SelectViolation [name=RegulationDeductionAccount]").val());
+        }
+
+    </script>
+}
+
+@section SubmitControl{
+    <button type="button" id="btnSave" class="btn px-4 btn-outline-primary mb-1 disabled" data-dismiss="modal" onclick="_saveViolationInfo();"><i class="fa fa-save"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Save")</button>
+}

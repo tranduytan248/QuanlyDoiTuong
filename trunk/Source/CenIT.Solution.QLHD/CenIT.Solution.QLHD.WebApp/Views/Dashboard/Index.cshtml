@@ -1,0 +1,331 @@
+﻿@using Syncfusion.EJ2
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Dashboard_Title");
+}
+
+@section PluginCss
+{
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/tiny-date-picker.css">
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/date-range-picker.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+    <style type="text/css">
+        .datepicker.datepicker-dropdown.dropdown-menu {
+            z-index: 998 !important;
+        }
+
+        .dp-daterange-picker.visible {
+            z-index: 999 !important;
+        }
+    </style>
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+
+}
+
+@Html.Partial("_Search")
+
+@*@Html.Partial("_DataGrid")*@
+
+<div class="card bcard h-auto">
+    <div class="p-2 table-responsive-md p-2">
+        <table id="ListContracts" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table">
+            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1 text-center">
+                <tr>
+                    <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_ContractNo")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_ReceivedOn")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_GiveResultOn")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Customer_Title")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Purpose_Title")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_Address")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_Status")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_RemainingTime")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Procedure_Title")</th>
+                    <th class="">@AppProcessor.Messagor.GetMessage("Contract_Note")</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section PluginJs
+{
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+    <script src="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/dist/date-range-picker.js"></script>
+}
+
+@section BottomScript
+{
+    @*@Html.EJS().ScriptManager()
+
+        <script type="text/javascript">
+            var ajax = new ej.base.Ajax(location.origin + '/Contents/Modules/Major/plugins/ej2/locale/vi.json', 'GET', false);   //load the de json culture file
+            ajax.send().then((e) => {
+                var loader = JSON.parse(e);
+                ej.base.L10n.load(
+                    loader
+                );
+                ej.base.setCulture('vi');      //Set the culture for the ASP.NET MVC controls
+            });
+        </script>*@
+
+    <script type="text/javascript">
+        $(function () {
+            var permissions = function () { return @Html.Raw(Json.Encode(Model.Permissions)); }();
+            window['Permissions'] = permissions;
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        //$(document).ready(function () {
+        //    // bootstrap select
+        //    $.fn.selectpicker.Constructor.DEFAULTS.tickIcon = 'far fa-check-square text-125 text-danger-m3 my-2';
+        //    $('#Search .selectpicker').selectpicker({
+        //        selectAllText: "Chọn tất cả",
+        //        deselectAllText: "Bỏ chọn tất cả"
+        //    });
+        //});
+
+        var _ContractActionURLs = {
+            Contract_GetData: "@Url.Action("Get","Dashboard", new{area=""})"
+        };
+
+        var _tableContracts;
+
+        jQuery(function ($) {
+            _tableContracts = $("#ListContracts").DataTable({
+                "Responsive": true,
+                "language": {
+                    "processing": '<div id="tableLoading" class="pageload-overlay show pageload-loading" data-opening="M 0,0 80,-10 80,60 0,70 0,0" data-closing="M 0,-10 80,-20 80,-10 0,0 0,-10" style=""><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 80 60" preserveAspectRatio="none"><path d="M 0,70 80,60 80,80 0,80 0,70"></path></svg></div>'
+                },
+                //"order": [[0, 'desc']],
+                "pageLength": 50,
+                "lengthChange": true,
+                "processing": true,
+                "serverSide": true,
+                "ajax":
+                {
+                    "url": _ContractActionURLs.Contract_GetData,
+                    "type": "POST",
+                    "dataType": "JSON",
+                    "data": {
+                        "SearchValue": function () {
+                            return $("#Search #SearchValue").val() != null &&
+                                $("#Search #SearchValue").val().length > 0
+                                ? $("#Search #SearchValue").val()
+                                : "";
+                        },
+                        "FromDate": function () {
+                            return $("#Search #FromDate").val() != null &&
+                                $("#Search #FromDate").val().length > 0
+                                ? $("#Search #FromDate").val()
+                                : "";
+                        },
+                        "ToDate": function () {
+                            return $("#Search #ToDate").val() != null &&
+                                $("#Search #ToDate").val().length > 0
+                                ? $("#Search #ToDate").val()
+                                : "";
+                        },
+                        "GiveResultFromDate": function () {
+                            return $("#Search #GiveResultFromDate").val() != null &&
+                                $("#Search #GiveResultFromDate").val().length > 0
+                                ? $("#Search #GiveResultFromDate").val()
+                                : "";
+                        },
+                        "GiveResultToDate": function () {
+                            return $("#Search #GiveResultToDate").val() != null &&
+                                $("#Search #GiveResultToDate").val().length > 0
+                                ? $("#Search #GiveResultToDate").val()
+                                : "";
+                        },
+                        "ContractStatus": function () {
+                            return $("#Search select#ListContractStatusIds").val() != null &&
+                                $("#Search select#ListContractStatusIds").val().length > 0
+                                ? $("#Search select#ListContractStatusIds").val()
+                                : "";
+                        },
+                        "TypeContractIds": function () {
+                            return $("#Search select#ListTypeContractIds").val() != null &&
+                                $("#Search select#ListTypeContractIds").val().length > 0
+                                ? $("#Search select#ListTypeContractIds").val()
+                                : "";
+                        },
+                        "TypeCusIds": function () {
+                            return $("#Search select#ListTypeCusIds").val() != null &&
+                                $("#Search select#ListTypeCusIds").val().length > 0
+                                ? $("#Search select#ListTypeCusIds").val()
+                                : "";
+                        },
+                        "UnionIds": function () {
+                            return $("#Search select#ListUnionIds").val() != null &&
+                                $("#Search select#ListUnionIds").val().length > 0
+                                ? $("#Search select#ListUnionIds").val()
+                                : "";
+                        },
+                        "TypeTermIds": function () {
+                            return $("#Search select#ListTypeTermIds").val() != null &&
+                                $("#Search select#ListTypeTermIds").val().length > 0
+                                ? $("#Search select#ListTypeTermIds").val()
+                                : "";
+                        },
+                    }
+                },
+
+                classes: {
+                    sLength: "dataTables_length text-left w-auto",
+                },
+
+                buttons: {
+                    dom: {
+                        button: {
+                            className: 'btn' //remove the default 'btn-secondary'
+                        },
+                        container: {
+                            className: 'dt-buttons btn-group bgc-white-tp2 text-right w-auto'
+                        }
+                    },
+
+                    buttons: [
+                        {
+                            "extend": "colvis",
+                            "text": "<i class='far fa-eye text-125 text-dark-m2'></i> <span class='d-none'>Ẩn/hiện cột</span>",
+                            "className": "btn-light-default btn-bgc-white btn-h-outline-primary btn-a-outline-primary",
+                            columns: ':not(:first)'
+                        }
+                    ]
+                },
+
+                "columns": [
+                    {
+                        "data": "",
+                        "defaultContent": "1",
+                        "render": function (data, type, row, meta) {
+                            return meta.settings._iDisplayStart + meta.row + 1;
+                        }
+                    },
+                    {
+                        "data": "ContractNoInfo",
+                        "defaultContent": "",
+                        //"render": function (data, type, row, meta) {
+                        //    return data;
+                        //}
+                    },
+                    {
+                        "data": "ConfirmOn",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display" && data != null) {
+                                return moment(data).format("HH:mm:ss DD/MM/YYYY")
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "GiveResultOn",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display" && data != null) {
+                                return moment(data).format("DD/MM/YYYY")
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "CusName",
+                        "defaultContent": "",
+                        //"render": function (data, type, row, meta) {
+                        //    return data;
+                        //}
+                    },
+                    {
+                        "data": "PurposeName",
+                        "defaultContent": "",
+                        //"render": function (data, type, row, meta) {
+                        //    return data;
+                        //}
+                    },
+                    {
+                        "data": "Address",
+                        "defaultContent": "",
+                        //"render": function (data, type, row, meta) {
+                        //    return data;
+                        //}
+                    },
+                    {
+                        "data": "StatusName",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display") {
+                                var arrStatusContracts = { "-1": "info", "0": "warning", "1": "primary", "2": "secondary", "3": "success", "4": "purple", "99": "danger" };
+                                return '<div class="mx-2 my-auto"><span class="badge bgc-{0} brc-{0} text-white badge-lg arrowed arrowed-in-right mb-1">{1}</span></div>'.format(arrStatusContracts[row.Status], data);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "RemainingTime",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (row.Status == 1) {
+                                if (type == 'display') {
+                                        if (data < 0) {
+                                            return '<span class="text-md text-danger-m1 text-500">{0}</span>'.format(data);
+                                        } else {
+                                            return '<span class="text-md text-500">{0}</span>'.format(data);
+                                        }
+                                }
+                                return data;
+                            }
+                        }
+                    },
+                    {
+                        "data": "ContractId",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display" && row.Status > 0) {
+                                var html = "";
+                                html += _renderButton(true,
+                                    "Activity",
+                                    "btn px-4 btn-outline-info mr-1 v-hover",
+                                    "/Major/Dossier/Activity/" + data,
+                                    '<i class="fas fa-clipboard-list text-120"></i>',
+                                    "Quy trình xử lý", "1024", "data-aside-placement='right' data-aside-dismiss=true");
+
+                                return html;
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "data": "",
+                        "defaultContent": "",
+                        //"render": function (data, type, row, meta) {
+                        //    return data;
+                        //}
+                    }
+                ],
+
+                "createdRow": function (row, data, dataIndex) {
+                    if (data.CanEdit && data.Status != 99 && data.Status > 0 && data.RemainingTime < 0) {
+                        $(row).addClass('bgc-danger-l4');
+                    }
+                }
+            });
+
+            $('.table-tools-col').find('.dataTables_filter label').remove();
+        })
+
+    </script>
+}

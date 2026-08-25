@@ -1,0 +1,26 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = "Cập nhật Lĩnh vực";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-edit"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Edit", "Field", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Field_OnProcessSuccess(data, 'EditField')"
+    }, new { @class = "form-horizontal", id = "EditField" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Field")
+        </div>
+    }
+}

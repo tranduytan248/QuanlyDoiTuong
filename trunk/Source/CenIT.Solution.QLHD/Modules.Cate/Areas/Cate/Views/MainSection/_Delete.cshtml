@@ -1,0 +1,25 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateMainSectionModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("MainSection_Label_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Delete", "MainSection", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "MainSection_OnProcessSuccess(data, 'DeleteMainSection')"
+    }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.MainSectionId)
+        @Html.HiddenFor(model => model.MainSectionName)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

@@ -1,0 +1,199 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.DetailContract
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Detail"), AppProcessor.Messagor.GetMessage("Contract_Label_Title"));
+    Layout = "~/Views/Home/_PageHome.cshtml";
+}
+<link href="~/Views/Home/pageHome-style.css" rel="stylesheet" />
+
+<div class="body-content magin-QRbody">
+    <div class="input-form pdrightQR">
+        <div class="pt-3 mt-3" style="display: flex; justify-content: flex-end;">
+            <a href="@Url.Action("Index", "Home")" class="btn px-4 btn-success mr-1 v-hover">@AppProcessor.Messagor.GetMessage("BackHome")</a>
+        </div>
+        @if (Model.ContractModel == null)
+        {
+            <div>
+                <div class="mt-3"><h5 class="font-bold text-center">@AppProcessor.Messagor.GetMessage("Contract_Infor")</h5></div>
+            </div>
+            <div>
+                <p class="text-center">@AppProcessor.Messagor.GetMessage("NoData")</p>
+            </div>
+        }
+        else
+        {
+            <div class="pt-2 pb-2">
+                <div>
+                    <div class="mt-3"><h5 class="font-bold">@AppProcessor.Messagor.GetMessage("Contract_Infor")</h5></div>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="row col-md-6">
+                            <div class="col-md-5 text-md-right">
+                                <span class="font-bold">@AppProcessor.Messagor.GetMessage("ContractNumber"):</span>
+                            </div>
+                            <div class="col-md-7">
+                                <span>@Model.ContractModel.ContractNo/@Model.ContractModel.ContractSignal</span>
+                            </div>
+                        </div>
+                        <div class="row col-md-6">
+                            <div class="col-md-5 text-md-right">
+                                <span class="font-bold">@AppProcessor.Messagor.GetMessage("Contract_Status"):</span>
+                            </div>
+                            @{
+                                var arrTypeContracts = new Dictionary<int?, string> { { -1, "info" }, { 0, "warning" }, { 1, "primary" }, { 2, "secondary" }, { 3, "success" }, { 4, "purple" }, { 99, "danger" } };
+                            }
+                            <div class="col-md-7">
+                                <span class="bgc-@arrTypeContracts[Model.ContractModel.Status] brc-@arrTypeContracts[Model.ContractModel.Status] text-white badge badge-pill">@Model.ContractModel.StatusName</span> - <span>@Model.ContractModel.InStepName</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-md-2 stylePading2 text-md-right">
+                            <span class="font-bold">@AppProcessor.Messagor.GetMessage("Customer_Title"):</span>
+                        </div>
+                        <div class="col-md-9">
+                            <span>@Model.ContractModel.CusName</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-md-2 stylePading2 text-md-right">
+                            <span class="font-bold">@AppProcessor.Messagor.GetMessage("DateReception"):</span>
+                        </div>
+                        <div class="col-md-9">
+                            <span>@Model.ContractModel.ReceivedOn</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row col-md-6">
+                            <div class="col-md-5 text-md-right">
+                                <span class="font-bold">@AppProcessor.Messagor.GetMessage("DateConfim"):</span>
+                            </div>
+                            <div class="col-md-7">
+                                <span>@Model.ContractModel.ConfirmOn</span>
+                            </div>
+                        </div>
+                        <div class="row col-md-6">
+                            <div class="col-md-5 text-md-right">
+                                <span class="font-bold">@AppProcessor.Messagor.GetMessage("DateResponse"):</span>
+                            </div>
+                            <div class="col-md-7">
+                                <span>
+                                    @if (@Model.ContractModel.GiveResultOn != null)
+                                    {@Model.ContractModel.GiveResultOn.Value.ToString("dd/MM/yyyy")}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 stylePading2 text-md-right">
+                        <span class="font-bold">@AppProcessor.Messagor.GetMessage("Purpose_Title"):</span>
+                    </div>
+                    <div class="col-md-9">
+                        <span>@Model.ContractModel.PurposeName</span>
+                    </div>
+                </div>
+
+                </div>
+                <div class="pt-3 mt-3" style="display: flex; justify-content: flex-end;">
+                    @{
+                        string encodedContractId = Cores.Base.Helpers.SecurityHelper.EncryptId(Model.ContractModel.ContractId.Value);
+                    }
+                    <a href="@Url.Action("ShowContract", "Home", new { id = encodedContractId })" class="btn px-4 btn-info mr-1 v-hover" target="_blank">@AppProcessor.Messagor.GetMessage("ShowContract")</a>
+                </div>
+                <div class="mt-3"><h5 class="font-bold">@AppProcessor.Messagor.GetMessage("InfoRuler")</h5></div>
+                <div class="table-responsive mt-2">
+                    <div>
+                        @{ var totalPayment = 0.0;}
+                        @if (Model.ListContractTasks != null)
+                        {
+                        <table class="table table-striped table-product table-bordered">
+                            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                                <tr>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("STT")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("JobName")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ConstructionLicense_ConstructionArea")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Quantity")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Unit")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Price_Label")</label></th>
+                                    <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("IntoMoney")</label></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bgc-success-d2">
+                                @{
+                                int rowNum = 1;
+                                }
+                                @foreach (var item in Model.ListContractTasks)
+                                {
+                                <tr>
+                                    <td>@rowNum</td>
+                                    <td>@item.Contents</td>
+                                    <td>@item.SubSectionName</td>
+                                    <td>@($"{item.Amount:N0}".Replace(",", "."))</td>
+                                    <td>@item.Unit</td>
+                                    @*
+                                    <td>@($"{item.Price:N0} đ".Replace(",", "."))</td>*@
+                                    <td class="text-right">@(item.Price <= 0 ? "0 đ" : item.Price.ToString("#,### đ"))</td>
+                                    <td class="text-500 text-danger-d1 text-right">@(item.Total == null ? "0 đ" : item.Total.Value.ToString("#,### đ"))</td>
+                                    @*
+                                    <td class="text-500 text-danger-d1">@($"{item.Total:N0} đ".Replace(",", "."))</td>*@
+                                </tr>
+                                totalPayment += item.Total ?? 0;
+                                rowNum++;
+                                }
+                            </tbody>
+                        </table>
+                        }
+                        else
+                        {
+                        <p>@AppProcessor.Messagor.GetMessage("NoData")</p>
+                        }
+                        <div>
+                            <h6 class="text-right text-red"><span class="font-bold">@AppProcessor.Messagor.GetMessage("TotalPayment")</span>: @string.Format("{0:N0} VND", Math.Round(totalPayment)).Replace(",", ".")</h6>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="mt-3"><h5 class="font-bold">@AppProcessor.Messagor.GetMessage("InfoPayment")</h5></div>
+                <div class="table-responsive mt-2">
+                    <div>
+                        @if (Model.ListPayment != null)
+                        {
+                            <table class="table table-striped table-product">
+                                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                                    <tr>
+                                        <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("RowIndexPayment")</label></th>
+                                        <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("DocumentNumber")</label></th>
+                                        <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("PaymentDate")</label></th>
+                                        <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("PaidMoney")</label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int rowNum = 1;
+                                    }
+                                    @foreach (var item in Model.ListPayment)
+                                    {
+                                        <tr>
+                                            <td>@rowNum</td>
+                                            <td>@item.RefDocNo</td>
+                                            <td>@item.PaidOn.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@string.Format("{0:N0} VND", item.PaidAmount).Replace(",", ".")</td>
+                                        </tr>
+                                        rowNum++;
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>@AppProcessor.Messagor.GetMessage("NoData")</p>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

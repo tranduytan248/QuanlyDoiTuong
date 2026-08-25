@@ -1,0 +1,88 @@
+﻿@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Grids
+@using TSFramework.App.Processors
+@model List<Cores.Cate.Models.CateUnionModel>
+@{
+    Layout = "";
+}
+@{
+    var unions = Html.EJS().TreeGrid("Unions")
+        .DataSource(Model)
+        .AllowMultiSorting().AllowSorting().AllowFiltering()
+        .AllowResizing().AllowTextWrap().ShowColumnChooser()
+        .EnableHover()//.Height("calc(80vh)")
+        .Columns(col =>
+        {
+            col.Field("UnionCode")
+                .HeaderText(AppProcessor.Messagor.GetMessage("Union_Code"))
+                .Width("130").MinWidth("130").HeaderTextAlign(TextAlign.Center).Add();
+
+            col.Field("UnionName")
+                .HeaderText(AppProcessor.Messagor.GetMessage("Union_Name"))
+                .Width("470").MinWidth("450").HeaderTextAlign(TextAlign.Center).Add();
+
+            col.Field("BelongUnionName")
+                .HeaderText(AppProcessor.Messagor.GetMessage("Union_BelongUnion"))
+                .Width("400").MinWidth("400").HeaderTextAlign(TextAlign.Center).Add();
+
+            col.HeaderText(AppProcessor.Messagor.GetMessage("Column_Action"))
+                .Width("450")
+                .HeaderTextAlign(TextAlign.Center).TextAlign(TextAlign.Center).Add();
+        })
+        .AllowPaging().PageSettings(page => { page.PageCount(5).PageSize(50); })
+        .ChildMapping("ListChildrens").AllowReordering().FilterSettings(f => f.Type(Syncfusion.EJ2.TreeGrid.FilterType.Excel))
+        .Height(600).TreeColumnIndex(1).FrozenColumns(2)
+        .RowTemplate("#RowTemplate").GridLines(GridLine.Both).DataBound("dataBound")
+        .LoadingIndicator(l => { l.IndicatorType(IndicatorType.Shimmer); });
+}
+@unions.Render()
+
+<script>
+    function dataBound(args) {
+        var treegrid = document.getElementById("Unions").ej2_instances[0];
+        treegrid.autoFitColumns(['UnionName']);
+        $(document.getElementById("Unions").ej2_instances[0].element).find('.e-gridcontent table').addClass('d-style w-100 text-105 table text-dark-m1 border-y-1 brc-black-tp11 collapsed dtr-table dataTable no-footer');
+    }
+</script>
+
+<script id="RowTemplate" type="text/x-template">
+    <tr class="d-style bgc-h-default-l4 text-100" role="row">
+
+        <td class="pl-2 align-middle">${UnionCode}</td>
+
+        <td class="align-middle">
+            ${if(!IsActive)}
+                <s data-rel="tooltip" data-placement="auto" title="Ngưng hoạt động">{0}</s>
+            ${else}
+                ${if(TypeUnionName != null)}
+                    ${UnionName} <div>
+                        ${if(TypeUnion == 1)}
+                        <span class="badge badge-primary text-85">${TypeUnionName}</span>
+                        ${else}
+                        <span class="badge badge-danger text-85">${TypeUnionName}</span>
+                        ${/if}
+                    </div>
+                ${else}
+                    ${UnionName}
+                ${/if}
+            ${/if}
+
+        </td>
+
+        <td class="align-middle">
+            ${BelongUnionName}
+        </td>
+
+        <td class="align-middle">
+            <a data-width="1024px" id="CateUnionMembers${UnionId}" data-modal="" data-modal-id="MembersBelong" class="btn px-4 btn-outline-green mr-1 v-hover" data-rel="tooltip" title="" href="/Cate/Union/Members/${UnionId}" data-original-title="Nhân sự"><i class="fas fa-users text-120"></i></a>
+            ${if(TypeUnion == 1)}
+            <a id="CateUnionInfo${UnionId}" data-modal="" data-width="1024px" data-modal-id="InfoUnion" class="btn px-4 btn-lighter-primary mr-1 v-hover" data-rel="tooltip" title="" href="/Cate/Union/Info/${UnionId}" data-original-title="Thông tin đơn vị"><i class="fas fa-user-edit text-purple text-120"></i></a>
+            ${/if}
+            <a id="CateUnionEdit${UnionId}" data-modal="" data-modal-id="EditUnion" class="btn px-4 btn-lighter-primary mr-1 v-hover" data-rel="tooltip" title="" href="/Cate/Union/Edit/${UnionId}" data-original-title="Cập nhật"><i class="far fa-edit text-primary text-120"></i></a>
+            <a id="CateUnionToggleStatus${UnionId}" data-modal="" data-modal-id="ToggleStatus" class="btn px-4 btn-lighter-warning mr-1 v-hover" data-rel="tooltip" title="" href="/Cate/Union/ToggleStatus/${UnionId}" data-original-title="Ngưng hoạt động"><i class="fas fa-lock text-warning text-120"></i></a>
+            <a id="CateUnionDelete${UnionId}" data-modal="" data-modal-id="DeleteUnion" class="btn px-4 btn-lighter-danger mr-1 v-hover" data-rel="tooltip" title="" href="/Cate/Union/Delete/${UnionId}" data-original-title="Xoá"><i class="far fa-trash-alt text-danger text-120"></i></a>
+        </td>
+    </tr>
+
+</script>
+

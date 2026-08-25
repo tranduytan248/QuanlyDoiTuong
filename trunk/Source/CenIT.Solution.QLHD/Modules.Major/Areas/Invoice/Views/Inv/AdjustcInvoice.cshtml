@@ -1,0 +1,28 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Modal_Title_AdjustcInvoice")} [{Model.InvNo}-{Model.Pattern}/{Model.Serial}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("AdjustInvoice", "Inv", new { area = "Invoice" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Inv_OnProcessSuccess(data, 'AdjustInvoice')"
+    }, new { @class = "form-horizontal", id = "AdjustInvoice" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_AdjustcInvoiceBody")
+        </div>
+    }
+}

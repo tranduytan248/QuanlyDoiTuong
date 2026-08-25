@@ -1,0 +1,193 @@
+﻿@using Cores.eContract.Consts
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@*<div class="form-group row">
+        <div class="col-form-label pr-0 font-bold">
+            @Html.Button(true, "FindCustomer", Url.Action("FindCustomer", new { area = "Major", typeCus = ConstsCusType.CONSUMER }), "<i class='fas fa-search'></i>", AppProcessor.Messagor.GetMessage("Button_FindConsumer"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1024px" })
+
+        </div>
+    </div>
+    <hr />*@
+
+<div id="Consumer">
+    @Html.Hidden("CusInfo", "CusId;CusName;Gender;TypeIdentifier;TypeIdentifierName;IdentifierNo;Phone;Email;ProvinceId;ProvinceName;WardId;WardName;StreetName;AddressNo;Address", new { disabled = true })
+
+    <div class="form-group row">
+        <div class="col-md-8">
+            @Html.TitleFor(model => model.CusInfo.CusName, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.CusInfo.CusName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name"), maxlength = 100, onchange = "_onChangeCusName(this);" })
+                <div class="input-group-append">
+                    <a class="btn btn-outline-primary" data-modal="true" data-modal-id="FindCustomer" data_scrollbars_inside="true" data_width="1024px" href="@Url.Action("FindCustomer", new { area = "Major", typeCus = ConstsCusType.CONSUMER, prefix = "CusInfo" })"><i class="fas fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</a>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.CusInfo.CusName, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.CusInfo.Gender, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="col-md-12">
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.Gender, 1, new { })
+                    <span class="badge bgc-danger brc-danger text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Male")</span>
+                    </span>
+                </label>
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.Gender, 0, new { })
+                    <span class="badge bgc-purple brc-purple text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Female")</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="ccard h-100 d-flex flex-column p-3">
+        <div class="form-group row mb-0">
+            <div class="col-md-7">
+                @Html.TitleFor(model => model.CusInfo.TypeIdentifier, new { @class = "col-form-label pr-0 font-bold" })
+                <div class="col-md-12">
+                    <label class="px-0">
+                        @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.DefinitionDoc, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc") + "')" })
+                        <span class="badge bgc-primary brc-primary text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc")</span>
+                        </span>
+                    </label>
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.IdCard, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard") + "')" })
+                        <span class="badge bgc-warning brc-warning text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard")</span>
+                        </span>
+                    </label>
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.Passport, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport") + "')" })
+                        <span class="badge bgc-green brc-green text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport")</span>
+                        </span>
+                    </label>
+                    @Html.HiddenFor(model => model.CusInfo.TypeIdentifierName)
+                </div>
+            </div>
+            @*</div>
+
+                <div class="form-group row">*@
+            <div class="col-md-3">
+                @Html.TitleFor(model => model.CusInfo.IdentifierNo, new { @class = "col-form-label pr-0 font-bold" })
+                @Html.TextBoxFor(model => model.CusInfo.IdentifierNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_IdentifierNo") })
+                @Html.ValidationMessageFor(model => model.CusInfo.IdentifierNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="form-group row">
+        <div class="col-md-4">
+            @Html.TitleFor(model => model.CusInfo.Phone, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.CusInfo.Phone, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Phone") })
+            @Html.ValidationMessageFor(model => model.CusInfo.Phone, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.CusInfo.Email, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.CusInfo.Email, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Email") })
+            @Html.ValidationMessageFor(model => model.CusInfo.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.CusInfo.ProvinceId)
+    @Html.HiddenFor(model => model.CusInfo.ProvinceName)
+    @Html.HiddenFor(model => model.CusInfo.WardId)
+    @Html.HiddenFor(model => model.CusInfo.WardName)
+    @Html.HiddenFor(model => model.CusInfo.StreetName)
+    @Html.HiddenFor(model => model.CusInfo.AddressNo)
+
+    <div class="form-group row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.CusInfo.Address, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.CusInfo.Address, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Address"), onclick = "_onTypeAddress('#Consumer #CusInfo_',$('#Consumer #CusInfo_ProvinceId').val(),$('#Consumer #CusInfo_WardId').val(),$('#Consumer #CusInfo_StreetName').val(),$('#Consumer #CusInfo_AddressNo').val());" })
+            @Html.ValidationMessageFor(model => model.CusInfo.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    //debugger;
+
+    function _onChangeTypeIdentifier(eleName, name) {
+        $(eleName).val(name);
+    }
+
+    function _onChangeCusName(eleCusName) {
+        var errMsg = "@Html.Raw(string.Format(AppProcessor.Messagor.GetMessage("Common_MaxLengthMessage"), AppProcessor.Messagor.GetMessage("Customer_Name"), 100))";
+        var newCusName = $(eleCusName).val();
+        if (newCusName.length > 100) {
+            $(eleCusName).addClass('brc-danger-m2').popover({
+                container: 'body',
+                trigger: 'focus',
+                content: errMsg,
+                placement: 'auto',
+                template: '<div class="popover brc-danger-m2" role="tooltip"><div class="arrow arrow2 brc-white"></div><div class="arrow brc-danger-m1"></div><h3 class="popover-header bgc-danger-l2 border-0 text-115 text-danger-d3"></h3><div class="popover-body text-danger-d2 text-105"></div></div>'
+            });
+
+            $(eleCusName).trigger('focus');
+        }
+    }
+
+    $(document).ready(function () {
+
+        $("input[name='@Html.IdFor(model => model.CusInfo.Phone)']").inputFilter(function (value) {
+            return /^\d*$/.test(value);
+        }, "Phải nhập số nguyên không dấu");
+
+        var $identifierNoElement = $("#@Html.IdFor(model => model.CusInfo.IdentifierNo)");
+        var $errorIdentifierNo = $("span[data-valmsg-for='@Html.IdFor(model => model.CusInfo.IdentifierNo)']");
+
+        $($identifierNoElement).on("blur", function () {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.CusInfo.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                var identifierNo = $(this).val().trim();
+
+                // Không được để trống
+                if (identifierNo === "") {
+                    $errorIdentifierNo.text("Vui lòng nhập số Căn Cước Công Dân.");
+                    return false;
+                }
+
+                // Chỉ gồm 12 chữ số
+                var regex = /^\d{12}$/;
+
+                if (!regex.test(identifierNo)) {
+                    $errorIdentifierNo.text("Số Căn Cước Công Dân phải gồm đúng 12 chữ số.");
+                    return false;
+                }
+
+                $errorIdentifierNo.text("");
+                return true;
+            }
+        });
+
+        $($identifierNoElement).on("keypress", function (e) {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.CusInfo.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                var charCode = e.which || e.keyCode;
+
+                // Cho phép Backspace
+                if (charCode === 8) return true;
+
+                // Chỉ cho phép số
+                if (charCode < 48 || charCode > 57) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        $($identifierNoElement).on("input", function () {
+            var typeIdentifier = $("input[name='@Html.NameFor(model => model.CusInfo.TypeIdentifier)']:checked").val();
+            if (typeIdentifier == "1") {
+                $(this).val($(this).val().replace(/\D/g, "").substring(0, 12));
+            }
+        });
+    });
+
+</script>

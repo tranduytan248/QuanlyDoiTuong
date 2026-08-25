@@ -1,0 +1,41 @@
+﻿@{
+    Response.Redirect("~/Account/Login");
+    return;
+}
+@using TSFramework.App.Processors
+@model CenIT.Solution.QLHD.WebApp.Models.SearchFEContractModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Congthongtin");
+    Layout = "~/Views/Home/_PageHome.cshtml";
+}
+
+@section HeadCss{
+    <meta http-equiv="refresh" content="0;url=/Account/Login" />
+    <link href="~/Views/Home/pageHome-style.css" rel="stylesheet" />
+    <style type="text/css">
+        .popover-body img {
+            width: -webkit-fill-available;
+        }
+    </style>
+}
+
+<script type="text/javascript">
+    window.location.href = '@Url.Action("Login", "Account")';
+</script>
+
+<div class="body-content" style="min-height: calc(100vh - 272px); ">
+    <div class="row mt-lg-3 mx-lg-0 m-2">
+        <div class="col-12 col-lg-3 px-lg-2 px-0" id="Search">
+            @Html.Partial("_Search")
+        </div>
+
+        <div class="col-12 col-lg-9 px-lg-2 px-0 pt-2 pt-lg-0">
+            <div class="card h-100" data-aos="fade-left" data-aos-delay="200">
+                <div class="minh-100 card-body p-2" id="searchResult">
+                    <h4 class="font-bold my-5 text-center text-primary-d2">@AppProcessor.Messagor.GetMessage("SearchContract_Title")</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

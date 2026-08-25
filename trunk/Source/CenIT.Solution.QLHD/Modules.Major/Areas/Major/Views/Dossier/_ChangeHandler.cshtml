@@ -1,0 +1,59 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_ChangeHandler"), $"{AppProcessor.Messagor.GetMessage("Dossier_Title")} [{Model.DossierCode}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fas fa-people-arrows"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ChangeHandler", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ChangeHandler", @class = "" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ChangeHandlerBody")
+        </div>
+    }
+
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+    <script type="text/javascript">
+        //debugger;
+        $('form#ChangeHandler').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_ChangeHandler").modal("hide");
+                    $("#ModalContent #modal_ChangeHandler").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_ChangeHandler" + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+            }
+        });
+
+        $("#modal_ChangeHandler .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_ChangeHandler .modal-body").addClass("ace-scrollbar");
+
+        $(document).ready(function () {
+
+        });
+
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnComplete" class="btn px-4 btn-outline-success btn-text-slide-x mb-1"><i class="btn-text-2 move-right fas fa-clipboard-check text-120 align-text-bottom "></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

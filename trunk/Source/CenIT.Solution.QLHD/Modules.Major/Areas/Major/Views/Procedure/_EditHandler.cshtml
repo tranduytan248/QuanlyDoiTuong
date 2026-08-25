@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Step_Handler")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditHandler", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "HandlerStep_OnProcessSuccess(data, 'EditHandler')"
+    }, new { @class = "form-horizontal", id = "EditHandler" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Handler")
+        </div>
+    }
+}
+

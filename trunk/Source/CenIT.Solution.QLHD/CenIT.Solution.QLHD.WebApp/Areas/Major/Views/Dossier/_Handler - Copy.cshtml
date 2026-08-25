@@ -1,0 +1,95 @@
+﻿@model Cores.Major.Models.MajorDossierTaskSwitchHandlerModel
+
+<div id="SwitchHandler">
+    @Html.HiddenFor(model => model.HandlerId)
+    @Html.HiddenFor(model => model.TaskId)
+    @Html.HiddenFor(model => model.TaskName)
+    @Html.HiddenFor(model => model.IsEdit)
+
+    <div class="form-group row">
+        <div class="col-md-10">
+            @Html.TitleFor(model => model.UnionId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.UnionName, new { disabled = true, @class = "form-control col-md-11" })
+            @Html.HiddenFor(model => model.UnionName)
+            @Html.HiddenFor(model => model.UnionId)
+        </div>
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.DeptId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.DeptName, new { disabled = true, @class = "form-control col-md-11" })
+            @Html.HiddenFor(model => model.DeptName)
+            @Html.HiddenFor(model => model.DeptId)
+        </div>
+        @*<div class="col-md-6">
+                @Html.TitleFor(model => model.DeptId, new { @class = "col-form-label pr-0 font-bold" })
+                @Html.SelectFor(model => model.DeptId, Model.ListDepts, "", new { @class = "form-control col-md-12", onchange = $"_onLoadStaffInDept(this, '#SwitchHandler #DeptName','#SwitchHandler #PositionID','#SwitchHandler #PositionName','#SwitchHandler #StaffId','{Model.StaffId}')" })
+                @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.DeptName)
+            </div>*@
+
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.PositionId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.PositionId, new SelectList(Model.ListPositions, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = $"_onLoadStaffInDept('{Model.DeptId}', this, '#SwitchHandler #PositionName','#SwitchHandler #StaffId', '{Model.StaffId}')" })
+            @Html.ValidationMessageFor(model => model.PositionId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PositionName)
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-8">
+            @Html.TitleFor(model => model.StaffId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.StaffId, new SelectList(Model.ListStaffs, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#SwitchHandler #StaffName')" })
+            @Html.ValidationMessageFor(model => model.StaffId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.StaffName)
+        </div>
+    </div>
+    @{
+        if (!Model.HasPrimary)
+        {
+            <div class="form-group row">
+                <div class="col-md-8">
+                    <label class="">
+                        @Html.CheckBoxFor(model => model.IsPrimary, new { @class = "checkbox mr-2" })
+                        @Html.LabelFor(model => model.IsPrimary, new { @class = "font-bold text-primary" })
+                    </label>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+        $("select#PositionId").trigger('change');
+    });
+
+
+    function _onLoadStaffInDept(unionId, cbbPositions, elePositionName, cbbStaffs, staffId) {
+        
+        if ($(cbbPositions).length > 0) {
+            $(elePositionName).val($(cbbPositions).children("option:selected").text());
+        }
+
+        var positionId = $(cbbPositions).val();
+
+        var urlStaffsViaUnionAndPosition =
+            "@Url.Action("StaffsViaUnionAndPosition", "Procedure", new { area = "Major" })?unionId=" + unionId + '&positionId=' + positionId;
+
+        $.ajax({
+                type: "GET",
+                url: urlStaffsViaUnionAndPosition,
+                dataType: "JSON",
+                success: function (response) {
+                    $(cbbStaffs).empty();
+                    $(cbbStaffs).append('<option value=""></option>');
+                    $.each(response, function (index, staff) {
+                        $(cbbStaffs).append('<option value="' + staff.UserName + '">' + staff.FullName + "</option>");
+                    });
+                    if (staffId != undefined && staffId.length > 0) {
+                        $(cbbStaffs).val(staffId).trigger("change");
+                    }
+                }
+            });
+    }
+</script>

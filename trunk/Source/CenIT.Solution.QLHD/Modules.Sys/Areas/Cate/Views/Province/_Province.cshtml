@@ -1,0 +1,34 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Cate.CateProvinceModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.ProvinceId)
+@{
+    if (Model.ProvinceId > 0)
+    {
+        <div class="form-group row">
+            @Html.TitleFor(model => model.ProvinceCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.ProvinceCode, new { @class = "form-control col-md-7", @readonly = "readonly" })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group row hidden">
+            @Html.TitleFor(model => model.ProvinceCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.ProvinceCode, new { @class = "form-control col-md-7", placeholder = AppProcessor.Messagor.GetMessage("Province_Label_Code") })
+
+            </div>
+        </div>
+    }
+}
+<div class="form-group row">
+    @Html.TitleFor(model => model.ProvinceName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.ProvinceName, new { @class = "form-control col-md-8", placeholder = AppProcessor.Messagor.GetMessage("Province_Label_Name") })
+        @Html.ValidationMessageFor(model => model.ProvinceName, "", new { @class = "text-danger" })
+    </div>
+</div>

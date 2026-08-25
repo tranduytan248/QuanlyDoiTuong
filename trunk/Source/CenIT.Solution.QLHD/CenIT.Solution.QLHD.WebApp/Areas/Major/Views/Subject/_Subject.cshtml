@@ -1,0 +1,744 @@
+@using TSFramework.App.Processors
+@using Cores.Cate.Models
+@using Cores.Major.Models
+@model Cores.Major.Models.MajorSubjectModel
+
+@{
+    var listFields = ViewBag.ListFields as List<CateFieldModel> ?? new List<CateFieldModel>();
+    var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
+    var isEditMode = Model?.SubjectId.HasValue == true && Model.SubjectId.Value != Guid.Empty;
+}
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.SubjectId)
+
+<style>
+    #fieldTabs .nav-link {
+        border-radius: 4px;
+        background-color: #f1f5f9;
+        color: #334155;
+        transition: all 0.2s ease;
+        border: 1px solid #cbd5e1;
+        font-size: 11.5px;
+        padding: 5px 8px;
+    }
+    #fieldTabs .nav-link:hover {
+        background-color: #e2e8f0;
+        color: #0f172a;
+    }
+    #fieldTabs .nav-link.active {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #1d4ed8 !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    }
+    #fieldTabs .nav-link.active .field-tab-title {
+        color: #ffffff !important;
+    }
+    .behavior-card {
+        transition: all 0.15s ease;
+        border-radius: 4px;
+    }
+    .behavior-card:hover {
+        background-color: #fffbeb !important;
+        border-color: #f59e0b !important;
+    }
+    .behavior-card.is-selected {
+        background-color: #eff6ff !important;
+        border-color: #3b82f6 !important;
+    }
+</style>
+
+<div class="row">
+    <!-- CỘT 1: THÔNG TIN ĐỐI TƯỢNG & NGƯỜI KHAI BÁO -->
+    <div class="col-12 col-lg-6 pr-lg-2">
+        <div class="card border-1 brc-primary-m3 shadow-sm mb-3">
+            <div class="card-header bgc-primary-l4 py-2">
+                <h6 class="card-title text-primary font-bold mb-0 text-95">
+                    <i class="fas fa-id-card-alt mr-2 text-110"></i>1. THÔNG TIN ĐỊNH DANH CÁ NHÂN
+                </h6>
+            </div>
+            <div class="card-body p-3">
+                <div class="form-group row mb-2">
+                    <div class="col-md-4 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Số CCCD / Căn cước <span class="text-danger">(*)</span></label>
+                        @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control font-bold text-primary", placeholder = "Số CCCD/CMND..." })
+                        @Html.ValidationMessageFor(model => model.IdentityCardNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-5 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Họ và tên khai sinh <span class="text-danger">(*)</span></label>
+                        @Html.TextBoxFor(model => model.FullName, new { @class = "form-control font-bold", placeholder = "Họ và tên đầy đủ..." })
+                        @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Tên gọi khác</label>
+                        @Html.TextBoxFor(model => model.OtherName, new { @class = "form-control", placeholder = "Biệt danh..." })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-2">
+                    <div class="col-md-4 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Ngày, tháng, năm sinh</label>
+                        @Html.TextBoxFor(model => model.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-4 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Giới tính</label>
+                        <select class="form-control" id="Gender" name="Gender">
+                            <option value="Nam" @(Model?.Gender == "Nam" ? "selected" : "")>Nam</option>
+                            <option value="Nữ" @(Model?.Gender == "Nữ" ? "selected" : "")>Nữ</option>
+                            <option value="Khác" @(Model?.Gender == "Khác" ? "selected" : "")>Khác</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Dân tộc</label>
+                        @Html.TextBoxFor(model => model.Ethnicity, new { @class = "form-control", placeholder = "Kinh, Tày..." })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-2">
+                    <div class="col-md-4 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Tôn giáo</label>
+                        @Html.TextBoxFor(model => model.Religion, new { @class = "form-control", placeholder = "Không..." })
+                    </div>
+                    <div class="col-md-4 mb-2 mb-md-0">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Quốc tịch</label>
+                        @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control", placeholder = "Việt Nam..." })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Số ĐT di động</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text py-0"><i class="fas fa-phone text-80"></i></span></div>
+                            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", placeholder = "09x..." })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-2">
+                    <div class="col-md-12">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Quê quán</label>
+                        @Html.TextBoxFor(model => model.PlaceOfOrigin, new { @class = "form-control", placeholder = "Xã/Phường, Quận/Huyện, Tỉnh/Thành phố..." })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-2">
+                    <div class="col-md-12">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">Nơi ở hiện tại</label>
+                        @Html.TextBoxFor(model => model.CurrentResidence, new { @class = "form-control", placeholder = "Địa chỉ thường trú / tạm trú / nơi ở thực tế hiện nay..." })
+                    </div>
+                </div>
+
+                <!-- 2. THÔNG TIN NGƯỜI KHAI BÁO & ĐƠN VỊ (HIỂN THỊ DẠNG LABEL / INFO CARD) -->
+                <div class="bgc-blue-l4 p-3 radius-1 border-1 brc-blue-m3 mb-3 shadow-sm">
+                    <div class="d-flex align-items-center mb-2 pb-1 border-b-1 brc-blue-l2">
+                        <i class="fas fa-user-shield text-primary mr-2 fa-lg"></i>
+                        <span class="font-bold text-primary text-90">2. Cán bộ khai báo hồ sơ:</span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <span class="text-secondary text-80 d-block mb-1 font-bold">Họ tên người khai báo:</span>
+                            <div class="font-bold text-85 text-dark-m1 bgc-white p-2 radius-1 border-1 brc-grey-l2 d-flex align-items-center shadow-none">
+                                <i class="fas fa-user text-primary mr-2 text-85"></i>
+                                <span>@(string.IsNullOrEmpty(Model?.ReporterName) ? "Chưa có" : Model.ReporterName)</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <span class="text-secondary text-80 d-block mb-1 font-bold">Chức vụ:</span>
+                            <div class="font-bold text-85 text-dark-m1 bgc-white p-2 radius-1 border-1 brc-grey-l2 d-flex align-items-center shadow-none">
+                                <i class="fas fa-id-badge text-warning-d1 mr-2 text-85"></i>
+                                <span>@(string.IsNullOrEmpty(Model?.ReporterPosition) ? "Cán bộ tiếp nhận" : Model.ReporterPosition)</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <span class="text-secondary text-80 d-block mb-1 font-bold">Đơn vị công tác:</span>
+                            <div class="font-bold text-85 text-primary-d1 bgc-white p-2 radius-1 border-1 brc-grey-l2 d-flex align-items-center shadow-none">
+                                <i class="fas fa-building text-info mr-2 text-85"></i>
+                                <span>@(string.IsNullOrEmpty(Model?.ReporterUnit) ? "Văn phòng Đăng ký Đất đai Khánh Hòa" : Model.ReporterUnit)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.HiddenFor(model => model.ReporterName)
+                    @Html.HiddenFor(model => model.ReporterPosition)
+                    @Html.HiddenFor(model => model.ReporterUnit)
+                    @Html.HiddenFor(model => model.ReporterPhone)
+                </div>
+
+                <!-- 3. HÌNH ẢNH ĐỊNH DANH -->
+                <div class="bgc-grey-l4 p-2 radius-1 border-1 brc-grey-l2">
+                    <label class="font-bold text-primary text-90 d-block mb-2"><i class="fas fa-camera mr-1"></i>3. Hình ảnh định danh CCCD & Chân dung</label>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="text-secondary text-85 font-bold mb-1">Ảnh chân dung</div>
+                            <img id="previewAvatar" src="@(!string.IsNullOrEmpty(Model?.AvatarUrl) ? Model.AvatarUrl : "/Contents/Base/imgs/avatar-default.png")" onerror="this.src='/Contents/Base/imgs/avatar-default.png';" class="radius-round border-2 brc-primary-m2 mb-1 shadow-sm" style="width:75px;height:75px;object-fit:cover;" />
+                            <input type="file" id="fileAvatar" class="d-none" accept="image/*" onchange="handleSubjectFileUpload(this, 'AvatarUrl', 'previewAvatar');" />
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-block" onclick="$('#fileAvatar').click();"><i class="fas fa-upload mr-1"></i>Tải ảnh</button>
+                            @Html.HiddenFor(model => model.AvatarUrl)
+                        </div>
+                        <div class="col-4">
+                            <div class="text-secondary text-85 font-bold mb-1">CCCD Mặt trước</div>
+                            <img id="previewFront" src="@(!string.IsNullOrEmpty(Model?.IdentityCardFrontUrl) ? Model.IdentityCardFrontUrl : "/Contents/Base/imgs/no-image.png")" onerror="this.src='/Contents/Base/imgs/no-image.png';" class="radius-1 border-1 brc-default-m3 mb-1 shadow-sm" style="width:115px;height:75px;object-fit:cover;" />
+                            <input type="file" id="fileFront" class="d-none" accept="image/*" onchange="handleSubjectFileUpload(this, 'IdentityCardFrontUrl', 'previewFront');" />
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-block" onclick="$('#fileFront').click();"><i class="fas fa-upload mr-1"></i>Mặt trước</button>
+                            @Html.HiddenFor(model => model.IdentityCardFrontUrl)
+                        </div>
+                        <div class="col-4">
+                            <div class="text-secondary text-85 font-bold mb-1">CCCD Mặt sau</div>
+                            <img id="previewBack" src="@(!string.IsNullOrEmpty(Model?.IdentityCardBackUrl) ? Model.IdentityCardBackUrl : "/Contents/Base/imgs/no-image.png")" onerror="this.src='/Contents/Base/imgs/no-image.png';" class="radius-1 border-1 brc-default-m3 mb-1 shadow-sm" style="width:115px;height:75px;object-fit:cover;" />
+                            <input type="file" id="fileBack" class="d-none" accept="image/*" onchange="handleSubjectFileUpload(this, 'IdentityCardBackUrl', 'previewBack');" />
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-block" onclick="$('#fileBack').click();"><i class="fas fa-upload mr-1"></i>Mặt sau</button>
+                            @Html.HiddenFor(model => model.IdentityCardBackUrl)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CỘT 2: LỊCH SỬ & THÔNG TIN VI PHẠM -->
+    <div class="col-12 col-lg-6 pl-lg-2">
+        <div class="card border-1 brc-danger-m3 shadow-sm mb-3">
+            <div class="card-header bgc-danger-l4 py-2 d-flex justify-content-between align-items-center">
+                <h6 class="card-title text-danger font-bold mb-0 text-95">
+                    <i class="fas fa-exclamation-triangle mr-2 text-110"></i>4. LỊCH SỬ & THÔNG TIN VI PHẠM
+                </h6>
+                @if (isEditMode)
+                {
+                    <span class="badge badge-danger text-90 px-2 py-1"><i class="fas fa-history mr-1"></i>@(Model.ListViolations?.Count ?? 0) lần vi phạm</span>
+                }
+            </div>
+            <div class="card-body p-3">
+                @if (isEditMode && Model.ListViolations != null && Model.ListViolations.Count > 0)
+                {
+                    <div class="mb-3">
+                        <label class="font-bold text-dark-m1 text-85 mb-1"><i class="fas fa-list-ul mr-1 text-danger"></i>Các lần vi phạm đã ghi nhận:</label>
+                        <div class="border-1 brc-grey-l2 radius-1 p-2 bgc-grey-l5 ace-scrollbar" style="max-height: 160px; overflow-y: auto;">
+                            @foreach (var v in Model.ListViolations)
+                            {
+                                <div class="bgc-white p-2 mb-2 radius-1 border-1 brc-danger-l2 shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="font-bold text-danger"><i class="far fa-clock mr-1"></i>@v.ViolationDateStr</span>
+                                        <span class="badge badge-warning text-80">@v.CreatedBy</span>
+                                    </div>
+                                    <div class="text-85 mb-1">
+                                        <span class="font-bold text-secondary">Hành vi:</span>
+                                        <span class="text-danger font-bold">@v.BehaviorNames</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(v.TreatmentMeasures))
+                                    {
+                                        <div class="text-80 text-dark-m2 mb-1">
+                                            <span class="font-bold">Biện pháp xử lý:</span> @v.TreatmentMeasures
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(v.RelatedDocuments))
+                                    {
+                                        <div class="text-80 text-dark-m2 mb-1">
+                                            <span class="font-bold"><i class="fas fa-paperclip mr-1"></i>Văn bản liên quan:</span>
+                                            <div class="d-inline-block js-render-docs" data-raw="@v.RelatedDocuments"></div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(v.Images))
+                                    {
+                                        <div class="d-flex flex-wrap mt-1">
+                                            @foreach (var imgUrl in v.Images.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                            {
+                                                <a href="@imgUrl" target="_blank" class="mr-1 mb-1">
+                                                    <img src="@imgUrl" class="radius-1 border-1 brc-grey-m2" style="width:40px;height:40px;object-fit:cover;" />
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- FORM GHI NHẬN VI PHẠM -->
+                <div class="bgc-orange-l4 p-3 radius-1 border-1 brc-orange-m3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="font-bold text-danger text-90 mb-0">
+                            <i class="fas fa-plus-circle mr-1"></i>@(isEditMode ? "Ghi nhận thêm lần vi phạm mới (nếu có)" : "Ghi nhận vụ việc vi phạm ban đầu")
+                        </label>
+                        <div class="text-85 text-secondary">
+                            Thời gian: <input type="datetime-local" class="form-control d-inline-block" style="width:190px;" id="InitialViolationDate" name="InitialViolationDate" value="@(Model?.InitialViolationDate?.ToString("yyyy-MM-ddTHH:mm") ?? DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" />
+                        </div>
+                    </div>
+
+                    <!-- BỘ CHỌN HÀNH VI VI PHẠM THEO LĨNH VỰC (NAV TABS + SEARCH + CHECKLIST TRỰC QUAN) -->
+                    <div class="bgc-white p-2 radius-1 border-1 brc-warning-m2 mb-2 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="font-bold text-85 text-primary">
+                                <i class="fas fa-th-list mr-1"></i>Chọn Lĩnh vực & Hành vi vi phạm:
+                            </span>
+                            <span id="badgeTotalSelected" class="badge badge-primary text-80 font-bold px-2 py-1">Đã chọn: 0 hành vi</span>
+                        </div>
+
+                        <!-- KHUNG TÌM KIẾM NHANH HÀNH VI VI PHẠM -->
+                        <div class="input-group input-group-sm mb-2 shadow-none">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bgc-grey-l4 border-1 brc-grey-l1 text-primary py-0">
+                                    <i class="fas fa-search text-85"></i>
+                                </span>
+                            </div>
+                            <input type="text" id="txtSearchBehavior" class="form-control form-control-sm border-1 brc-grey-l1" placeholder="🔍 Tìm nhanh hành vi vi phạm (nhập tên hoặc mã ví dụ: MT-01, ma túy, bán dâm...)" onkeyup="filterBehaviorsByKeyword(this.value);" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-xs btn-outline-secondary" onclick="$('#txtSearchBehavior').val('').trigger('keyup');" title="Xóa tìm kiếm">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Danh sách Tabs Lĩnh vực -->
+                        <ul class="nav nav-pills d-flex flex-wrap mb-2" id="fieldTabs" role="tablist">
+                            @for (int i = 0; i < listFields.Count; i++)
+                            {
+                                var f = listFields[i];
+                                var activeClass = i == 0 ? "active" : "";
+                                <li class="nav-item mr-1 mb-1">
+                                    <a class="nav-link @activeClass" id="tab-field-@f.FieldId" data-toggle="pill" href="#pane-field-@f.FieldId" role="tab">
+                                        <span class="field-tab-title font-bold">[@f.FieldCode] @f.FieldName</span>
+                                        <span class="badge badge-danger badge-pill d-none count-badge ml-1" id="count-field-@f.FieldId">0</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                        <!-- Nội dung từng Lĩnh vực: Danh sách Hành vi dạng Checkbox Card -->
+                        <div class="tab-content border-1 brc-grey-l2 radius-1 bgc-grey-l5 p-2 mb-2 ace-scrollbar" id="fieldTabContent" style="max-height: 155px; overflow-y: auto;">
+                            @for (int i = 0; i < listFields.Count; i++)
+                            {
+                                var f = listFields[i];
+                                var activeClass = i == 0 ? "show active" : "";
+                                var fieldBehaviors = listBehaviors.Where(b => b.FieldId == f.FieldId).ToList();
+                                <div class="tab-pane fade @activeClass" id="pane-field-@f.FieldId" role="tabpanel">
+                                    @if (fieldBehaviors.Count == 0)
+                                    {
+                                        <div class="text-secondary text-80 text-center py-2">Chưa có hành vi nào thuộc lĩnh vực này</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row no-gutters">
+                                            @foreach (var b in fieldBehaviors)
+                                            {
+                                                <div class="col-12 mb-1 behavior-col" data-search-full="@($"{b.BehaviorCode} {b.BehaviorName}".ToLower())">
+                                                    <div class="behavior-card bgc-white p-2 border-1 brc-grey-l2 d-flex align-items-center" id="card-behavior-@b.BehaviorId">
+                                                        <div class="custom-control custom-checkbox mr-2">
+                                                            <input type="checkbox" class="custom-control-input chk-behavior" 
+                                                                   id="chk-@b.BehaviorId" 
+                                                                   value="@b.BehaviorId" 
+                                                                   data-fieldid="@f.FieldId" 
+                                                                   data-fieldname="@f.FieldName" 
+                                                                   data-code="@b.BehaviorCode" 
+                                                                   data-name="@b.BehaviorName" 
+                                                                   onchange="onBehaviorCheckboxChange(this)" />
+                                                            <label class="custom-control-label" for="chk-@b.BehaviorId"></label>
+                                                        </div>
+                                                        <label class="font-bold text-85 text-dark-m1 mb-0 cursor-pointer flex-grow-1" for="chk-@b.BehaviorId">
+                                                            <span class="badge badge-warning text-dark font-bold mr-1">@b.BehaviorCode</span>
+                                                            @b.BehaviorName
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Danh sách tổng hợp hành vi đã chọn -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-80 font-bold text-dark-m2">
+                                    <i class="fas fa-clipboard-check mr-1 text-success"></i>Danh sách hành vi đã chọn:
+                                </span>
+                                <button type="button" class="btn btn-xs btn-link text-danger p-0" id="btnClearAllBehaviors" onclick="clearAllSelectedBehaviors()" style="display:none;">
+                                    <i class="fas fa-trash-alt mr-1"></i>Xóa tất cả
+                                </button>
+                            </div>
+                            <div id="selectedBehaviorsSummary" class="border-1 brc-grey-l2 radius-1 bgc-white p-1 ace-scrollbar" style="max-height: 110px; overflow-y: auto;">
+                                <div class="text-secondary text-80 text-center py-2 empty-behavior-msg">
+                                    <i class="fas fa-info-circle mr-1"></i>Chưa chọn hành vi nào. Hãy tích chọn các hành vi ở bảng trên.
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.InitialBehaviorIds)
+                        </div>
+                    </div>
+
+                    <!-- BIỆN PHÁP XỬ LÝ -->
+                    <div class="form-group row mb-2">
+                        <div class="col-md-12">
+                            <label class="col-form-label pr-0 font-bold text-85 mb-1">Biện pháp xử lý</label>
+                            @Html.TextAreaFor(model => model.InitialTreatmentMeasures, new { @class = "form-control", rows = "2", placeholder = "Hình thức xử phạt, số tiền, tạm giữ tang vật, tước GPLX..." })
+                        </div>
+                    </div>
+
+                    <!-- VĂN BẢN LIÊN QUAN & GHI CHÚ -->
+                    <div class="row mb-2">
+                        <!-- VĂN BẢN LIÊN QUAN (UPLOAD NHIỀU FILE & DANH SÁCH CÓ NÚT XÓA) -->
+                        <div class="col-md-7 mb-2 mb-md-0">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="col-form-label pr-0 font-bold text-85 mb-0">
+                                    <i class="fas fa-paperclip mr-1 text-primary"></i>Văn bản / Quyết định liên quan
+                                </label>
+                                <input type="file" id="fileRelatedDocs" class="d-none" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip,.rar" onchange="handleSubjectDocumentUpload(this);" />
+                                <button type="button" class="btn btn-xs btn-outline-primary" onclick="$('#fileRelatedDocs').click();">
+                                    <i class="fas fa-cloud-upload-alt mr-1"></i>Tải file lên
+                                </button>
+                            </div>
+                            <div id="relatedDocsContainer" class="border-1 brc-grey-l2 radius-1 bgc-white p-1 ace-scrollbar" style="min-height: 60px; max-height: 110px; overflow-y: auto;">
+                                <div class="text-secondary text-80 text-center py-2 empty-doc-msg">
+                                    <i class="far fa-folder-open mr-1"></i>Chưa có văn bản đính kèm
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.InitialRelatedDocuments)
+                        </div>
+
+                        <!-- GHI CHÚ VI PHẠM -->
+                        <div class="col-md-5">
+                            <label class="col-form-label pr-0 font-bold text-85 mb-1">Ghi chú vi phạm</label>
+                            @Html.TextAreaFor(model => model.InitialNotes, new { @class = "form-control", rows = "3", placeholder = "Ghi chú thêm về vụ việc..." })
+                        </div>
+                    </div>
+
+                    <!-- HÌNH ẢNH HIỆN TRƯỜNG -->
+                    <div class="form-group row mb-0">
+                        <div class="col-md-12">
+                            <label class="col-form-label pr-0 font-bold text-85 mb-1">Hình ảnh hiện trường / đối tượng tại thời điểm vi phạm</label>
+                            <div>
+                                <input type="file" id="fileViolationImages" class="d-none" multiple accept="image/*" onchange="handleSubjectMultipleViolationUpload(this);" />
+                                <button type="button" class="btn btn-xs btn-outline-danger mb-2" onclick="$('#fileViolationImages').click();">
+                                    <i class="fas fa-images mr-1"></i>Chọn nhiều ảnh vi phạm tải lên
+                                </button>
+                            </div>
+                            <div id="previewViolationImages" class="d-flex flex-wrap mt-1"></div>
+                            @Html.HiddenFor(model => model.InitialImages)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var _selectedBehaviors = [];
+    var _attachedDocuments = [];
+
+    $(document).ready(function () {
+        // Tab switching bootstrap 4
+        $('#fieldTabs a[data-toggle="pill"]').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            // Re-apply search filter when switching tabs
+            var currentSearch = $('#txtSearchBehavior').val();
+            if (currentSearch) {
+                filterBehaviorsByKeyword(currentSearch);
+            }
+        });
+
+        // Khởi tạo danh sách hành vi vi phạm nếu đã có (Edit mode)
+        var initBehaviors = $("#InitialBehaviorIds").val();
+        if (initBehaviors) {
+            var bIds = initBehaviors.split(',');
+            bIds.forEach(function (bId) {
+                if (bId) {
+                    var $chk = $('#chk-' + bId);
+                    if ($chk.length > 0) {
+                        $chk.prop('checked', true);
+                        $('#card-behavior-' + bId).addClass('is-selected');
+                        _selectedBehaviors.push({
+                            id: bId,
+                            fieldId: $chk.attr('data-fieldid') || '',
+                            fieldName: $chk.attr('data-fieldname') || '',
+                            code: $chk.attr('data-code') || '',
+                            name: $chk.attr('data-name') || ''
+                        });
+                    }
+                }
+            });
+            updateBehaviorsUI();
+        }
+
+        // Khởi tạo danh sách văn bản đính kèm nếu đã có
+        var initDocs = $("#InitialRelatedDocuments").val();
+        if (initDocs) {
+            try {
+                if (initDocs.startsWith('[')) {
+                    _attachedDocuments = JSON.parse(initDocs);
+                } else if (initDocs.trim() !== '') {
+                    _attachedDocuments = [{ name: initDocs, url: initDocs, size: 0 }];
+                }
+            } catch (e) {
+                console.error("Lỗi parse InitialRelatedDocuments", e);
+            }
+            renderAttachedDocuments();
+        }
+
+        // Render các văn bản của lịch sử cũ nếu có
+        $('.js-render-docs').each(function () {
+            var raw = $(this).attr('data-raw');
+            if (raw) {
+                try {
+                    if (raw.startsWith('[')) {
+                        var docs = JSON.parse(raw);
+                        var html = '';
+                        docs.forEach(function (d) {
+                            html += '<a href="' + d.url + '" target="_blank" class="badge badge-info mr-1 mb-1"><i class="fas fa-file mr-1"></i>' + d.name + '</a> ';
+                        });
+                        $(this).html(html);
+                    } else {
+                        $(this).html('<a href="' + raw + '" target="_blank" class="badge badge-info">' + raw + '</a>');
+                    }
+                } catch (e) {
+                    $(this).text(raw);
+                }
+            }
+        });
+    });
+
+    // HÀM LOẠI BỎ DẤU TIẾNG VIỆT ĐỂ TÌM KIẾM THÔNG MINH
+    function removeVietnameseTones(str) {
+        if (!str) return '';
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+        str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+        str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+        str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+        str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+        str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+        str = str.replace(/Đ/g, "D");
+        return str.toLowerCase().trim();
+    }
+
+    // TÌM KIẾM NHANH HÀNH VI
+    function filterBehaviorsByKeyword(keyword) {
+        var kw = removeVietnameseTones(keyword || '');
+        if (!kw) {
+            $('.behavior-col').show();
+            $('.empty-search-msg').remove();
+            return;
+        }
+
+        $('.behavior-col').each(function () {
+            var rawText = $(this).attr('data-search-full') || '';
+            var slugText = removeVietnameseTones(rawText);
+            if (slugText.indexOf(kw) !== -1 || rawText.toLowerCase().indexOf(keyword.toLowerCase().trim()) !== -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+
+        // Kiểm tra xem tab hiện tại có kết quả nào không
+        $('.tab-pane').each(function () {
+            var visibleCount = $(this).find('.behavior-col:visible').length;
+            $(this).find('.empty-search-msg').remove();
+            if (visibleCount === 0 && $(this).find('.behavior-col').length > 0) {
+                $(this).append('<div class="text-secondary text-80 text-center py-2 empty-search-msg"><i class="fas fa-search mr-1"></i>Không tìm thấy hành vi phù hợp trong lĩnh vực này</div>');
+            }
+        });
+    }
+
+    // SỰ KIỆN TÍCH CHỌN CHECKBOX HÀNH VI
+    function onBehaviorCheckboxChange(chk) {
+        var bId = $(chk).val();
+        var isChecked = $(chk).is(':checked');
+
+        if (isChecked) {
+            $('#card-behavior-' + bId).addClass('is-selected');
+            var exists = _selectedBehaviors.some(function (x) { return x.id == bId; });
+            if (!exists) {
+                _selectedBehaviors.push({
+                    id: bId,
+                    fieldId: $(chk).attr('data-fieldid') || '',
+                    fieldName: $(chk).attr('data-fieldname') || '',
+                    code: $(chk).attr('data-code') || '',
+                    name: $(chk).attr('data-name') || ''
+                });
+            }
+        } else {
+            $('#card-behavior-' + bId).removeClass('is-selected');
+            _selectedBehaviors = _selectedBehaviors.filter(function (x) { return x.id != bId; });
+        }
+
+        updateBehaviorsUI();
+    }
+
+    function removeSelectedBehavior(behaviorId) {
+        $('#chk-' + behaviorId).prop('checked', false);
+        $('#card-behavior-' + behaviorId).removeClass('is-selected');
+        _selectedBehaviors = _selectedBehaviors.filter(function (x) { return x.id != behaviorId; });
+        updateBehaviorsUI();
+    }
+
+    function clearAllSelectedBehaviors() {
+        $('.chk-behavior').prop('checked', false);
+        $('.behavior-card').removeClass('is-selected');
+        _selectedBehaviors = [];
+        updateBehaviorsUI();
+    }
+
+    function updateBehaviorsUI() {
+        // Cập nhật tổng số đã chọn
+        var total = _selectedBehaviors.length;
+        if (total > 0) {
+            $('#badgeTotalSelected').removeClass('badge-secondary').addClass('badge-danger').text('Đã chọn: ' + total + ' hành vi');
+            $('#btnClearAllBehaviors').show();
+        } else {
+            $('#badgeTotalSelected').removeClass('badge-danger').addClass('badge-secondary').text('Đã chọn: 0 hành vi');
+            $('#btnClearAllBehaviors').hide();
+        }
+
+        // Cập nhật số lượng trên từng tab lĩnh vực
+        $('.count-badge').addClass('d-none').text('0');
+        var fieldCounts = {};
+        _selectedBehaviors.forEach(function (item) {
+            if (item.fieldId) {
+                fieldCounts[item.fieldId] = (fieldCounts[item.fieldId] || 0) + 1;
+            }
+        });
+        for (var fId in fieldCounts) {
+            $('#count-field-' + fId).text(fieldCounts[fId]).removeClass('d-none');
+        }
+
+        // Render bảng tổng hợp tóm tắt
+        var $summary = $('#selectedBehaviorsSummary');
+        if (total === 0) {
+            $summary.html('<div class="text-secondary text-80 text-center py-2 empty-behavior-msg"><i class="fas fa-info-circle mr-1"></i>Chưa chọn hành vi nào. Hãy tích chọn các hành vi ở bảng trên.</div>');
+            $('#InitialBehaviorIds').val('');
+            return;
+        }
+
+        var html = '<table class="table table-bordered table-sm mb-0 bgc-white">' +
+            '<thead class="bgc-grey-l3 text-80">' +
+            '<tr>' +
+            '<th style="width:30%">Lĩnh vực</th>' +
+            '<th>Mã & Tên hành vi vi phạm</th>' +
+            '<th style="width:40px" class="text-center">Xóa</th>' +
+            '</tr>' +
+            '</thead><tbody>';
+
+        _selectedBehaviors.forEach(function (item) {
+            html += '<tr>' +
+                '<td class="text-80 font-bold text-primary">' + item.fieldName + '</td>' +
+                '<td class="text-85"><span class="badge badge-sm badge-warning mr-1">' + item.code + '</span>' + item.name + '</td>' +
+                '<td class="text-center">' +
+                '<button type="button" class="btn btn-xs btn-outline-danger" onclick="removeSelectedBehavior(\'' + item.id + '\')" title="Xóa hành vi này"><i class="fas fa-times"></i></button>' +
+                '</td>' +
+                '</tr>';
+        });
+        html += '</tbody></table>';
+        $summary.html(html);
+
+        // Lưu danh sách ID vào hidden input
+        var ids = _selectedBehaviors.map(function (x) { return x.id; }).join(',');
+        $('#InitialBehaviorIds').val(ids);
+    }
+
+    // XỬ LÝ UPLOAD VĂN BẢN ĐÍNH KÈM
+    function handleSubjectDocumentUpload(input) {
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                var formData = new FormData();
+                formData.append("file", file);
+
+                $.ajax({
+                    url: _SubjectActionURLs.Subject_UploadFile,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    success: function (res) {
+                        if (res.status) {
+                            _attachedDocuments.push({
+                                name: res.fileName || file.name,
+                                url: res.url,
+                                size: res.fileSize || file.size
+                            });
+                            renderAttachedDocuments();
+                        } else {
+                            alert(res.message || "Tải tệp đính kèm thất bại.");
+                        }
+                    },
+                    error: function () {
+                        alert("Lỗi kết nối máy chủ tải văn bản.");
+                    }
+                });
+            }
+            $(input).val('');
+        }
+    }
+
+    function removeAttachedDocument(index) {
+        if (index >= 0 && index < _attachedDocuments.length) {
+            _attachedDocuments.splice(index, 1);
+            renderAttachedDocuments();
+        }
+    }
+
+    function renderAttachedDocuments() {
+        var $container = $('#relatedDocsContainer');
+        if (_attachedDocuments.length === 0) {
+            $container.html('<div class="text-secondary text-80 text-center py-2 empty-doc-msg"><i class="far fa-folder-open mr-1"></i>Chưa có văn bản đính kèm</div>');
+            $('#InitialRelatedDocuments').val('');
+            return;
+        }
+
+        var html = '<div class="list-group">';
+        _attachedDocuments.forEach(function (doc, idx) {
+            var icon = getDocFileIcon(doc.name);
+            var sizeStr = formatFileSize(doc.size);
+            html += '<div class="list-group-item d-flex justify-content-between align-items-center py-1 px-2 mb-1 border-1 brc-grey-l2 radius-1 bgc-white">' +
+                '<div class="d-flex align-items-center text-truncate mr-2">' +
+                '<i class="' + icon + ' mr-2 fa-lg"></i>' +
+                '<a href="' + doc.url + '" target="_blank" class="text-primary font-bold text-85 text-truncate" title="' + doc.name + '">' + doc.name + '</a>' +
+                (sizeStr ? '<span class="text-secondary text-75 ml-2">(' + sizeStr + ')</span>' : '') +
+                '</div>' +
+                '<button type="button" class="btn btn-xs btn-outline-danger" onclick="removeAttachedDocument(' + idx + ')" title="Xóa văn bản này"><i class="fas fa-trash-alt"></i></button>' +
+                '</div>';
+        });
+        html += '</div>';
+        $container.html(html);
+
+        $('#InitialRelatedDocuments').val(JSON.stringify(_attachedDocuments));
+    }
+
+    function getDocFileIcon(fileName) {
+        if (!fileName) return 'far fa-file-alt text-secondary';
+        var ext = fileName.split('.').pop().toLowerCase();
+        switch (ext) {
+            case 'pdf': return 'far fa-file-pdf text-danger';
+            case 'doc':
+            case 'docx': return 'far fa-file-word text-primary';
+            case 'xls':
+            case 'xlsx': return 'far fa-file-excel text-success';
+            case 'png':
+            case 'jpg':
+            case 'jpeg': return 'far fa-file-image text-warning';
+            case 'zip':
+            case 'rar':
+            case '7z': return 'far fa-file-archive text-purple';
+            default: return 'far fa-file-alt text-secondary';
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes || bytes <= 0) return '';
+        var k = 1024;
+        var sizes = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+</script>

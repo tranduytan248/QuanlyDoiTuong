@@ -1,0 +1,389 @@
+﻿
+@using Modules.Major.Cores.Enums
+@using Modules.Major.Cores.Models
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@using EnumHelper = TSFramework.Core.Helpers.EnumHelper
+@model Cores.Major.Models.SAVDossierModel
+
+@{
+    var disabled = Model.IsDisabled ? " disabled" : "";
+}
+
+@Html.HiddenFor(model => model.Land.TotalDaysViolate)
+@Html.HiddenFor(model => model.Land.TotalYearsViolate)
+
+<div id="Land" class="pt-2">
+    <div class="form-group col-12 row">
+        <div class="acard card h-100 col-12">
+            <div class="card-header pb-15">
+                <h5 class="card-title">
+                    <i class="fas fa-clipboard-list"></i>&nbsp; @AppProcessor.Messagor.GetMessage("LandTypeViolation_Title")
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group row my-0">
+                    @{
+                        foreach (var typeViolation in Model.Land.ListLandTypeViolations.OrderBy(t => t.Value))
+                        {
+                            <label class="col-form-label col-5 @disabled">
+                                @Html.RadioButtonFor(model => model.Land.TypeViolation, typeViolation.Value, new { id = $"{((EnumLandTypeViolation)int.Parse(typeViolation.Value)).ToString()}", title = AppProcessor.Messagor.GetMessage(EnumHelper.GetDescription((EnumLandTypeViolation)int.Parse(typeViolation.Value))) })
+                                @Html.Label(typeViolation.Text, new { @for = $"{((EnumLandTypeViolation)int.Parse(typeViolation.Value)).ToString()}" })
+                            </label>}
+                    }
+                    @Html.HiddenFor(model => model.Land.TypeViolationName)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="brc-danger-m1" />
+
+    <div class="form-group row">
+        <div class="col-5 text-blue-d2 brc-blue-m1 pr-1" data-views="1;2;3">
+            @Html.TitleFor(model => model.Land.Area, new { @class = "text-500" })
+            <div class="input-group">
+	            @Html.TextBoxFor(model => model.Land.AreaFormatter, new { min = 0, @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_Area"), onfocusout = "_onCurrencyFocusout(this, '[name=\"Land.Area\"]');" })
+	            <div class="input-group-append">
+		            <span class="input-group-text text-500 text-danger">m²</span>
+	            </div>
+                @Html.ValidationMessageFor(model => model.Land.Area, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.Land.Area)
+        @*<span class="my-auto text-500 text-danger text-110 col-1 px-1">m²</span>*@
+        <div class="col-4 text-blue-d2 brc-blue-m1" data-views="1;2">
+            @Html.TitleFor(model => model.Land.BeginViolateOnDate, new { @class = "text-500" })
+            @Html.TextBoxFor(model => model.Land.BeginViolateOnDate, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_BeginViolateOnDate"), onchange = "_calculateIllegalProfit();" })
+            @Html.ValidationMessageFor(model => model.Land.BeginViolateOnDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="card dcard mb-4 d-none" draggable="false" id="TypeLandAfter" data-views="1;2">
+        <div class="card-header">
+            <h5 class="card-title text-120 text-danger-d2 text-500">
+                <i class="fas fa-hand-point-right"></i>&nbsp;@AppProcessor.Messagor.GetMessage("AfterViolate_Title")
+            </h5>
+            <div class="card-toolbar">
+                <div class="card-toolbar no-border">
+                    <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                        <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body px-2">
+            <div class="form-group row">
+                @{
+                    if (Model.IsDisabled)
+                    {
+                        <div class="col-8 text-blue-d2 brc-blue-m1">
+                            @Html.TitleFor(model => model.Land.TypeLandAfterName, new { @class = "text-500" })
+                            @Html.TextBoxFor(model => model.Land.TypeLandAfterName, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Land_TypeLandAfter") })
+                        </div>
+                        @Html.HiddenFor(model => model.Land.TypeLandAfter)
+                        @Html.HiddenFor(model => model.Land.TypeLandAfterName)
+                    }
+                    else
+                    {
+                        <div class="col-8 text-blue-d2 brc-blue-m1">
+                            @Html.TitleFor(model => model.Land.TypeLandAfter, new { @class = "text-500" })
+                            @Html.DropDownListFor(model => model.Land.TypeLandAfter, new SelectList(Model.Land.ListTypeLands, "Value", "Text"), "", new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Land_TypeLandAfter"), onchange = "_onChangeCombo(this,'[name=\"Land.TypeLandAfterName\"]', false)" })
+                            @Html.ValidationMessageFor(model => model.Land.TypeLandAfter, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.HiddenFor(model => model.Land.TypeLandAfterName)
+                    }
+                }
+            </div>
+
+            <div class="form-group row">
+                <div class="col-7 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.Land.UnitPriceAfterFormula, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.Land.UnitPriceAfterFormula, new { @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_UnitPriceAfterFormula"), onchange = "_onComputeFormula(this,'[name=\"Land.UnitPriceAfterFormatter\"]','[name=\"Land.UnitPriceAfter\"]')" })
+                    @Html.ValidationMessageFor(model => model.Land.UnitPriceAfterFormula, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-4 text-blue-d2 brc-blue-m1 pr-1">
+                    @Html.TitleFor(model => model.Land.UnitPriceAfter, new { @class = "text-500" })
+                    <div class="input-group">
+	                    @Html.TextBoxFor(model => model.Land.UnitPriceAfterFormatter, new { @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_UnitPriceAfter"), onfocusout = "_onCurrencyFocusout(this, '[name=\"Land.UnitPriceAfter\"]');" })
+	                    <div class="input-group-append">
+		                    <span class="input-group-text text-500 text-danger">đồng/m²</span>
+	                    </div>
+                        @Html.ValidationMessageFor(model => model.Land.UnitPriceAfter, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<span class="my-auto text-500 text-danger text-110 col-2 px-1">đồng/m²</span>*@
+                @Html.HiddenFor(model => model.Land.UnitPriceAfter)
+            </div>
+        </div>
+    </div>
+
+    <div class="card dcard mb-4 d-none" draggable="false" id="TypeLandBefore" data-views="1">
+        <div class="card-header">
+            <h5 class="card-title text-120 text-danger-d2 text-500">
+                <i class="fas fa-hand-point-left"></i>&nbsp;@AppProcessor.Messagor.GetMessage("BeforeViolate_Title")
+            </h5>
+            <div class="card-toolbar">
+                <div class="card-toolbar no-border">
+                    <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                        <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body px-2">
+            <div class="form-group row">
+                @{
+                    if (Model.IsDisabled)
+                    {
+                        <div class="col-8 text-blue-d2 brc-blue-m1">
+                            @Html.TitleFor(model => model.Land.TypeLandBeforeName, new { @class = "text-500" })
+                            @Html.TextBoxFor(model => model.Land.TypeLandBeforeName, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Land_TypeLandBefore") })
+                        </div>
+                        @Html.HiddenFor(model => model.Land.TypeLandBefore)
+                        @Html.HiddenFor(model => model.Land.TypeLandBeforeName)
+                    }
+                    else
+                    {
+                        <div class="col-8 text-blue-d2 brc-blue-m1">
+                            @Html.TitleFor(model => model.Land.TypeLandBefore, new { @class = "text-500" })
+                            @Html.DropDownListFor(model => model.Land.TypeLandBefore, new SelectList(Model.Land.ListTypeLands, "Value", "Text"), "", new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Land_TypeLandBefore"), onchange = "_onChangeCombo(this,'[name=\"Land.TypeLandBeforeName\"]', false)" })
+                            @Html.ValidationMessageFor(model => model.Land.TypeLandBefore, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.HiddenFor(model => model.Land.TypeLandBeforeName)
+                    }
+                }
+
+            </div>
+            <div class="form-group row">
+                <div class="col-7 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.Land.UnitPriceBeforeFormula, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.Land.UnitPriceBeforeFormula, new { @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_UnitPriceBeforeFormula"), onchange = "_onComputeFormula(this,'[name=\"Land.UnitPriceBeforeFormatter\"]','[name=\"Land.UnitPriceBefore\"]')" })
+                    @Html.ValidationMessageFor(model => model.Land.UnitPriceBeforeFormula, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-4 text-blue-d2 brc-blue-m1 pr-1">
+                    @Html.TitleFor(model => model.Land.UnitPriceBefore, new { @class = "text-500" })
+                    <div class="input-group">
+	                    @Html.TextBoxFor(model => model.Land.UnitPriceBeforeFormatter, new { @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_UnitPriceBefore"), onfocusout = "_onCurrencyFocusout(this, '[name=\"Land.UnitPriceBefore\"]');" })
+	                    <div class="input-group-append">
+		                    <span class="input-group-text text-500 text-danger">đồng/m²</span>
+	                    </div>
+                        @Html.ValidationMessageFor(model => model.Land.UnitPriceBefore, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<span class="my-auto text-500 text-danger text-110 col-2 px-1">đồng/m²</span>*@
+                @Html.HiddenFor(model => model.Land.UnitPriceBefore)
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group row" data-views="1;2">
+        <div class="col-5 text-blue-d2 brc-blue-m1 pr-1">
+            @Html.TitleFor(model => model.Land.TotalUsageTime, new { @class = "text-500" })
+            <div class="input-group">
+	            @Html.TextBoxFor(model => model.Land.TotalUsageTime, new { type = "number", min = 0, @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_TotalUsageTime"), onfocusout = "_calculateIllegalProfit();" })
+	            <div class="input-group-append">
+		            <span class="input-group-text text-500 text-danger">năm</span>
+	            </div>
+                @Html.ValidationMessageFor(model => model.Land.TotalUsageTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @*<span class="my-auto text-500 text-danger text-110 col-1 px-1">năm</span>*@
+    </div>
+
+    <div class="form-group row" data-views="1;2">
+        <div class="col-7 text-blue-d2 brc-blue-m1">
+            @Html.TitleFor(model => model.Land.IllegalProfitFormular, new { @class = "text-500" })
+            @Html.TextBoxFor(model => model.Land.IllegalProfitFormular, new { @readonly = true, @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_IllegalProfitFormular"), onchange = "_onComputeFormula(this,'[name=\"Land.IllegalProfitFormatter\"]','[name=\"Land.IllegalProfit\"]')" })
+            @Html.ValidationMessageFor(model => model.Land.IllegalProfitFormular, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-4 text-blue-d2 brc-blue-m1 pr-1">
+            @Html.TitleFor(model => model.Land.IllegalProfit, new { @class = "text-500" })
+            <div class="input-group">
+	            @Html.TextBoxFor(model => model.Land.IllegalProfitFormatter, new { @readonly = true, @class = "form-control col-md-12" + disabled, placeholder = AppProcessor.Messagor.GetMessage("Land_IllegalProfit"), onfocusout = "_onCurrencyFocusout(this, '[name=\"Land.IllegalProfit\"]');" })
+	            <div class="input-group-append">
+		            <span class="input-group-text text-500 text-danger">đồng</span>
+	            </div>
+                @Html.ValidationMessageFor(model => model.Land.IllegalProfit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @*<span class="my-auto text-500 text-danger text-110 col-2 px-1">đồng</span>*@
+        @Html.HiddenFor(model => model.Land.IllegalProfit)
+    </div>
+</div>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    var regexFormula = @Html.Raw(ViewData["CONFIG_KEY_REGEX_FORMULA"]);
+    /*
+        Parrmeters:
+        - 0: Diện tích vi phạm
+        - 1: Số năm vi phạm
+        - 2: Tổng thời gian sử dụng đất
+
+        - 3: Giá đất sau vi phạm
+        - 4: Giá đất trước vi phạm
+    */
+
+    //CONFIG_KEY_FORMULA_CALCULATE_ILLEGAL_PROFIT => {"1":"({0}*{3}-{0}*{4})*{1}/{2}","2":"({0}*{3})*{1}/{2}","3":"({0}*{3}-{0}*{4})*{1}/{2}"}
+    //CONFIG_KEY_VIEW_UNIT_PRICE_CONTENTS => {"TypeLandBefore":[1,3],"TypeLandAfter":[1,2,3]};
+
+    var configFormulaCalculateIllegalProfit = @Html.Raw(ViewData["CONFIG_KEY_FORMULA_CALCULATE_ILLEGAL_PROFIT"]);
+    var configViewUnitPriceContents = @Html.Raw(ViewData["CONFIG_KEY_VIEW_UNIT_PRICE_CONTENTS"]);
+    var configMappingTypeLandViolation = @Html.Raw(ViewData["CONFIG_KEY_MAPPING_TYPE_LAND_VIOLATION"]);
+
+    var selectedConstructionParticipant = "";
+
+    $(document).ready(function () {
+
+        $("#Land [type='radio'][name='Land.TypeViolation']").change(function () {
+            var typeViolationName = $(this).attr("title");
+            $("#Land [type='hidden'][name='Land.TypeViolationName']").val(typeViolationName);
+        });
+
+        $('[name="Land.UnitPriceAfterFormatter"],[name="Land.UnitPriceBeforeFormatter"],[name="Land.IllegalProfitFormatter"],[name="Land.AreaFormatter"]')
+        .maskNumber({ integer: true,decimal: ',',thousands: '.' });
+
+        $('[name="BBVPHC_ThoiGianLapBB"]').on('dp.change', function(e){
+            _calculateIllegalProfit();
+        });
+
+        $('[name="Land.TotalUsageTime"],[name="Land.UnitPriceBefore"],[name="Land.UnitPriceAfter"]').change(function () {
+            _calculateIllegalProfit();
+        });
+
+        $("[name='Land.TypeViolation']").change(function () {
+            _initAreaUnitPriceContents();
+            if(configMappingTypeLandViolation == null || configMappingTypeLandViolation == undefined) return;
+            var typeViolation = $(this).val();
+
+            selectedConstructionParticipant = configMappingTypeLandViolation[typeViolation];
+        });
+        var typeViolation = $("[name='Land.TypeViolation']:checked").val();
+        selectedConstructionParticipant = configMappingTypeLandViolation[typeViolation];
+
+        _initAreaUnitPriceContents();
+    });
+
+    function _calculateTotalYearViolated(type){
+        var releaseDocOn = $('[name="BBVPHC_ThoiGianLapBB"]').val();
+        var beginViolateOn = $('[name="Land.BeginViolateOnDate"]').val();
+
+        if(releaseDocOn == null || releaseDocOn == undefined || releaseDocOn.length <= 0) return;
+        if(beginViolateOn == null || beginViolateOn == undefined || beginViolateOn.length <= 0) return;
+
+        var dateReleaseDoc = moment(releaseDocOn,"DD/MM/YYYY HH:mm");
+        var dateBeginViolate = moment(beginViolateOn,"DD/MM/YYYY");
+        var duration = moment.duration(dateReleaseDoc.diff(dateBeginViolate));
+        if(type == "Y") return Math.round(duration.asYears() * 1000)/1000;
+        if(type == "M") return Math.round(duration.asMonths() * 1000)/1000;
+        if(type == "D") return Math.round(duration.asMonths() * 1000)/1000;
+        return Math.round(duration.asDays() * 1000)/1000;
+    }
+
+    function _calculateIllegalProfit(){
+        var areaVal = $('[name="Land.Area"]').val(); // Diện tích vi phạm (tính theo m2)
+        var unitPriceAfterVal = $('[name="Land.UnitPriceAfter"]').val(); // Giá đất sau vi phạm
+        var unitPriceBeforeVal = $('[name="Land.UnitPriceBefore"]').val(); // Giá đất trước vi phạm
+        var totalUsageTimeVal = $('[name="Land.TotalUsageTime"]').val(); // Tổng thời gian sử dụng đất
+
+        var totalYearViolated = _calculateTotalYearViolated('Y'); // Số năm vi phạm
+        var area = areaVal != null && areaVal != undefined && areaVal.length > 0 ? parseFloat(areaVal) : 0;
+        var unitPriceAfter = unitPriceAfterVal != null && unitPriceAfterVal != undefined && unitPriceAfterVal.length > 0 ? parseFloat(unitPriceAfterVal) : 0;
+        var unitPriceBefore = unitPriceBeforeVal != null && unitPriceBeforeVal != undefined && unitPriceBeforeVal.length > 0 ? parseFloat(unitPriceBeforeVal) : 0;
+        var totalUsageTime = totalUsageTimeVal != null && totalUsageTimeVal != undefined && totalUsageTimeVal.length > 0 ? parseFloat(totalUsageTimeVal) : 0;
+
+        if(!isNumeric(totalYearViolated) || !isNumeric(area) || !isNumeric(unitPriceAfter) || !isNumeric(unitPriceBefore) || !isNumeric(totalUsageTime)) return;
+
+        var totalYearViolatedFormat = totalYearViolated.toLocaleString('vi');
+        var areaFormat = area.toLocaleString('vi');
+        var unitPriceAfterFormat = unitPriceAfter.toLocaleString('vi');
+        var unitPriceBeforeFormat = unitPriceBefore.toLocaleString('vi');
+        var totalUsageTimeFormat = totalUsageTime.toLocaleString('vi');
+
+        var typeLandViolation = $("[name='Land.TypeViolation']:checked").val(); // Loại vi phạm
+
+        if(configFormulaCalculateIllegalProfit != null && configFormulaCalculateIllegalProfit != undefined){
+            var formulaCalculateIllegalProfit = configFormulaCalculateIllegalProfit[typeLandViolation];
+            if(formulaCalculateIllegalProfit != null && configFormulaCalculateIllegalProfit != undefined && formulaCalculateIllegalProfit.length > 0){
+
+                var totalIllegalProfitFormula = formulaCalculateIllegalProfit.format(areaFormat, totalYearViolatedFormat, totalUsageTimeFormat, unitPriceAfterFormat, unitPriceBeforeFormat);
+
+                var totalIllegalProfitFormulaFormat = totalIllegalProfitFormula;
+
+                Object.keys(regexFormula).forEach(function (key) {
+                    totalIllegalProfitFormulaFormat = totalIllegalProfitFormulaFormat.replaceAll(key, regexFormula[key]);
+                });
+
+                if(totalIllegalProfitFormulaFormat != null && totalIllegalProfitFormulaFormat != undefined && totalIllegalProfitFormulaFormat.length > 0){
+                    eval("var totalIllegalProfit =" + totalIllegalProfitFormulaFormat);
+
+                    if(!isNaN(totalIllegalProfit)){
+                        $('[name="Land.IllegalProfitFormular"]').val(totalIllegalProfitFormula);
+                        $('[name="Land.IllegalProfit"]').val(Math.round(totalIllegalProfit));
+                        $('[name="Land.IllegalProfitFormatter"]').val(Math.round(totalIllegalProfit)).trigger('keyup');
+                    }
+                }
+            }
+        }
+    }
+
+    var arrProcessing = [];
+    function _onCurrencyFocusout(eleFormatter, eleValue) {
+        var nameFormatterId = $(eleFormatter).attr('name');
+        if (arrProcessing != undefined && arrProcessing.length > 0 && arrProcessing.indexOf(nameFormatterId) >= 0) return;
+        arrProcessing.push(nameFormatterId);
+
+        var value = $(eleFormatter).val();
+        value = value.replace(/\D/g, '');
+
+        $(eleValue).val(value);
+        arrProcessing.pop(nameFormatterId);
+
+        _calculateIllegalProfit();
+    }
+
+    function _onComputeFormula(eleFormula, eleResult, eleRealResult) {
+        var formular = $(eleFormula).val();
+        Object.keys(regexFormula).forEach(function (key) {
+            formular = formular.replaceAll(key, regexFormula[key]);
+        });
+        if(formular != null && formular != undefined && formular.length > 0){
+            eval("var resultVal = " + formular);
+            resultVal = Math.round(resultVal/1000) * 1000;
+            $(eleResult).val(resultVal).trigger('keyup');
+            $(eleRealResult).val(resultVal).trigger('change');
+        }
+    }
+
+    function _initAreaUnitPriceContents(){
+        //if(configViewUnitPriceContents == null || configViewUnitPriceContents == undefined) return;
+        var typeLandViolationVal = $("[name='Land.TypeViolation']:checked").val();
+        var typeLandViolation = typeLandViolationVal != null && typeLandViolationVal.length > 0 ? parseInt(typeLandViolationVal) : 1;
+
+        $("[data-views]:not([data-views*='{0}'])".format(typeLandViolation)).addClass('d-none');
+        $("[data-views*='{0}']".format(typeLandViolation)).removeClass('d-none');
+
+        //Object.keys(configViewUnitPriceContents).forEach(key => {
+        //    var lstTypeLandViolations = configViewUnitPriceContents[key];
+        //    var $eleContents = $("div#{0}".format(key));
+        //    if(lstTypeLandViolations.includes(typeLandViolation)){
+        //        $eleContents.removeClass("d-none");
+        //    }else if(!$eleContents.hasClass("d-none")){
+        //        $eleContents.addClass("d-none");
+        //    }
+        //});
+        _calculateIllegalProfit();
+    }
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+</script>

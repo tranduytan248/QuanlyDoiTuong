@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateFieldModel
+@{
+    ViewBag.Title = "Xác nhận xóa Lĩnh vực";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fa fa-trash-alt"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "Field", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Field_OnProcessSuccess(data, 'DeleteField')"
+    }, new { @class = "form-horizontal", id = "DeleteField" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.FieldId)
+        @Html.HiddenFor(model => model.FieldName)
+
+        <div class="alert alert-warning text-center">
+            @Html.Raw(ViewBag.ConfirmMessage ?? $"Bạn có chắc chắn muốn xóa Lĩnh vực <b>[{Model.FieldName}]</b> không?")
+        </div>
+    }
+}

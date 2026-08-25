@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Step_Handler"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("DeleteHandler", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "HandlerStep_OnProcessSuccess(data, 'DeleteHandler')"
+    }, new { @class = "form-horizontal", id = "DeleteHandler" }))
+    {
+        <div id="bodyForm">
+	        @Html.Partial("_DeleteHandlerBody")
+        </div>
+    }
+}

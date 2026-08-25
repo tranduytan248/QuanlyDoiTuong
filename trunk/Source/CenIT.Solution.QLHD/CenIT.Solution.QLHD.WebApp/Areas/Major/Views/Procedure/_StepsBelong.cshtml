@@ -1,0 +1,235 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcedureModel
+
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("Step_Title")} - <b>{AppProcessor.Messagor.GetMessage("Procedure_Title")} [{Model.ProcedureName}]</b>");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fas fa-tasks"></i>
+}
+
+@section FormBody{
+
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @Html.Button(true, "AddStep", Url.Action("Add", "Step", new { area = "Major", procedureId = Model.ProcedureId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1024px" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="col-md-12">
+            <div class="mt-3">
+                <div class="card dcard">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="card-title mb-2 mb-md-0 text-120 text-grey-d3">
+                            <i class="fas fa-random mr-1 text-primary-d1 text-90"></i>
+                            @AppProcessor.Messagor.GetMessage("Procedure_Title")
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Procedure_Title")</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.ProcedureName, new { disabled = true, @class = "form-control col-md-12" })
+                            </div>
+                        </div>
+                        @Html.HiddenFor(model => model.ProcedureId)
+                        @Html.HiddenFor(model => model.ProcedureName)
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="card dcard">
+                    <div class="col-sm-12 table-responsive-md">
+                        <table id="Steps" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85">
+                                <tr>
+                                    @*<th>@AppProcessor.Messagor.GetMessage("Column_No")</th>*@
+                                    @*<th>@AppProcessor.Messagor.GetMessage("Procedure_Title")</th>*@
+                                    <th>@AppProcessor.Messagor.GetMessage("Step_Name")</th>
+                                    <th>@AppProcessor.Messagor.GetMessage("Step_Handler")</th>
+                                    <th>@AppProcessor.Messagor.GetMessage("Step_ProcessedTime")</th>
+                                    <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var _StepActionURLs = {
+            Step_GetData: "@Url.Action("GetViaProcedure", "Step", new { area = "Major" })"
+        };
+        var _tableStep;
+        $(document).ready(function () {
+            initTableStep();
+        });
+
+        var arrIconSteps = { "1": "fa-eye", "3": "fa-pencil-alt", "5": "fa-user-shield" };
+
+        function initTableStep() {
+            _tableStep = $("#Steps").DataTable({
+                "Responsive": true,
+                "language": {
+                    "processing": "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+                },
+                "lengthChange": true,
+                "processing": true,
+                "serverSide": true,
+                "autoWidth": false,
+                "ajax":
+                {
+                    "url": _StepActionURLs.Step_GetData,
+                    "type": "POST",
+                    "dataType": "JSON",
+                    "data": {
+                        "procedureId": function () {
+                            return "@Model.ProcedureId";
+                        }
+                    }
+                },
+                "columns": [
+                    //{
+                    //    "data": "",
+                    //    "defaultContent": "1",
+                    //    "render": function (data, type, row, meta) {
+                    //        return meta.settings._iDisplayStart + meta.row + 1;
+                    //    }
+                    //},
+                    //{
+                    //    "data": "ProcedureName",
+                    //    "defaultContent": ""
+                    //},
+                    {
+                        "data": "StepName",
+                        "defaultContent": "",
+                        "width": "55%",
+                        "render": function (data, type, row, meta) {
+                            //var html = "";
+                            //if (type === "display") {
+                            //    return '<span class="badge btn-info badge-lg arrowed-in arrowed-right mb-1">' + data + '</span>';
+                            //}
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "Handler",
+                        "width": "20%",
+                        "defaultContent": ""
+                    },
+                    {
+                        "data": "ProcessedTime",
+                        "defaultContent": "",
+                        //"width": "15%",
+                        //"visible": false,
+                        "render": function (data, type, row, meta) {
+                            if (type === "display") {
+                                var html = '<span class="text-danger-d1 text-md">{0}&nbsp;ngày</span>'.format(data);
+                                return html;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "StepId",
+                        "width": "15%",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+                            var html = '<span class="d-none d-lg-inline">';
+
+                            if (type === "display") {
+                                html += _renderButton(true,
+                                    "EditStep",
+                                    "btn px-4 btn-lighter-primary mr-1 v-hover",
+                                    "/Major/Step/Edit/" + data,
+                                    '<i class="far fa-edit text-primary text-120"></i>',
+                                    "Cập nhật", 1024);
+
+                                html += _renderButton(true,
+                                  "StepSituation",
+                                  "btn px-4 btn-lighter-purple mr-1 v-hover",
+                                  "/Major/Step/Situations/" + data,
+                                  '<i class="fab fa-playstation text-info text-120"></i>',
+                                  "Tình huống", "fullscreen");
+
+                                //html += _renderButton(true,
+                                //   "StepPermit",
+                                //   "btn px-4 btn-lighter-purple mr-1 v-hover",
+                                //   "/Major/Step/Permits/" + data,
+                                //   '<i class="fa fa-shield-alt text-purple text-120"></i>',
+                                //   "Quyền xử lý", 1024);
+
+                                if (row["TotalSituations"] > 0) {
+                                    html += _renderButton(true,
+                                        "Flow",
+                                        "btn px-4 btn-lighter-success mr-1 v-hover",
+                                        "/Major/Step/Flow/" + data,
+                                        '<i class="fas fa-project-diagram text-success text-120"></i>',
+                                        "Sơ đồ", "fullscreen");
+                                }
+                                html += _renderButton(true,
+                                    "DeleteStep",
+                                    "btn px-4 btn-lighter-danger mr-1 v-hover",
+                                    "/Major/Step/Delete/" + data,
+                                    '<i class="far fa-trash-alt text-danger text-120"></i>',
+                                    "Xoá");
+                            }
+                            html += "</span>";
+
+                            return html;
+                        }
+                    }
+                ]
+            });
+        }
+
+        function Step_OnProcessSuccess(response, formId) {
+            if (response.status != undefined) {
+                if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                    if (response.status != undefined) {
+                        eval(response.message);
+                        _tableStep.ajax.reload(null, false);
+                        response.status = undefined;
+                        //$("#ModalContent #modal_" + formId + " form")[0].reset();
+                        var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                        $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                            _initElement();
+                        });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableStep.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+            }
+        }
+
+    </script>
+}
+@section SubmitControl{
+
+}

@@ -1,0 +1,480 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+
+<div class="form-group row mt-2">
+    <label for="TypeViolator" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("TypeViolator_Title")</label>
+    <label class="col-form-label col-4">
+        <input type="radio" name="TypeViolator" value="@((int)EnumTypeViolator.Persional)" checked="checked" id="Persional" , onchange="_onChangeTypeViolator(this);" />
+        @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolator_Persional"), new { @for = "Persional" })
+    </label>
+    <label class="col-form-label col-4">
+        <input type="radio" name="TypeViolator" value="@((int)EnumTypeViolator.Organization)" id="Organization" , onchange="_onChangeTypeViolator(this);" />
+        @Html.Label(AppProcessor.Messagor.GetMessage("TypeViolator_Organization"), new { @for = "Organization" })
+    </label>
+</div>
+
+<div class="card dcard mb-4" draggable="false">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-danger-d2 text-500">
+            <i class="fas fa-user"></i>&nbsp;@AppProcessor.Messagor.GetMessage("TypeViolator_Title")
+        </h5>
+        <div class="card-toolbar">
+            <div class="card-toolbar no-border">
+                <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                    <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-2">
+        <div id="ViolatorInfo" class="mt-1">
+
+            <div class="" id="ForPersonal">
+                <input type="hidden" name="NguoiViPham_DanhXung" value="Ông " />
+
+                <div class="form-group row">
+                    <div class="col-5 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Họ tên (*)
+                        </label>
+                        <input required="" type="text" placeholder="Họ tên" class="form-control shadow-none" id="NguoiViPham_HoTen" name="NguoiViPham_HoTen" />
+                    </div>
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Ngày sinh (*)
+                        </label>
+                        <input required="" type="text" placeholder="Ngày sinh" class="form-control shadow-none pickerdate" id="NguoiViPham_NgaySinh" name="NguoiViPham_NgaySinh" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            CMND/CCCD (*)
+                        </label>
+                        <input required="" type="text" placeholder="CMND/CCCD" class="form-control shadow-none" id="NguoiViPham_CCCD" name="NguoiViPham_CCCD" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Ngày cấp (*)
+                        </label>
+                        <input required="" type="text" placeholder="Ngày cấp" class="form-control shadow-none pickerdate" id="NguoiViPham_CCCD_NgayCap" name="NguoiViPham_CCCD_NgayCap" value="" />
+                    </div>
+                    <div class="col-5 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Nơi cấp (*)
+                        </label>
+                        <input required="" type="text" placeholder="Nơi cấp" class="form-control shadow-none" id="NguoiViPham_CCCD_NoiCap" name="NguoiViPham_CCCD_NoiCap" value="Cục cảnh sát Quản lý hành chính và trật tự xã hội" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label text-sm-right pr-0 text-500 text-danger-m3">Giới tính (*) </label>
+                    <div class="col-md-4 mt-2">
+                        <label class="col-6">
+                            <input type="radio" name="NguoiViPham_GioiTinh" class="mr-1" value="Nam" checked="checked" gender="1">
+                            Nam
+                        </label>
+                        <label>
+                            <input type="radio" name="NguoiViPham_GioiTinh" class="mr-1" value="Nữ" gender="0">
+                            Nữ
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 text-secondary-d2 brc-secondary-m1">
+                        <label class="text-secondary-m3 text-500">
+                            Quốc tịch
+                        </label>
+                        <input type="text" placeholder="Quốc tịch" class="form-control shadow-none" id="NguoiViPham_QuocTich" name="NguoiViPham_QuocTich" value="Việt Nam" />
+                    </div>
+                    <div class="col-5 text-secondary-d2 brc-secondary-m1">
+                        <label class="text-secondary-m3 text-500">
+                            Nghề nghiệp
+                        </label>
+                        <input type="text" placeholder="Nghề nghiệp" class="form-control shadow-none" id="NguoiViPham_NgheNghiep" name="NguoiViPham_NgheNghiep" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="NguoiViPham_NoiO_TinhTP">Tỉnh/Thành phố (*)</label>
+                        <select required="" class="form-control col-md-12 " id="NguoiViPham_NoiO_TinhTP" onchange="_onChangeProvince(this,'[name=\'NguoiViPham_NoiO_TenTinhTP\']', '#NguoiViPham_NoiO_QuanHuyen');" placeholder="Tỉnh/Thành phố"></select>
+                        <input type="hidden" name="NguoiViPham_NoiO_TinhTP" />
+                        <input type="hidden" name="NguoiViPham_NoiO_TenTinhTP" />
+                    </div>
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="NguoiViPham_NoiO_QuanHuyen">Quận/Huyện (*)</label>
+                        <select required="" class="form-control col-md-12 " id="NguoiViPham_NoiO_QuanHuyen" onchange="_onChangeDistrict(this,'[name=\'NguoiViPham_NoiO_TenQuanHuyen\']', '#NguoiViPham_NoiO_XaPhuong');" placeholder="Quận/Huyện"></select>
+                        <input type="hidden" name="NguoiViPham_NoiO_QuanHuyen" />
+                        <input type="hidden" name="NguoiViPham_NoiO_TenQuanHuyen" />
+                    </div>
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="NguoiViPham_NoiO_XaPhuong">Xã/Phường (*)</label>
+                        <select required="" class="form-control col-md-12 " id="NguoiViPham_NoiO_XaPhuong" onchange="_onChangeWardAddress(this,'[name=\'NguoiViPham_NoiO_TenXaPhuong\']');" placeholder="Xã/Phường"></select>
+                        <input type="hidden" name="NguoiViPham_NoiO_XaPhuong" />
+                        <input type="hidden" name="NguoiViPham_NoiO_TenXaPhuong" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Số nhà, tên đường, khu phố (*)
+                        </label>
+                        <input required="" type="text" placeholder="Số nhà, tên đường, khu phố" class="form-control shadow-none" id="NguoiViPham_NoiO_DiaChi" name="NguoiViPham_NoiO_DiaChi" onchange="_onUpdateFullAddress('[name=\'NguoiViPham_NoiO\']','[name=\'NguoiViPham_NoiO_TenTinhTP\']','[name=\'NguoiViPham_NoiO_TenQuanHuyen\']','[name=\'NguoiViPham_NoiO_TenXaPhuong\']',this )" />
+                    </div>
+                </div>
+
+                <div class="form-group row d-none">
+                    <div class="col-11 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Nơi ở hiện tại
+                        </label>
+                        <input required="" type="text" placeholder="Nơi ở hiện tại" class="form-control shadow-none" id="NguoiViPham_NoiO" name="NguoiViPham_NoiO" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-none" id="ForOrganization">
+                <div class="form-group row">
+                    <div class="col-10 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Tổ chức vi phạm (*)
+                        </label>
+                        <input required="" type="text" placeholder="Tên tổ chức vi phạm" class="form-control shadow-none" id="ToChucViPham_Ten" name="ToChucViPham_Ten" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="ToChucViPham_DiaChi_TinhTP">Tỉnh/Thành phố (*)</label>
+                        <select required="" class="form-control col-md-12 " id="ToChucViPham_DiaChi_TinhTP" onchange="_onChangeProvince(this,'[name=\'ToChucViPham_DiaChi_TenTinhTP\']', '#ToChucViPham_DiaChi_QuanHuyen');" placeholder="Tỉnh/Thành phố"></select>
+                        <input type="hidden" name="ToChucViPham_DiaChi_TinhTP" />
+                        <input type="hidden" name="ToChucViPham_DiaChi_TenTinhTP" />
+                    </div>
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="ToChucViPham_DiaChi_QuanHuyen">Quận/Huyện (*)</label>
+                        <select required="" class="form-control col-md-12 " id="ToChucViPham_DiaChi_QuanHuyen" onchange="_onChangeDistrict(this,'[name=\'ToChucViPham_DiaChi_TenQuanHuyen\']', '#ToChucViPham_DiaChi_XaPhuong');" placeholder="Quận/Huyện"></select>
+                        <input type="hidden" name="ToChucViPham_DiaChi_QuanHuyen" />
+                        <input type="hidden" name="ToChucViPham_DiaChi_TenQuanHuyen" />
+                    </div>
+                    <div class="col-4 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500" for="ToChucViPham_DiaChi_XaPhuong">Xã/Phường (*)</label>
+                        <select required="" class="form-control col-md-12 " id="ToChucViPham_DiaChi_XaPhuong" onchange="_onChangeWardAddress(this,'[name=\'ToChucViPham_DiaChi_TenXaPhuong\']');" placeholder="Xã/Phường"></select>
+                        <input type="hidden" name="ToChucViPham_DiaChi_XaPhuong" />
+                        <input type="hidden" name="ToChucViPham_DiaChi_TenXaPhuong" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Địa chỉ, tên đường, khu phố (*)
+                        </label>
+                        <input required="" type="text" placeholder="Địa chỉ, tên đường, khu phố" class="form-control shadow-none" id="ToChucViPham_DiaChi_SoNha" name="ToChucViPham_DiaChi_SoNha" onchange="_onUpdateFullAddress('[name=\'ToChucViPham_DiaChi\']','[name=\'ToChucViPham_DiaChi_TenTinhTP\']','[name=\'ToChucViPham_DiaChi_TenQuanHuyen\']','[name=\'ToChucViPham_DiaChi_TenXaPhuong\']',this )" />
+                    </div>
+                </div>
+                <div class="form-group row d-none">
+                    <div class="col-9 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Địa chỉ trụ sở chính (*)
+                        </label>
+                        <input required="" type="text" placeholder="Địa chỉ trụ sở chính" class="form-control shadow-none" id="ToChucViPham_DiaChi" name="ToChucViPham_DiaChi" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-5 text-danger-d2 brc-danger-m1">
+                        <label class="text-danger-m3 text-500">
+                            Mã số doanh nghiệp (*)
+                        </label>
+                        <input required="" type="text" placeholder="Mã số doanh nghiệp" class="form-control shadow-none" id="ToChucViPham_MaSoDoanhNghiep" name="ToChucViPham_MaSoDoanhNghiep" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-6 text-secondary-d2 brc-secondary-m1">
+                        <label class="text-secondary-m3 text-500">
+                            Số GCN đăng ký đầu tư/doanh nghiệp hoặc GP thành lập
+                        </label>
+                        <input type="text" placeholder="Số GCN đăng ký đầu tư" class="form-control shadow-none" id="ToChucViPham_SoGCN" name="ToChucViPham_SoGCN" />
+                    </div>
+                    <div class="col-4 text-secondary-d2 brc-secondary-m1">
+                        <label class="text-secondary-m3 text-500">
+                            Ngày cấp (*)
+                        </label>
+                        <input type="text" placeholder="Ngày cấp" class="form-control shadow-none pickerdate" id="ToChucViPham_SoGCN_NgayCap" name="ToChucViPham_SoGCN_NgayCap" />
+                    </div>
+                    <div class="col-7 text-secondary-d2 brc-secondary-m1">
+                        <label class="text-secondary-m3 text-500">
+                            Nơi cấp (*)
+                        </label>
+                        <input type="text" placeholder="Nơi cấp" class="form-control shadow-none" id="ToChucViPham_SoGCN_NoiCap" name="ToChucViPham_SoGCN_NoiCap" />
+                    </div>
+                </div>
+                <div class="acard card h-100">
+                    <div class="card-header pb-15">
+                        <h5 class="card-title">
+                            Người đại diện
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="NguoiDaiDien_DanhXung" value="Ông " />
+                        <div class="form-group row">
+                            <div class="col-5 text-danger-d2 brc-danger-m1">
+                                <label class="text-danger-m3 text-500">
+                                    Họ tên (*)
+                                </label>
+                                <input required="" type="text" placeholder="Họ tên người đại diện" class="form-control shadow-none" id="NguoiDaiDien_HoTen" name="NguoiDaiDien_HoTen" />
+                            </div>
+                            <label class="col-sm-2 col-form-label text-sm-right pr-0 text-500 text-danger-m3">Giới tính (*) </label>
+                            <div class="col-md-4 mt-2">
+                                <label class="col-6">
+                                    <input type="radio" name="NguoiDaiDien_GioiTinh" class="mr-1" value="Nam" checked="checked" gender="1">
+                                    Nam
+                                </label>
+                                <label>
+                                    <input type="radio" name="NguoiDaiDien_GioiTinh" class="mr-1" value="Nữ" gender="0">
+                                    Nữ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-7 text-secondary-d2 brc-secondary-m1">
+                                <label class="text-secondary-m3 text-500">
+                                    Chức danh
+                                </label>
+                                <input type="text" placeholder="Chức danh người đại diện" class="form-control shadow-none" id="NguoiDaiDien_ChucDanh" name="NguoiDaiDien_ChucDanh" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*constructor*@
+            <div id="ForConstructor"></div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function lcFirstCharacter(str) {
+        return str.charAt(0).toLowerCase() + str.slice(1);
+    }
+
+    function _onUpdateFullAddress(eleFullAddrees, eleProvince, eleDistrict, eleWard, eleAddress){
+        var addressVal = (eleAddress != null && eleAddress != undefined ? $(eleAddress).val() : "");
+        var wardVal = (eleWard != null && eleWard != undefined ? $(eleWard).val() : "");
+        var districtVal = (eleWard != null && eleWard != undefined ? $(eleDistrict).val() : "");
+        var provinceVal = (eleWard != null && eleWard != undefined ? $(eleProvince).val() : "");
+
+        addressVal = addressVal != null && addressVal != undefined && addressVal.length > 0 ? "{0}, ".format(addressVal) : "";
+        wardVal = wardVal != null && wardVal != undefined && wardVal.length > 0 ? "{0}, ".format(wardVal) : "";
+        districtVal = districtVal != null && districtVal != undefined && districtVal.length > 0 ? "{0}, ".format(districtVal) : "";
+        provinceVal = provinceVal != null && provinceVal != undefined && provinceVal.length > 0 ? "{0}".format(provinceVal) : "";
+
+        var fullAddress = "{0}{1}{2}{3}".format(addressVal,lcFirstCharacter(wardVal),lcFirstCharacter(districtVal),lcFirstCharacter(provinceVal));
+        $(eleFullAddrees).val(fullAddress);
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    //debugger;
+
+    var $formValid = null;
+
+    $(function () {
+        $(".pickerdate").datetimepicker({
+            locale: 'vi',
+            format: 'DD/MM/YYYY',
+            dayViewHeaderFormat: 'MMMM YYYY',
+            calendarWeeks: true,
+            showTodayButton: true,
+            icons: {
+                time: 'fas fa-clock',
+                date: 'fas fa-calendar',
+                up: 'fas fa-chevron-up',
+                down: 'fas fa-chevron-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'fas fa-calendar-day',
+                clear: 'fas fa-trash',
+                close: 'fas fa-remove'
+            }
+        });
+
+        $("input[type='radio'][name='NguoiViPham_GioiTinh']").change(function () {
+            var gender = $(this).attr('gender');
+            if (gender == "1") {
+                $("input[name='NguoiViPham_DanhXung']").val("Ông ");
+            } else {
+                $("input[name='NguoiViPham_DanhXung']").val("Bà ");
+            }
+        });
+
+        $("input[type='radio'][name='NguoiDaiDien_GioiTinh']").change(function () {
+            var gender = $(this).attr('gender');
+            if (gender == "1") {
+                $("input[name='NguoiDaiDien_DanhXung']").val("Ông ");
+            } else {
+                $("input[name='NguoiDaiDien_DanhXung']").val("Bà ");
+            }
+        });
+
+        arrIgnore = $('#ForOrganization [required=""]').map(function (idx, el) { return "#" + $(el).attr("id") }).get();
+        $formValid = _initValidForm('#CreateDossier',arrIgnore);
+        _initProvinces("select#NguoiViPham_NoiO_TinhTP", $('[name="NguoiViPham_NoiO_TinhTP"]').val());
+    });
+
+    function _onChangeTypeViolator(rdType) {
+        var typeViolator = $(rdType).val();
+        var typeViolatorPersional = @((int)EnumTypeViolator.Persional);
+
+        if(typeViolator == typeViolatorPersional) {
+            $("#ViolatorInfo #ForPersonal").removeClass("d-none");
+            $("#ViolatorInfo #ForOrganization").addClass("d-none");
+
+            arrIgnore = $('#ViolatorInfo #ForOrganization [required=""]').map(function (idx, el) { return "#" + $(el).attr("id") }).get();
+            if($formValid != null){
+                $formValid.settings.ignore = arrIgnore != undefined ? arrIgnore.join(',') : "";
+            }
+            else{
+                _initValidForm('#CreateDossier',arrIgnore);
+            }
+            _initProvinces("select#NguoiViPham_NoiO_TinhTP", $('[name="NguoiViPham_NoiO_TinhTP"]').val());
+        }
+        else {
+            $("#ViolatorInfo #ForPersonal").addClass("d-none");
+            $("#ViolatorInfo #ForOrganization").removeClass("d-none");
+
+            arrIgnore = $('#ViolatorInfo #ForPersonal [required=""]').map(function (idx, el) { return "#" + $(el).attr("id") }).get();
+            if($formValid != null){
+                $formValid.settings.ignore = arrIgnore != undefined ? arrIgnore.join(',') : "";
+            }
+            else{
+                _initValidForm('#CreateDossier',arrIgnore);
+            }
+            _initProvinces("select#ToChucViPham_DiaChi_TinhTP", $('[name="ToChucViPham_DiaChi_TinhTP"]').val());
+        }
+
+        typeViolatorPersional = typeViolator;
+        var fineAmountValue = $("#DecisionPenalize [name=TienPhat_Number]").val();
+        _initAuthorityCode(typeViolatorPersional, fineAmountValue);
+    }
+
+    function _initAuthorityCode(typeViolatorPersional, fineAmountValue){
+        var configValue= configAuthorityViaFineAmount[typeViolatorPersional];
+        var fineAmount = fineAmountValue != null && fineAmountValue != undefined ? ((typeof fineAmountValue === 'string' || fineAmountValue instanceof String) && fineAmountValue.length > 0 ? parseFloat(fineAmountValue) :fineAmountValue ) : 0;
+        var authorityCode = '';
+
+        Object.keys(configValue).forEach(function (key) {
+            var minVal = configValue[key]['min'];
+            var maxVal = configValue[key]['max'];
+            var min = (minVal != null && minVal != undefined ? minVal : 0) * 1000000;
+            var max = (maxVal != null && maxVal != undefined ? maxVal : 0) * 1000000;
+
+            if(max > 0){
+                if(fineAmount <= max && fineAmount > min) {
+                    authorityCode = key; return;
+                }
+            }else{
+                if(fineAmount > min) {
+                    authorityCode = key; return;
+                }
+            }
+        });
+
+        $('[name="NextAuthorityCode"]').val(authorityCode);
+    }
+
+    function _initProvinces(cbbProvince, selectedProvince) {
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetListProvinces", "Ajax", new{area="Cate"})",
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbProvince).append('<option value="">Chọn 1 giá trị</option>');
+                $.each(response.Provinces, function (index, item) {
+                    $(cbbProvince).append('<option value="' + item.ProvinceId + '">' + item.ProvinceName + "</option>");
+                });
+                $(cbbProvince).val(selectedProvince).trigger('change.select2');
+            }
+        });
+        $(cbbProvince).select2({width: 'resolve'});
+    }
+
+    function _onChangeDistrict(cbb, eleName, cbbWard){
+        var districtId = $(cbb).val();
+        $(cbbWard).empty();
+        $(cbbWard).append('<option value="">Chọn 1 giá trị</option>');
+
+        if(districtId == null || districtId.length <= 0) return;
+        $('[name="'+$(cbb).attr('id')+'"]').val(districtId);
+
+        $(eleName).val($(cbb).children("option:selected").text());
+        var urlWardsBelongDistrict =
+            "@Url.Action("GetWardsBelongDistrict", "Ajax", new { area = "Cate" })?districtIds=" + districtId;
+        $.ajax({
+            type: "GET",
+            url: urlWardsBelongDistrict,
+            dataType: "JSON",
+            success: function(response) {
+                var wardId = $('[name="'+$(cbbWard).attr('id')+'"]').val();
+
+                $.each(response.Wards,
+                    function(index, item) {
+                        $(cbbWard).append('<optgroup label="' + index + '">');
+                        $.each(item,
+                            function(idx, ward) {
+                                $(cbbWard).append('<option value="' + ward.WardId + '">' + ward.WardName + "</option>");
+                            });
+                        $(cbbWard).append('</optgroup>');
+                    });
+
+                $(cbbWard).val(wardId).trigger('change.select2');
+
+            }
+        });
+    }
+
+    function _onChangeProvince(cbb, eleName, cbbDistrict){
+        var provinceId = $(cbb).val();
+
+        $(cbbDistrict).empty();
+        $(cbbDistrict).append('<option value="">Chọn 1 giá trị</option>');
+
+        if(provinceId == null || provinceId.length <= 0) return;
+        $('[name="'+$(cbb).attr('id')+'"]').val(provinceId);
+
+        $(eleName).val($(cbb).children("option:selected").text());
+        var urlDistrictsViaProvince =
+            "@Url.Action("GetDistrictsBelongProvince", "Ajax", new { area = "Cate" })?provinceIds=" + provinceId;
+        $.ajax({
+            type: "GET",
+            url: urlDistrictsViaProvince,
+            dataType: "JSON",
+            success: function(response) {
+                var districtId = $('[name="'+$(cbbDistrict).attr('id')+'"]').val();
+
+                $.each(response.Districts,
+                    function(index, item) {
+                        $(cbbDistrict).append('<optgroup label="' + index + '">');
+                        $.each(item, function(idx, district) {
+                            $(cbbDistrict).append('<option value="' + district.DistrictId + '">' + district.DistrictName + "</option>");
+                        });
+                        $(cbbDistrict).append('</optgroup>');
+                    });
+                $(cbbDistrict).val(districtId).trigger('change.select2');
+            }
+        });
+    }
+
+    function _onChangeWardAddress(cbb, eleName){
+        var wardId = $(cbb).val();
+        if(wardId == null || wardId.length <= 0) return;
+        $('[name="'+$(cbb).attr('id')+'"]').val(wardId);
+        $(eleName).val($(cbb).children("option:selected").text());
+    }
+
+</script>

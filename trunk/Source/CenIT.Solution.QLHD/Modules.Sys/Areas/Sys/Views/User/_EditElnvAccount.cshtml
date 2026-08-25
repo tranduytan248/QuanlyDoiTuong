@@ -1,0 +1,28 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("ElnvAccount_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditElncAccount", "User", new { area = "Sys" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "User_OnProcessSuccess(data, 'EditElncAccount')"
+    }, new { @class = "form-horizontal", id = "EditContractStatus" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ElnvAccount")
+        </div>
+    }
+
+}

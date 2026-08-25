@@ -1,0 +1,32 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcStepModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Step_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "Step", new { area = "Major", procedureId = Model.ProcedureId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Step_OnProcessSuccess(data, 'AddStep')"
+    }, new { @class = "form-horizontal", id = "AddStep" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Step")
+        </div>
+    }
+}
+@section ContinueForm{
+
+}

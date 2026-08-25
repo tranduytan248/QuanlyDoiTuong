@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Modal_Title_Permit_Report");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="fas fa-tasks"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("PermitReport", "Report", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "PermitReport", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_PermitReport")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#PermitReport').ajaxForm({
+            success: function(response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_PermitReport").modal("hide");
+                    $("#ModalContent #modal_PermitReport").on('hidden.bs.modal',
+                        function() {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_PermitReport" + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("ContractType_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Edit", "ContractType", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ContractType_OnProcessSuccess(data, 'EditContractType')"
+    }, new { @class = "form-horizontal", id = "EditContractType" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ContractType")
+        </div>
+    }
+}

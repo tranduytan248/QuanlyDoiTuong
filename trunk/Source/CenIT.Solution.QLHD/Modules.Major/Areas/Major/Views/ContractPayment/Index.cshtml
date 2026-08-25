@@ -1,0 +1,181 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+@using Cores.Major.Enums
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("ContractPayment_Title")} [{AppProcessor.Messagor.GetMessage("Contract_Title")} - {Model.ContractNo} - {Model.CusName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-file-invoice-dollar"></i>
+}
+
+@section FormBody{
+    <style>
+        .col-sm-12.table-responsive-md tr {
+            text-align: center;
+        }
+
+        .col-sm-12.table-responsive-md th {
+            vertical-align: middle;
+        }
+    </style>
+
+    <div class="col-md-12 acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-info-circle text-info"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Info")
+            </h5>
+        </div>
+        <div class="row pt-2">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Contract_ContractNo")</label>
+                    <label class="col-md-7 col-form-label">@Model.ContractNo/@Model.ContractSignal</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Purpose_Title")</label>
+                    <label class="col-md-7 col-form-label">@Model.PurposeName</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("ContractTypeName")</label>
+                    <label class="col-md-7 col-form-label">@Model.ContractTypeName</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Contract_Land_Address")</label>
+                    <label class="col-md-7 col-form-label">@Model.Address</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-user-tie text-warning"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Customers")
+            </h5>
+        </div>
+        <div class="row pt-2">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Customer_Label_CusName")</label>
+                    <label class="col-md-7 col-form-label">@Model.CusName</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Customer_Phone")</label>
+                    <label class="col-md-7 col-form-label">@Model.CusPhone</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Customer_Address")</label>
+                    <label class="col-md-7 col-form-label">@Model.CusAddress</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-md-12 acard card h-100">
+            <div class="card-header pb-15">
+                <h5 class="card-title">
+                    <i class="fas fa-money-bill-alt text-danger"></i>&nbsp;@AppProcessor.Messagor.GetMessage("InfoPayment")
+                </h5>
+            </div>
+            <div class="row pt-2">
+                <div class="col-md-6">
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label for="Total" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Contract_Total")</label>
+                        <div class="col-md-8 input-group">
+                            <input type="text" class="form-control text-500 text-danger-d1 text-110" id="Total" value="@Model.Total" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">đ</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="RemainingAmount" class="col-md-4 col-form-label text-right font-weight-bold">@AppProcessor.Messagor.GetMessage("Contract_RemainingAmount")</label>
+                        <div class="col-md-8 input-group">
+                            <input type="text" class="form-control text-500 text-danger-d1 text-110" id="RemainingAmount" value="@Model.RemainingAmount" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">đ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @{
+                        //if (Model.RemainingAmount > 0)
+                        //{
+                        <div class="dropdown d-inline-block mb-1" id="ButtonCreateContract">
+                            <button class="btn px-3 h-6 waves-effect btn-primary btn-h-outline-primary btn-a-outline-primary py-1 text-600 pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class='fa fa-plus'></i>
+                                @AppProcessor.Messagor.GetMessage("Button_Add_Payment")
+                            </button>
+                            <div class="dropdown-menu dropdown-caret dropdown-menu-right">
+                                @Html.Button(true, "AddPayment", Url.Action("AddPayment", new { area = "Major", contractId = Model.ContractId, status = (int)EnumPaymentStatus.Received }), "<i class=\"fas fas fa-coins\"></i>", AppProcessor.Messagor.GetMessage("PaymentStatus_Received"), new { @class = "dropdown-item text-105", data_width = "1024px", data_scrollbars_inside = true })
+
+                                @Html.Button(true, "AddPayment", Url.Action("AddPayment", new { area = "Major", contractId = Model.ContractId, status = (int)EnumPaymentStatus.Refunded }), "<i class=\"fas fa-money-bill-wave\"></i>", AppProcessor.Messagor.GetMessage("PaymentStatus_Refunded"), new { @class = "dropdown-item text-105", data_width = "1024px", data_scrollbars_inside = true })
+                            </div>
+                        </div>
+                        @*@Html.Button(true, "AddPayment", Url.Action("AddPayment", "ContractPayment", new { area = "Major", contractId = Model.ContractId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_rel = "tooltip", title = "Thêm thông tin Thanh toán" })*@
+                        //}
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.ContractId)
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="p-2 table-responsive-md px-1">
+                    <table id="DSContractPayment" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                        <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                            <tr>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaymentTimes")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_Status")</th>
+                                <th id="Amount" class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidOn")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_RefDocNo")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaymentInfo")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            document.getElementById("Total").value = formatNumber(@Model.Total);
+            document.getElementById("RemainingAmount").value = formatNumber(@Model.RemainingAmount);
+        });
+
+        function formatNumber(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+    </script>
+    <script src="~/Areas/Major/Views/ContractPayment/ContractPayment.js"></script>
+
+}
+@section SubmitControl{
+
+}

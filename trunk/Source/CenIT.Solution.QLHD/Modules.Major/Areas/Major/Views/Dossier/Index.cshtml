@@ -1,0 +1,114 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchDossierModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Dossier_Title");
+}
+
+@section PluginCss
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/dropzone/dist/dropzone.css")">
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/tiny-date-picker.css">
+    <link rel="stylesheet" type="text/css" href="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/date-range-picker.css">
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+    <style type="text/css">
+        .datepicker.datepicker-dropdown.dropdown-menu {
+            z-index: 998 !important;
+        }
+        .dp-daterange-picker.visible {
+            z-index: 999 !important;
+        }
+    </style>
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @*@Html.Button(true, "AddDossier", Url.Action("Add", new { area = "Major" }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "860px" })*@
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md d-none">
+            <table id="DSDossier" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Dossier_Code")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Dossier_HandlingTime")</th>
+                        @*<th class="">@AppProcessor.Messagor.GetMessage("Step_Title")</th>*@
+                        <th class="">@AppProcessor.Messagor.GetMessage("Dossier_Status")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- the `html` of this element will be used by dropzone instance for previewing files/images -->
+<div id="preview-template" class="d-none">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-image">
+            <img alt="Dropzone placeholder" data-dz-thumbnail="" style="width:120px;" />
+        </div>
+
+        <div class="dz-details">
+            <div class="dz-size">
+                <span data-dz-size=""></span>
+            </div>
+
+            @*<div class="dz-filename">
+                    <span data-dz-name=""></span>
+                </div>*@
+        </div>
+
+        @*<div class="dz-progress progress border-1 brc-yellow-tp2" style="height: 0.75rem;">
+                <div class="progress-bar bgc-success dz-upload " role="progressbar" data-dz-uploadprogress=""></div>
+            </div>*@
+
+        <div class="dz-error-message">
+            <span data-dz-errormessage=""></span>
+        </div>
+
+        <div class="dz-success-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-white"></i>
+                <i class="fa fa-check fa-stack-1x fa-inverse text-success-m1"></i>
+            </span>
+        </div>
+
+        <div class="dz-error-mark">
+            <span class="fa-stack fa-lg text-150">
+                <i class="fa fa-circle fa-stack-2x text-danger-m3"></i>
+                <i class="fas fa-exclamation fa-stack-1x fa-inverse text-white"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+@section PluginJs
+{
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/dropzone/dist/dropzone.js")"></script>
+    <script src="/Contents/Base/plugins/ace_v4/node_modules/tiny-date-picker/dist/date-range-picker.js"></script>
+}
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Major/Views/Dossier/Dossier.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            var permissions = function () { return @Html.Raw(Json.Encode(Model.Permissions)); }();
+            window['Permissions'] = permissions;
+        });
+    </script>
+}

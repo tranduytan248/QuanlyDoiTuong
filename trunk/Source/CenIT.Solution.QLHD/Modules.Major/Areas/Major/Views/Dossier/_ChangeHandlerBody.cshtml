@@ -1,0 +1,121 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.DossierId)
+@Html.HiddenFor(model => model.DossierCode)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.PrevStep)
+@Html.HiddenFor(model => model.PrevStepName)
+@Html.HiddenFor(model => model.UnionHandle)
+@Html.HiddenFor(model => model.HandledBy)
+@Html.HiddenFor(model => model.PositionId)
+@Html.HiddenFor(model => model.HandlingTime)
+@Html.HiddenFor(model => model.Status)
+@Html.HiddenFor(model => model.StatusName)
+@Html.HiddenFor(model => model.ProcUnionId)
+@Html.HiddenFor(model => model.ProcedureId)
+@Html.HiddenFor(model => model.ProcedureName)
+@Html.HiddenFor(model => model.AllowChangeHandler)
+@Html.HiddenFor(model => model.StepsChangeHandler)
+@Html.HiddenFor(model => model.SelectedSituationName)
+@Html.HiddenFor(model => model.IsRollbackPrev)
+
+<link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+<div id="CompleteDossier">
+    <div class="alert bgc-red-l4 border-none border-l-4 brc-red-tp1 radius-0 text-dark-tp2">
+        <h4 class="alert-heading text-danger-m1 font-bolder text-110"><i class="fas fa-list-ul"></i>&nbsp;@AppProcessor.Messagor.GetMessage("CurrentTask_Title")</h4>
+        <label class="text-115 text-500 text-primary-d1 d-block">[@Model.InStepName]</label>
+    </div>
+
+    <div class="card ccard">
+        <div class="card-body px-0 py-2">
+            <div class="tab-content tab-sliding border-0 p-0">
+                <div class="tab-pane show active text-95 px-25" id="handle-dossier-pane" role="tabpanel" aria-labelledby="handle-dossier">
+                    @{
+                        if (!Model.AllowChangeHandler)
+                        {
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="text-danger-d1 col-md-12 px-0 mb-0">
+                                        <i class="fas fa-user-tie"></i>&nbsp;@Html.TitleFor(model => model.HandledBy, new { @class = "col-form-label pr-0 font-bold" })
+                                    </label>
+                                    <select id="NextStepHandler" name="NextStepHandler" class="form-control col-md-12 none-select2 show-tick" data-size="7" data-live-search="true" data-container="body" onchange="_onChangeCombo(this, '#CompleteDossier #NextStepHandlerName')">
+                                        @{
+                                            foreach (var dept in Model.ListNextStepHandlers.GroupBy(s => s.UnionName)
+                                                         .Select(g => new { UnionName = g.Key, Handlers = g.Select(h => h) }).ToList())
+                                            {
+                                                <optgroup data-icon="fas fa-building" label="@dept.UnionName">
+                                                    @foreach (var handler in dept.Handlers)
+                                                    {
+                                                        @Html.Raw($"<option value='{handler.UserName}' data-content=\"<div class='d-flex align-items-start'><div class='mx-2 text-grey-d1'><div class='text-600 text-blue-d1'><i class='w-3 text-center fas fa-user-tie'></i>{handler.FullName}</div><i class='w-3 text-center fas fa-at text-95'></i>{handler.UserName}</div></div>\">{handler.FullName}</option>")
+                                                    }
+                                                </optgroup>
+                                            }
+                                        }
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.NextStepHandler, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.NextStepHandlerName)
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // bootstrap select
+        $('#CompleteDossier select#NextStepHandler').selectpicker('val', '@Model.NextStepHandler');
+    });
+
+    function _reloadStepHandler(situationId) {
+        var dossierId = "@Model.DossierId";
+
+        var urlStepHandlerViaSituation = "@Url.Action("StepHandlerViaSituation", "Dossier", new { area = "Major" })?dossierId=" + dossierId + "&situationId=" + situationId;
+
+        $.ajax({
+            type: "GET",
+            url: urlStepHandlerViaSituation,
+            dataType: "JSON",
+            success: function (response) {
+                //debugger;
+                var unions = response.Unions;
+                var primaryHandler = response.Handler;
+                if (unions != null && unions.length > 0) {
+                    $('#CompleteDossier select#NextStepHandler').empty();
+                    $.each(unions, function (index, union) {
+                        var handlers = union.Handlers;
+                        if (handlers != null && handlers.length > 0) {
+                            var htmlHandlers = "";
+
+                            $.each(handlers, function (index, handler) {
+                                htmlHandlers += "<option value='{0}' data-content=\"<div class='d-flex align-items-start'><div class='mx-2 text-grey-d1'><div class='text-600 text-blue-d1'><i class='w-3 text-center fas fa-user-tie'></i>{1}</div><i class='w-3 text-center fas fa-at text-95'></i>{2}</div></div>\">{1}</option>".format(handler.UserName, handler.FullName, handler.Email);
+                            });
+
+                            $('#CompleteDossier select#NextStepHandler').append('<optgroup data-icon="fas fa-building" label="{0}">{1}</optgroup>'.format(union.UnionName, htmlHandlers));
+                        }
+                    });
+                }
+                $('#CompleteDossier select#NextStepHandler').selectpicker('val', primaryHandler).selectpicker('refresh');
+            }
+        });
+    }
+
+</script>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)

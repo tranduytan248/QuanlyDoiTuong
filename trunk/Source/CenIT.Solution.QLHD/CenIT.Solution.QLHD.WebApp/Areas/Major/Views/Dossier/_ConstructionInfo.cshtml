@@ -1,0 +1,273 @@
+﻿
+@using Modules.Major.Cores.Enums
+@using Modules.Major.Cores.Models
+@using Cores.Major.Enums
+@using Cores.Major.Models
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+@{
+    var disabled = Model.IsDisabled ? "disabled" : "";
+}
+
+<div id="Construction" class="pt-2">
+
+    @{
+        if (Model.IsDisabled)
+        {
+            @Html.HiddenFor(model => model.Construction.ViolatedConstructionId)
+
+            <div class="form-group row">
+                <span class="col-10 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.Construction.ViolatedConstructionName, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.Construction.ViolatedConstructionName, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.ViolatedConstructionName) })
+                </span>
+                @*<div class="col-10 text-blue-d2 brc-blue-m1">
+                        @Html.DropDownListFor(model => model.Construction.ViolatedConstructionId, new SelectList(Model.Construction.ListViolatedConstructions, "Value", "Text"), "", new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.ViolatedConstructionId) })
+                        @Html.TitleFor(model => model.Construction.ViolatedConstructionId, new { @class = "text-500" })
+                    </div>*@
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                <div class="col-10 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.Construction.ViolatedConstructionId, new { @class = "text-500" })
+                    @Html.DropDownListFor(model => model.Construction.ViolatedConstructionId, new SelectList(Model.Construction.ListViolatedConstructions, "Value", "Text"), "", new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.Construction.ViolatedConstructionId) })
+                </div>
+                @Html.HiddenFor(model => model.Construction.ViolatedConstructionName)
+            </div>}
+    }
+    <hr class="brc-danger-m1" />
+    <div class="form-group col-12">
+        <div class="acard card h-100 row">
+            <div class="card-header pb-15">
+                <h5 class="card-title">
+                    <i class="fas fa-clipboard-list"></i>&nbsp;@AppProcessor.Messagor.GetMessage("LandTypeViolation_Title")
+                </h5>
+            </div>
+            <div class="card-body col-12">
+                <div class="form-group my-0 @disabled">
+                    @{
+                        foreach (var typeViolation in Model.Construction.ListConstructionTypeViolations)
+                        {
+                    <label class="col-form-label col-3">
+                        @Html.RadioButtonFor(model => model.Construction.TypeViolation, typeViolation.Value, new { id = $"{((EnumConstructionTypeViolation)int.Parse(typeViolation.Value)).ToString()}" })
+                        @Html.Label(typeViolation.Text, new { @for = $"{((EnumConstructionTypeViolation)int.Parse(typeViolation.Value)).ToString()}" })
+                    </label>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="brc-danger-m1" />
+
+    <div id="TypeViolationWrongLicense" class="@(Model.Construction.TypeViolation == (int)EnumConstructionTypeViolation.NoLicense ? "d-none" : "")">
+
+	    <div class="form-group col-12">
+		    <div class="acard card h-100 row">
+			    <div class="card-header pb-15">
+				    <h5 class="card-title">
+					    <i class="fas fa-building"></i>&nbsp;@AppProcessor.Messagor.GetMessage("ConstructionLicense_Type")
+				    </h5>
+			    </div>
+			    <div class="card-body col-12">
+				    <div class="form-group col-12 px-0 my-0 @disabled">
+					    <label class="col-form-label col-3">
+						    @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.NewBuilding, new { id = "NewBuilding", title = "TypeConstructionLicense_NewBuilding" })
+						    @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_NewBuilding"), new { @for = "NewBuilding" })
+					    </label>
+					    <label class="col-form-label col-3">
+						    @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.Repairing, new { id = "Repairing", title = "TypeConstructionLicense_Repairing" })
+						    @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_Repairing"), new { @for = "Repairing" })
+					    </label>
+					    <label class="col-form-label col-3">
+						    @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.RelocateBuilding, new { id = "RelocateBuilding", title = "TypeConstructionLicense_RelocateBuilding" })
+						    @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_RelocateBuilding"), new { @for = "RelocateBuilding" })
+					    </label>
+					    <label class="col-form-label col-3">
+						    @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.LicenseTypeId, (int)EnumTypeConstructionLicense.DeadlineBuilding, new { id = "DeadlineBuilding", title = "TypeConstructionLicense_DeadlineBuilding" })
+						    @Html.Label(AppProcessor.Messagor.GetMessage("TypeConstructionLicense_DeadlineBuilding"), new { @for = "DeadlineBuilding" })
+					    </label>
+					    @Html.HiddenFor(model => model.Construction.DataConstructionLicense.LicenseTypeName)
+				    </div>
+			    </div>
+		    </div>
+	    </div>
+	    <hr class="brc-warning-m1" />
+
+	    @{
+		    if (Model.IsDisabled)
+            {
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.LicenseNo)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.ReleaseBy)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.ReleaseOn)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.NumberFloor)
+                @Html.HiddenFor(model => model.Construction.DataConstructionLicense.ConstructionArea)
+	            <div class="form-group row">
+		            <div class="col-3 text-blue-d2 brc-blue-m1">
+			            @Html.TitleFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "text-500" })
+			            @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_LicenseNo") })
+		            </div>
+		            <div class="col-3 text-blue-d2 brc-blue-m1">
+			            @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseBy, new { @class = "text-500" })
+			            @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ReleaseBy, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ReleaseBy") })
+		            </div>
+		            <div class="col-4 text-blue-d2 brc-blue-m1">
+			            @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseOn, new { @class = "text-500" })
+			            @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ReleaseOn, "{0:dd/MM/yyyy}", new { disabled = true, @class = "form-control col-md-12 datepicker", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ReleaseOn") })
+		            </div>
+	            </div>
+                <div class="form-group row">
+                    <div class="col-3 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_NumberFloor") })
+                    </div>
+                    <div class="col-3 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ConstructionArea") })
+                    </div>
+                </div>
+                <hr />if (Model.Construction.DataConstructionLicense?.ListConstructionLicense?.Count > 0)
+                {
+                    <hr />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Construction.DataConstructionLicense.ListConstructionLicense, new { @class = "col-12 col-form-label pr-0 text-danger-m3" })
+                        <div class="col-12">
+                            <ul class="list-unstyled">
+                                @foreach (var doc in Model.Construction.DataConstructionLicense.ListConstructionLicense)
+                                {
+                                    <li id="@doc.FileId">
+                                        @Html.Button(true, "ViewRefDoc", Url.Action("ViewDoc", "Doc", new { area = "Cate", fileId = doc.FileId }), "<i class='fa fa-paperclip'></i>", doc.FileName, new { @class = "", data_width = "fullscreen" })
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>}
+            }
+            else
+            {
+                <div class="form-group row">
+                    <div class="col-3 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.LicenseNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_LicenseNo") })
+                    </div>
+                    <div class="col-4 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseBy, new { @class = "text-500" })
+                        @Html.DropDownListFor(model => model.Construction.DataConstructionLicense.ReleaseBy, new SelectList(Model.Construction.DataConstructionLicense.ListLicensingAuthority, "Value", "Text"), "", new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ReleaseBy") })
+                    </div>
+                    @Html.HiddenFor(model => model.Construction.ViolatedConstructionName)
+                    <div class="col-4 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ReleaseOn, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ReleaseOn, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ReleaseOn") })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.NumberFloor, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_NumberFloor") })
+                    </div>
+                    <div class="col-4 text-blue-d2 brc-blue-m1">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "text-500" })
+                        @Html.TextBoxFor(model => model.Construction.DataConstructionLicense.ConstructionArea, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_ConstructionArea") })
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group my-3">
+                    @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionLicenseFiles, new { @class = "col-sm-12 col-form-label text-sm-left pr-0 font-bold" })
+                    <div id="Construction_DataConstructionLicense_ConstructionLicenseFiles" class="dropzone bgc-white brc-dark-l3 brc-h-primary-m4 bgc-h-primary-l4 radius-1">
+                        <div class="fallback d-none" enctype="multipart/form-data">
+                            <input name="lstRefFiles" type="file" multiple />
+                        </div>
+
+                        <div class="dz-default dz-message my-0">
+                            <span class="text-120 text-grey-d2">
+                                <span class="text-115 font-bolder"><i class="fa fa-caret-right text-danger-m1"></i> Kéo thả hoặc nhấn chọn tệp để tải lên</span>
+                                <br />
+                                <i class="upload-icon fas fa-cloud-upload-alt text-blue-m1 fa-3x mt-2"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="form-group row mt-4">
+                        @Html.TitleFor(model => model.Construction.DataConstructionLicense.ConstructionLicenseFiles, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-8">
+                            @Html.FileFor(model => model.Construction.DataConstructionLicense.ConstructionLicenseFiles, ".doc,.docx,.pdf", true, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ConstructionLicense_RefFile") })
+                            @Html.ValidationMessageFor(model => model.Construction.DataConstructionLicense.ConstructionLicenseFiles, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+            }
+        }
+    </div>
+
+    <div id="TypeViolationNoLicense" class="@(Model.Construction.TypeViolation == (int)EnumConstructionTypeViolation.WrongLicense ? "d-none" : "")">
+        <div class="form-group my-0 @disabled">
+            <label class="offset-2"></label>
+            <label class="col-form-label col-4">
+                @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.NoLicenseTypeId, (int)EnumConstructionTypeViolationNoLicense.Agricultural, new { id = "Agricultural", title = "NoLicense_Agricultural" })
+                @Html.Label(AppProcessor.Messagor.GetMessage("NoLicense_Agricultural"), new { @for = "Agricultural" })
+            </label>
+            <label class="col-form-label col-4">
+                @Html.RadioButtonFor(model => model.Construction.DataConstructionLicense.NoLicenseTypeId, (int)EnumConstructionTypeViolationNoLicense.NonAgricultural, new { id = "NonAgricultural", title = "NoLicense_NonAgricultural" })
+                @Html.Label(AppProcessor.Messagor.GetMessage("NoLicense_NonAgricultural"), new { @for = "NonAgricultural" })
+            </label>
+            @Html.HiddenFor(model => model.Construction.DataConstructionLicense.NoLicenseTypeName)
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Construction input[type='radio'][name='Construction.DataConstructionLicense.LicenseTypeId']").change(function () {
+            var licenseTypeName = $(this).attr("title");
+            $("#Construction input[type='hidden'][id='Construction_DataConstructionLicense_LicenseTypeName']").val(licenseTypeName);
+        });
+
+        $("#Construction input[type='radio'][name='Construction.DataConstructionLicense.NoLicenseTypeId']").change(function () {
+            var licenseTypeName = $(this).attr("title");
+            $("#Construction input[type='hidden'][id='Construction_DataConstructionLicense_NoLicenseTypeName']").val(licenseTypeName);
+        });
+
+        $("#Construction input[type='radio'][name='Construction.TypeViolation']").change(function () {
+            var typeViolation = $(this).val();
+            var wrongLicense = @((int)EnumConstructionTypeViolation.WrongLicense);
+            var noLicense = @((int)EnumConstructionTypeViolation.NoLicense);
+
+            if(typeViolation == wrongLicense)
+            {
+                $("#Construction #TypeViolationWrongLicense").removeClass("d-none");
+                $("#Construction #TypeViolationNoLicense").addClass("d-none");
+            }
+            else if(typeViolation == noLicense){
+                $("#Construction #TypeViolationWrongLicense").addClass("d-none");
+                $("#Construction #TypeViolationNoLicense").removeClass("d-none");
+            }
+            else{
+                $("#Construction #TypeViolationWrongLicense").addClass("d-none");
+                $("#Construction #TypeViolationNoLicense").addClass("d-none");
+            }
+        });
+
+        $("#DecisionPenalize #areaChiTietCuThe").removeClass("d-none");
+
+        @if (!Model.IsDisabled)
+        {
+	        @Html.Raw($"initDropzoneUpload('#Construction_DataConstructionLicense_ConstructionLicenseFiles', '{ConstructionLicenseModel.CONSTRUCTION_LICENSE}');");
+        }
+
+        $("#Construction [name='Construction.ViolatedConstructionId']").change(function () {
+            var violatedConstructionId = $(this).val();
+            $('[data-type="Situation"][proctype][proctype=' + $('#TypeProcedure').val() + ']').removeClass('d-none');
+
+            $('[data-type="Situation"][violatedconstructions][violatedconstructions*="['+violatedConstructionId+']"][proctype][proctype!=' + $('#TypeProcedure').val() + ']').removeClass('d-none');
+
+            $('[data-type="Situation"][proctype][proctype!=' + $('#TypeProcedure').val() + ']').addClass('d-none');
+        });
+
+    });
+
+</script>

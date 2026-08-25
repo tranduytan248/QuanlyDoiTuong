@@ -1,0 +1,36 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadJs{
+    @RenderSection("HeadJs", false)
+    @Html.RenderScripts(ScriptPosition.HeadEnd)
+}
+
+@section HeadCss{
+
+    @RenderSection("HeadCss", false)
+}
+
+<body>
+<div class="body-container">
+
+    <div class="main-container bgc-white">
+
+        <div role="main" class="main-content">
+
+            <div class="page-content container container-plus">
+                <!-- page header and toolbox -->
+                @RenderBody()
+            </div>
+
+            @Html.Partial("_Footer")
+
+        </div>
+        <!-- .modal-aside -->
+    </div>
+</div>
+
+@RenderSection("BottomScript", false)
+
+</body>

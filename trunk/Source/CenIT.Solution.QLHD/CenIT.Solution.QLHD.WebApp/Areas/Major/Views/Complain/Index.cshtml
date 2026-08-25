@@ -1,0 +1,133 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Complain_Title");
+}
+
+@section PluginCss{
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @Html.Button(false, "SyncComplain", Url.Action("SyncComplain", new { area = "Major" }), "<i class='fas fa-sync'></i>", "Đồng bộ từ PAKN", new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right" })
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+	<div class="card dcard">
+        @*@Html.Partial("_Violator")*@
+
+		<div class="col-sm-12 table-responsive-md">
+            <table id="DSComplain" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Complain_Title")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Complain_CreatedOn")</th>
+                        <th>@AppProcessor.Messagor.GetMessage("Complain_Status")</th>
+                        <th class="w-25">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+	</div>
+</div>
+
+@section BottomScript
+{
+    <script type="text/javascript">
+        var currentUser = "@User.Identity.Name";
+    </script>
+    <script src="@Url.Content("~/Areas/Major/Views/Complain/Complain.js")"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#Search #CreatedFrom").datepicker({
+                autoclose: true,
+                format: "dd/mm/yyyy",
+                todayhighlight: true,
+                orientation: "auto",
+                todaybtn: true,
+                defaultDate: "+1w",
+                calendarWeeks: true,
+                changeMonth: true
+            }).on('changeDate',
+                function (selectedDate) {
+                    $("#Search #CreatedTo").datepicker('remove');
+                    $("#Search #CreatedTo").datepicker({
+                        autoclose: true,
+                        format: "dd/mm/yyyy",
+                        todayhighlight: true,
+                        orientation: "auto",
+                        todaybtn: true,
+                        changeMonth: true,
+                        startDate: selectedDate.date,
+                        calendarWeeks: true
+                    });
+                });
+
+            var date = $("#Search #CreatedFrom").datepicker('getDate');
+            $("#Search #CreatedTo").datepicker({
+                autoclose: true,
+                format: "dd/mm/yyyy",
+                todayhighlight: true,
+                orientation: "auto",
+                todaybtn: true,
+                changeMonth: true,
+                startDate: date,
+                calendarWeeks: true
+            });
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#Search #HandleOnFrom").datepicker({
+                autoclose: true,
+                format: "dd/mm/yyyy",
+                todayhighlight: true,
+                orientation: "auto",
+                todaybtn: true,
+                defaultDate: "+1w",
+                calendarWeeks: true,
+                changeMonth: true
+            }).on('changeDate',
+                function (selectedDate) {
+                    $("#Search #HandleOnTo").datepicker('remove');
+                    $("#Search #HandleOnTo").datepicker({
+                        autoclose: true,
+                        format: "dd/mm/yyyy",
+                        todayhighlight: true,
+                        orientation: "auto",
+                        todaybtn: true,
+                        changeMonth: true,
+                        startDate: selectedDate.date,
+                        calendarWeeks: true
+                    });
+                });
+
+            var date = $("#Search #HandleOnFrom").datepicker('getDate');
+            $("#Search #HandleOnTo").datepicker({
+                autoclose: true,
+                format: "dd/mm/yyyy",
+                todayhighlight: true,
+                orientation: "auto",
+                todaybtn: true,
+                changeMonth: true,
+                startDate: date,
+                calendarWeeks: true
+            });
+        });
+
+    </script>
+}
+@section PluginJs{
+}

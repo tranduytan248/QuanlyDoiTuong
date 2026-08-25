@@ -1,0 +1,103 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ViewFormStructureModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Form_Title")} - {Model.FormName}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-cloud-download-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Export", "Dossier", new { area = "Major", id = Model.FormId, dossierId = Model.DossierId }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportForm", @class = "form-horizontal" }))
+    {
+        <div id="form-@Model.FormId" class="mx-2">
+            @Html.Raw(Model.ViewName)
+        </div>
+    }
+
+    <script type="text/javascript">
+        function _previewForm(){
+            var formData = $("form#ExportForm").serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Preview",new{id = Model.FormId, dossierId = Model.DossierId })",
+                data: formData,
+                success: function(response, textStatus, jqXHR) {
+                    if (response.status != undefined && !response.status) {
+                        eval(response.message);
+                    }else if (response != undefined){
+                        _showModal(response,"TmpExport", "fullscreen", "#ExportForm");
+                        _onFullscreen();
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        //debugger;
+
+        var formData =  @(string.IsNullOrEmpty(Model.FormData) ? Html.Raw("[]") : Html.Raw(Model.FormData));
+        var mappingFormKeys = @(string.IsNullOrEmpty(Model.MappingFormKeys) ? Html.Raw("{}") : Html.Raw(Model.MappingFormKeys));
+        formData["LuuVT"] = "@Html.Raw(User.FullName)";
+
+        $(document).ready(function () {
+            $("#modal_ExportForm .modal-dialog").addClass("modal-dialog-scrollable");
+            $("#modal_ExportForm .modal-body").addClass("ace-scrollbar");
+
+            for (var key in formData) {
+                var lstKeysMapping = mappingFormKeys[key];
+
+                if(typeof lstKeysMapping != "undefined" && lstKeysMapping.length > 0){
+                    $.each(lstKeysMapping, function(index, value){
+                        if(toString.call(value) == '[object Object]'){
+                            if(formData[key] != ''){
+                                $("#form-@Model.FormId [name='"+value.Key+"']").val(eval(value.Function.format(formData[key]))).trigger("change");
+                                $("#form-@Model.FormId [name='"+value.Key+"']:not(input)").html(eval(value.Function.format(formData[key])));
+                            }
+                        }else{
+                            if(formData[key] != ''){
+                                var $formEle = $("#form-@Model.FormId [name='"+value+"']");
+                                if($formEle.length <= 0) return;
+                                if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                                    $formEle.filter('[value='+formData[key]+']').prop('checked', true);
+                                }
+                                else {
+                                    $formEle.val(formData[key]).trigger("change");
+                                    $("#form-@Model.FormId [name='"+value+"']:not(input)").html(formData[key]);
+                                }
+                            }
+                        }
+                    });
+                }
+                if(formData[key] != ''){
+                    var $formEle = $("#form-@Model.FormId [name='"+key+"']");
+                    if($formEle.length <= 0) continue;
+                    if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                        $formEle.filter('[value='+formData[key]+']').prop('checked', true);
+                    }
+                    else {
+                        $formEle.val(formData[key]).trigger("change");
+                        $("#form-@Model.FormId [name='"+key+"']:not(input)").html(formData[key]);
+                    }
+                }
+            }
+        });
+
+    </script>
+}
+@section SubmitControl{
+
+    <button type="button" id="btnReview" class="btn px-4 btn-outline-info mb-1" onclick="_previewForm();"><i class="fas fa-eye"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Preview")</button>
+
+    <button type="submit" id="btnExport" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-cloud-download-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Export")</button>
+
+}

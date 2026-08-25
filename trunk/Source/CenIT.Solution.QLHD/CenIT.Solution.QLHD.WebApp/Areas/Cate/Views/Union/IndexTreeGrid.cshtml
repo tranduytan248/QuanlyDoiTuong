@@ -1,0 +1,106 @@
+﻿@using Syncfusion.EJ2
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Union_Title");
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @Html.Button(true, "AddUnion", Url.Action("Add", new { area = "Cate" }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "860px" })
+}
+
+@section HeadJs
+{
+    <script src="~/Contents/Modules/Major/plugins/ej2/ej2.min.js"></script>
+}
+
+@section HeadCss
+{
+    <link href="~/Contents/Modules/Major/plugins/ej2/bootstrap5.css" rel="stylesheet" />
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md" id="TreeGridUnions">
+            @{ Html.RenderAction("TreeGrid"); }
+        </div>
+    </div>
+</div>
+
+@section BottomScript
+{
+
+    @Html.EJS().ScriptManager()
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#cardSearch .card-toolbar [data-action="toggle"] i').click();
+        });
+
+        var ajax = new ej.base.Ajax(location.origin + '/Contents/Modules/Major/plugins/ej2/locale/vi.json', 'GET', false);   //load the de json culture file
+        ajax.send().then((e) => {
+            var loader = JSON.parse(e);
+            ej.base.L10n.load(
+                loader
+            );
+            ej.base.setCulture('vi');      //Set the culture for the ASP.NET MVC controls
+        });
+
+        function refreshTreeGridDataSource() {
+            var belongUnions = $("#Search select#BelongUnions").val() != null &&
+                $("#Search select#BelongUnions").val().length > 0
+                ? $("#Search select#BelongUnions").val()
+                : "";
+            var typeUnions = $("#Search select#TypeUnions").val() != null &&
+                $("#Search select#TypeUnions").val().length > 0
+                ? $("#Search select#TypeUnions").val()
+                : "";
+            var tgUnions = document.getElementById("Unions").ej2_instances[0];
+            $.ajax({
+                url: '@Url.Action("GetDataUnions")?belongUnions=' + belongUnions + '&typeUnions=' + typeUnions,
+                type: "get",
+            }).done(function (data) {
+                tgUnions.dataSource = data;
+            }).fail(function () {
+                alert('error');
+            });
+        }
+
+        function Union_OnProcessSuccess(response, formId) {
+            if (response.status != undefined) {
+                if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                    if (response.status != undefined) {
+                        eval(response.message);
+                        refreshTreeGridDataSource();
+                        ////$("#TreeGridUnions").load("@Url.Action("TreeGrid")");
+                        response.status = undefined;
+                        var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                        $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                            _initElements(this);
+                        });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                refreshTreeGridDataSource();
+                                ////$("#TreeGridUnions").load("@Url.Action("TreeGrid")");
+                                response.status = undefined;
+                            }
+                        });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+            }
+        }
+    </script>
+}

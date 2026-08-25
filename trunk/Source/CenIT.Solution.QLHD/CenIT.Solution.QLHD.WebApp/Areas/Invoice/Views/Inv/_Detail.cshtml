@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ViewInvModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Inv_Title")} - {AppProcessor.Messagor.GetMessage("Contract_Title")} [{Model.InvNo}-{Model.Pattern}-{Model.Serial}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-file-invoice-dollar"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("", "", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ViewInv", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm" class="row">
+            <div class="col-12">
+                <div class="acard card h-100">
+                    <div class="card-body">
+                        <div class="row col-12 px-0 mx-auto">
+                            <iframe width="100%" style="height:calc(100vh - 225px); border:none;" srcdoc="@Model.HtmlInv">
+                            </iframe>
+                            @*@Html.Raw(Model.HtmlInv)*@
+                        </div>
+                    </div><!-- /.card-body -->
+                </div><!-- /.card -->
+            </div><!-- /.col -->
+        </div>
+    }
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/PrintArea/2.4.1/jquery.PrintArea.js" integrity="sha512-GhQdBWSddrd8ijiuwA0LZ7ppPcPrJOZAtGMOmgO/371vPNUNm/mKdNc13T/2UWLp5vLIcaDvh/9NwCRZAdxgFw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript">
+        debugger
+        function printInv() {
+            var mode = 'iframe'; //popup
+            var close = mode == "popup";
+            var options = { mode: mode, popClose: close };
+            $("#bodyForm .acard").printArea(options);
+        }
+    </script>*@
+}
+
+@section SubmitControl{
+    <button class="btn btn-primary"> <i class="fa fa-download"></i> <a class="text-white no-underline" href="~/Invoice/Inv/DownloadInv?invKey=@Model.InvKey&invNo=@Model.InvNo-@Model.Pattern/@Model.Serial">Tải xuống</a></button>
+
+    @*<button class="btn btn-purple" onclick="printInv();"> <i class="fas fa-print"></i> In hóa đơn</button>*@
+}

@@ -1,0 +1,339 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractPaymentModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.PaymentId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.IsEdit)
+
+<div id="Payment">
+    <div class="form-row">
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.ContractNo, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.ContractNo, new { @readonly = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_ContractNo") })
+            @Html.ValidationMessageFor(model => model.ContractNo, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.Total, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormatterTotal, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right formatter", placeholder = AppProcessor.Messagor.GetMessage("Contract_Total") })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.FormatterTotal, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Total)
+        </div>
+    </div>
+    @{
+        if (!Model.HasTaxForContract)
+        {
+            <div class="form-row">
+                @Html.TitleFor(model => model.InfoDiscountContract, new { @class = "col-form-label pr-0 font-bold" })
+                <div class="col-md-12">
+                    <div class="input-group">
+                        @Html.TextAreaFor(model => model.InfoDiscountContract, new { row = 3, @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110" })
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    
+    <div class="form-row">
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.TotalPaidAmount, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormatterTotalPaidAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right formatter", rawValue = Model.TotalPaidAmount, placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_TotalPaidAmount") })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.FormatterTotalPaidAmount, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.TotalPaidAmount)
+        </div>
+        @*@{
+            if (Model.HasTaxForContract)
+            {
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.TaxAmount, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.FormatterTaxAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right formatter", rawValue = Model.TaxAmount })
+                        <div class="input-group-append">
+                            <span class="input-group-text">đ</span>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.TaxAmount)
+                </div>
+            }
+        }*@
+    </div>
+
+    @Html.HiddenFor(model => model.TypePayment)
+    @Html.HiddenFor(model => model.TypePaymentName)
+    @Html.HiddenFor(model => model.Status)
+    @Html.HiddenFor(model => model.StatusName)
+
+    @Html.HiddenFor(model => model.PercentAdvance)
+    @Html.HiddenFor(model => model.DiscountRate)
+
+    @{
+        if (Model.IsEdit)
+        {
+            <hr class="border-none border-t-3 brc-grey-l2 border-double">
+            <div class="form-row">
+                <div class="col-md-12 form-row">
+                    <div class="col-md-3">
+                        @Html.Label("PercentAdvance", Model.TypePaymentName, new { @class = "col-form-label pr-0 font-bold" })
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.PercentAdvance, new { @readonly = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance") })
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PercentAdvance, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.TitleFor(model => model.PaidAmount, new { @class = "col-form-label pr-0 font-bold" })
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.FormatterPaidAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right formatter", rawValue = Model.PaidAmount, placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount") })
+                            <div class="input-group-append">
+                                <span class="input-group-text">đ</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.PaidAmount)
+                    </div>
+                    <div class="col-md-5">
+                        @Html.TitleFor(model => model.RefDocNo, new { @class = "col-form-label pr-0 font-bold" })
+                        @Html.TextBoxFor(model => model.RefDocNo, new { @readonly = true, @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_RefDocNo") })
+                        @Html.ValidationMessageFor(model => model.RefDocNo, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.PaymentMethod, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+                    @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.PaymentMethodName)
+                </div>
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.PaidOn, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.PaidOn, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = AppProcessor.Messagor.GetMessage("Contract_PaidOn") })
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PaidOn, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.Note, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_Note") })
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <hr class="border-none border-t-3 brc-grey-l2 border-double">
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.Reason, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <hr class="border-none border-t-3 brc-grey-l2 border-double">
+            <div class="form-row">
+                <div class="col-md-12 form-row">
+                    <div class="col-md-3">
+                        @Html.Label("PercentAdvance", Model.TypePaymentName, new { @class = "col-form-label pr-0 font-bold" })
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.PercentAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance"), onchange = $"_onChangePercentAdvance(this,{Model.Total} , '#Payment #FormatterPaidAmount', '#Payment #PaidAmount');" })
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PercentAdvance, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.TitleFor(model => model.PaidAmount, new { @class = "col-form-label pr-0 font-bold" })
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.FormatterPaidAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110 text-right formatter", rawValue = Model.PaidAmount, placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount") })
+                            <div class="input-group-append">
+                                <span class="input-group-text">đ</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.PaidAmount)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.PaymentMethod, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+                    @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.PaymentMethodName)
+                </div>
+                <div class="col-md-6">
+                    @Html.TitleFor(model => model.PaidOn, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.PaidOn, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = AppProcessor.Messagor.GetMessage("Contract_PaidOn") })
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PaidOn, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.Note, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_Note") })
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            
+            @Html.HiddenFor(model => model.Reason)
+
+        }
+    }
+
+</div>
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+
+        $('#Payment .formatter').maskNumber({ integer: true });
+        $('#Payment .formatter').trigger('keyup');
+        $('#Payment #PercentAdvance').trigger("change");
+        
+    });
+
+    function _onChangePercentAdvance(elePercent, remainingAmount, eleFormatterAmountViaPercent, eleAmountViaPercent) {
+        var percentAdvance = $(elePercent).val();
+        var rate = parseInt(percentAdvance) / 100;
+        //var remainingAmount = $(eleRemainingAmount).val();
+        //var amountViaPercent = Math.round(remainingAmount * rate / 1000) * 1000;
+        var amountViaPercent = Math.round(remainingAmount * rate);//Math.round(remainingAmount * rate / 1000) * 1000;
+        $(eleFormatterAmountViaPercent).val(amountViaPercent).trigger('keyup');
+        $(eleAmountViaPercent).val(amountViaPercent);
+    }
+
+    function _onChangeAmount(eleFormatterAmount, eleAmount) {
+        var formatterAmount = $(eleFormatterAmount).val();
+        var realAmount = Number(formatterAmount.replace(/[^0-9.-]+/g, ""));
+        $(eleAmount).val(realAmount);
+    }
+
+    function _onHasArising(chkHasArising, eleFormatterArisingAmount) {
+        $(eleFormatterArisingAmount).trigger('keyup');
+        if ($(chkHasArising).is(":checked")) {
+            $("[name='TypeArising'][value='0']").prop('checked', true);
+        }
+    }
+
+    function _onTypeArising(eleTypeArisingName, typeArisingName, eleFormatterArisingAmount) {
+        $(eleTypeArisingName).val(typeArisingName);
+        $(eleFormatterArisingAmount).trigger('keyup');
+    }
+
+    function _onChangeArisingAmount(eleFormatterArisingAmount, eleArisingAmount, eleFormatterLiquidationAmount, eleFormatterDiscountAmount, eleFormatterTotalPaidAmount, eleFormatterPaidAmount, elePaidAmount, eleTypeArising, eleHasArising) {
+        var realArisingAmount = 0;
+        if ($(eleHasArising).is(':checked')) {
+            var realArisingValue = $(eleTypeArising).attr('realArisingValue');
+            realArisingValue = realArisingValue == undefined ? 1 : realArisingValue;
+
+            var formatterArisingAmount = $(eleFormatterArisingAmount).val();
+            realArisingAmount = Number(formatterArisingAmount.replace(/[^0-9.-]+/g, ""));
+            $(eleArisingAmount).val(realArisingAmount);
+            realArisingAmount = realArisingAmount * realArisingValue;
+        }
+
+        var formatterLiquidationAmount = $(eleFormatterLiquidationAmount).attr('rawValue');
+        var realLiquidationAmount = Number(formatterLiquidationAmount.replace(/[^0-9.-]+/g, ""));
+
+        var newLiquidationAmount = realArisingAmount + realLiquidationAmount;
+        $(eleFormatterLiquidationAmount).val(newLiquidationAmount).trigger('keyup');
+
+        var formulaDiscount = $(eleFormatterDiscountAmount).attr('formulaDiscount');
+        var newLiquidationAmountInRound = Math.round(newLiquidationAmount);//Math.round(newLiquidationAmount / 1000) * 1000;
+        //var discountAmount = Math.round(eval(formulaDiscount.format(newLiquidationAmount)) / 1000) * 1000;
+        var discountAmount = Math.round(eval(formulaDiscount.format(newLiquidationAmountInRound)));
+        $(eleFormatterDiscountAmount).val(discountAmount).trigger('keyup');
+
+        var formatterTotalPaidAmount = $(eleFormatterTotalPaidAmount).attr('rawValue');
+        var realTotalPaidAmount = Number(formatterTotalPaidAmount.replace(/[^0-9.-]+/g, ""));
+
+        //var formatterPaidAmount = $(eleFormatterPaidAmount).attr('rawValue');
+        //var realPaidAmount = Number(formatterPaidAmount.replace(/[^0-9.-]+/g, ""));
+
+        //var paidAmount = newLiquidationAmount - discountAmount - realTotalPaidAmount;
+        var paidAmount = newLiquidationAmountInRound - discountAmount - realTotalPaidAmount;
+        $(eleFormatterPaidAmount + '+div+span[id="eleReadNegative"]').remove();
+        if (paidAmount < 0) {
+            $('label[for="PaidAmount"] span.text-danger').html("Số tiền hoàn trả khách hàng (*)");
+            var eleReadNegativeVal = '<span id="eleReadNegative" class="form-control text-500 text-110 border-0">({0} đ)</span>';
+            $(eleFormatterPaidAmount).parent().append(eleReadNegativeVal.format(paidAmount.toLocaleString()));
+        } else {
+            $('label[for="PaidAmount"] span.text-danger').html("Số tiền cần thanh toán (*)");
+        }
+
+        $(elePaidAmount).val(paidAmount);
+        $(eleFormatterPaidAmount).val(paidAmount).trigger('keyup');
+    }
+
+    function _onChangePaidAmount(eleFormatterPaidAmount, paidAmount) {
+        $(eleFormatterPaidAmount + '+div+span[id="eleReadNegative"]').remove();
+        if (paidAmount < 0) {
+            $('label[for="PaidAmount"] span.text-danger').html("Số tiền hoàn trả khách hàng (*)");
+            var eleReadNegativeVal = '<span id="eleReadNegative" class="form-control text-500 text-110 border-0">({0} đ)</span>';
+            $(eleFormatterPaidAmount).parent().append(eleReadNegativeVal.format(paidAmount.toLocaleString()));
+        } else {
+            $('label[for="PaidAmount"] span.text-danger').html("Số tiền cần thanh toán (*)");
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function _onChangeTypePayment(rdbTypePayment, typePaymentName, eleTypePaymentName) {
+        var remainingAmount = $('#Payment [name="RemainingAmount"]').val();
+
+        //var rawPaidAmount = $('#Payment [name="FormatterPaidAmount"]').attr("rawValue");
+        //if (isEdit) {
+        //    //var paidAmount = $('#Payment [name="PaidAmount"]').val();
+        //    remainingAmount = parseFloat(rawPaidAmount) + parseFloat(remainingAmount);
+        //}
+
+        $(eleTypePaymentName).val(typePaymentName);
+        var typePayment = $(rdbTypePayment).val();
+        if (typePayment == "1") {
+            $("#TypePaymentAdvance").removeClass('d-none');
+
+            var percentAdvance = $('#Payment [name="PercentAdvance"]').val();
+            var rate = parseInt(percentAdvance) / 100;
+            var amountViaPercent = Math.round(remainingAmount * rate);//Math.round(remainingAmount * rate / 1000) * 1000;
+            $('#Payment [name="FormatterPaidAmount"]').val(amountViaPercent).trigger('keyup');
+        } else {
+            $("#TypePaymentAdvance").addClass('d-none');
+            $("#PercentAdvanceContractVal").val(100);
+            $('#Payment [name="PaidAmount"]').val(remainingAmount);
+            $('#Payment [name="FormatterPaidAmount"]').val(remainingAmount).trigger('keyup');
+        }
+    }
+</script>

@@ -1,0 +1,89 @@
+﻿@model Cores.Major.Models.SAVDossierModel
+
+@Html.HiddenFor(model => model.ProcedureId)
+@Html.HiddenFor(model => model.ProcedureName)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.HandleInStep)
+@Html.HiddenFor(model => model.HandleBy)
+@Html.HiddenFor(model => model.ProcessedTime)
+@Html.HiddenFor(model => model.NextAuthorityCode)
+
+<div class="card dcard" id="card-steps" draggable="false">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-danger-d2 text-500">
+            <i class="fas fa-wrench"></i>&nbsp;Xử lý
+        </h5>
+        <div class="card-toolbar">
+            <div class="card-toolbar no-border">
+                <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" draggable="false">
+                    <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="form-group col-12">
+            @{
+                if (Model.StepView != null)
+                {
+                    var violatedConstructionsStep = string.IsNullOrEmpty(Model.StepView.ViolatedConstructions) ? "" : $"stepViolatedConstructions='{Model.StepView.ViolatedConstructions}'";
+                    <div @violatedConstructionsStep class="mt-3 alert bgc-secondary-l4 radius-0 text-dark-tp2 border-none border-l-3 brc-orange-m1" role="alert">
+                        <label class="col-12 col-form-label pr-0 text-600">
+                            <i class="fas fa-user-cog mr-2 text-120 text-orange-d1"></i>&nbsp;@Model.StepView.StepName
+                        </label>
+                        @if (Model.StepView.ListRefForms != null && Model.StepView.ListRefForms.Count > 0)
+                        {
+                            <hr class="brc-warning-m1" />
+                            <ul class="list-unstyled m-0 ml-3">
+                                @foreach (var f in Model.StepView.ListRefForms)
+                                {
+                                    <li id="@f.FormId">
+                                        <span class="floating-label brc-dark-m4 text-500 text-95 btn-text-dark pt-2">Biểu mẫu kết quả:</span>
+                                        <a data-width="1024" id="DossierForm_@f.FormId" data-modal="" data-modal-id="ExportForm" class="" data-rel="tooltip" title="" href="@Url.Action("ViewForm", new { id = f.FormId, dossierId = Model.DossierId })" data-original-title="Xuất biểu mẫu">
+                                            <i class="fa fa-paperclip"></i> @f.FormName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        @if (Model.StepView.Situations != null && Model.StepView.Situations.Count > 0)
+                        {
+                            @Html.Raw(Server.HtmlDecode(Html.ValidationMessageFor(m => m.SituationId, "", new { @class = "d-block text-danger" }).ToString()))
+                            <hr class="brc-danger-m1" />
+
+                            <div class="col-12">
+                                @Html.HiddenFor(model => model.SituationDesc)
+                                @foreach (var s in Model.StepView.Situations)
+                                {
+                                    var violatedConstructionsSituation = s.ListViolatedConstructions?.Count <= 0 ? "" : $"violatedConstructions={string.Join(";", s.ListViolatedConstructions?.Select(v => $"[{v}]").ToList() ?? new List<string>())}";
+                                    //var procType = s.NextStepProcType == null ? "" : $"procType={s.NextStepProcType.Value}";
+
+                                    <div @violatedConstructionsSituation class="text-grey-m1 text-95  border-b-1 brc-secondary-l3" data-type="Situation">
+                                        <div class="d-flex py-2 my-2 pos-rel">
+                                            <div class="pl-1">
+                                                <label class="brc-dark-l1 mb-0 d-flex align-items-center">
+                                                    <input onmouseenter="this.indeterminate = true" id="Situation_@s.SituationId" name="SituationId" type="radio" value="@s.SituationId" class="ml-3 position-lc radius-round input-lg text-90 text-blue brc-inherit brc-on-checked brc-dark-m4 brc-h-warning-m1 border-2" title="@s.SituationDesc" onclick="_onCheckSituation('@s.SituationDesc')">
+                                                    <span class="ml-5">
+                                                        <span class="task-title text-600 text-95 btn-text-dark btn-h-text-danger"> @s.SituationDesc</span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("TenXaPhuong", Model.UnionName)
+@Html.Hidden("TenXaPhuong_VietHoa", Model.UnionName.ToUpper())
+@Html.Hidden("BBVPHC_DonViLapBB", Model.UnionName)

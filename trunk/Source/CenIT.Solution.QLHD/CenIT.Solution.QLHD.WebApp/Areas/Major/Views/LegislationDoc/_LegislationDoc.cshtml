@@ -1,0 +1,33 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVLegislationDocModel
+
+@Html.AntiForgeryToken()
+<div id="Form">
+    @Html.HiddenFor(model => model.DocId)
+    @Html.HiddenFor(model => model.RefDocs)
+    @Html.HiddenFor(model => model.Version)
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.DocName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.DocName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("LegislationDoc_DocName") })
+            @Html.ValidationMessageFor(model => model.DocName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <hr />
+    <div class="form-group row">
+        @Html.TitleFor(model => model.RefDocFile, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @{
+                if (!string.IsNullOrEmpty(Model.RefDocs))
+                {
+                    @Html.Raw(Model.RefDocs)
+                }
+            }
+            @Html.FileFor(model => model.RefDocFile, ".doc,.docx", false, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.RefDocFile) })
+            @Html.ValidationMessageFor(model => model.RefDocFile, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+@Html.RenderScripts(ScriptPosition.BodyInside)

@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorSubjectModel
+@{
+    ViewBag.Title = "Xác nhận xóa Đối tượng";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fa fa-trash-alt"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "Subject", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Subject_OnProcessSuccess(data, 'DeleteSubject')"
+    }, new { @class = "form-horizontal", id = "DeleteSubject" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.SubjectId)
+        @Html.HiddenFor(model => model.FullName)
+
+        <div class="alert alert-warning text-center">
+            @Html.Raw(ViewBag.ConfirmMessage ?? $"Bạn có chắc chắn muốn xóa Đối tượng <b>[{Model.FullName}]</b> không?")
+        </div>
+    }
+}

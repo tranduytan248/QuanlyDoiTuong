@@ -1,0 +1,74 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Approve"), AppProcessor.Messagor.GetMessage("Contract_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Valid", "Contract", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ValidContract", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ValidBody")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('form#ValidContract').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                _onWaiting();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if (response.status) {
+                        var hrefViewContractModal = "@Url.Action("ViewContract", new { area = "Major" })?contractId=" + encodeURIComponent(response.contractId);
+                        var htmlButtonViewContract = '@Html.Button(true, "ViewContract", Url.Action("ViewContract", new { area = "Major" }), "<i class=\"fas fa-eye\"></i>", AppProcessor.Messagor.GetMessage("Button_View"), new { @class = "", data_width = "fullscreen" })';
+
+                        var eleButtonViewContract = $.parseHTML(htmlButtonViewContract);
+                        $(eleButtonViewContract[0]).attr('href', hrefViewContractModal);
+                        document.body.appendChild(eleButtonViewContract[0]);
+                        $(eleButtonViewContract).click();
+                    }
+                    if ($("#ModalContent #modal_ValidContract #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableContracts.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_ValidContract form").attr("action");
+                            $("#ModalContent #modal_ValidContract #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElements(this);
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_ValidContract").modal("hide");
+                        $("#ModalContent #modal_ValidContract").on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableContracts.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_ValidContract #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+                _endWaiting();
+            }
+        });
+
+    </script>
+}
+
+@*@section SubmitControl{
+        <button type="button" onclick="submitForm()" id="btnConfirm" class="btn px-4 btn-outline-primary mb-1">
+            <i class="fas fa-check"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Yes")
+        </button>
+    }*@

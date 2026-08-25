@@ -1,0 +1,367 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+
+@{
+    ViewBag.Title = Html.Raw($"Thông tin {AppProcessor.Messagor.GetMessage("Dossier_Title")} - [{Model.Title}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-eye"></i>
+}
+
+@section FormBody{
+
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-12 col-md-7">
+            @Html.Partial("_ConstructionInfo")
+            <hr class="brc-warning-l3" />
+            @{
+                                if (Model.ListRefDocs.Count > 0)
+                                {
+                <hr />
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.ListRefDocs, new { @class = "col-12 col-form-label pr-0" })
+                    <div class="col-12">
+                        <ul class="list-unstyled">
+                            @foreach (var doc in Model.ListRefDocs)
+                                                {
+                                        <li id="@doc.FileId">
+                                            @Html.Button(true, "ViewRefDoc", Url.Action("ViewDoc", "Doc", new { area = "Cate", fileId = doc.FileId }), "<i class='fa fa-paperclip'></i>", doc.FileName, new { @class = "", data_width = "fullscreen" })
+                                        </li>
+                                                }
+                        </ul>
+                    </div>
+                </div>
+                                }
+            }
+            @{
+                                if (Model.ListRefImgs.Count > 0)
+                                {
+                <hr />
+                <div class="row col-12 mx-0 p-0">
+                    @{
+                                            foreach (var k in Model.ListRefImgs.Keys)
+                                            {
+                                                int idx;
+                                                if (k == 0)
+                                                {
+                                                    idx = 0;
+									    <!-- column 1 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                                            idx += 1;
+                                                        }
+                                </div>
+                                                }
+                                                else if (k == 1)
+                                                {
+                                                    idx = 0;
+									    <!-- column 2 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                                            idx += 1;
+                                                        }
+                                </div>
+                                                }
+                                                else if (k == 2)
+                                                {
+                                                    idx = 0;
+									    <!-- column 3 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                                            idx += 1;
+                                                        }
+                                </div>
+                                                }
+
+                                            }
+                    }
+
+                </div>
+                                            }
+            }
+            <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+        </div>
+        <div class="col-12 col-md-5">
+            <div class="form-group row">
+                <label for="" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">Địa chỉ vi phạm</label>
+                <div class="col-md-12">
+                    <!-- Bản đồ sẽ được hiển thị ở đây -->
+                    <div id='map_canvas' class="m-2 border border-1 brc-black-m1" style="height: 300px;"></div>
+                    <!-- Thêm hai thẻ div để hiển thị tọa độ -->
+                    <div class="col-md-12 row mt-3 mb-3 font-bold">
+                        <div class="col-md-12 text-center" id="latitudeDisplay">Vĩ độ: </div>
+                        <div class="col-md-12 text-center" id="longitudeDisplay">Kinh độ: </div>
+                    </div>
+                    <div class="col-md-12 justify-content-center">
+                        <button type="button" class="btn btn-outline-primary col-md" id="viewOnGoogleMapsBtn">Xem địa chỉ đã chọn trên Google Maps</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.RenderScripts(ScriptPosition.BodyInside)
+
+    <script type="text/javascript">
+        // Khóa API từ Google Cloud Platform
+        var googleMapsAPIKey = "AIzaSyBSfrxuLaMDEe0Nn5hhqaq0C0eDh7Jzhxk";
+
+        // Địa chỉ mặc định để hiển thị trên bản đồ
+        var defaultAddress = "04 Lê Lợi, Xương Huân, Nha Trang, Khánh Hòa 650000, Việt Nam";
+
+        // Biến để lưu trữ tọa độ
+        var _Latitude;
+        var _Longitude;
+
+        // Biến global để lưu trữ hiển thị tọa độ
+        var latitudeDisplay = document.getElementById('latitudeDisplay');
+        var longitudeDisplay = document.getElementById('longitudeDisplay');
+
+        // Sự kiện xảy ra khi trang web đã được tải xong
+        $(document).ready(function () {
+            // Gọi hàm để thiết lập và hiển thị bản đồ
+            initializeMap();
+
+            // Lắng nghe sự kiện click trên toàn bộ trang web
+
+            // Hàm để thiết lập và hiển thị bản đồ
+            function initializeMap() {
+                //hideSuggestions();
+                // Gọi hàm để lấy tọa độ từ địa chỉ
+                getCoordinatesFromAddress(defaultAddress);
+            }
+
+            // Hàm để lấy tọa độ từ địa chỉ sử dụng Google Geocoding API
+            function getCoordinatesFromAddress(address) {
+                // Tạo URL query để gửi lời gọi API
+                var queryURL = 'https://maps.googleapis.com/maps/api/geocode/json?key=' + googleMapsAPIKey + '&address=' + address;
+
+                // Gửi lời gọi API sử dụng jQuery
+                $.getJSON(queryURL, function (data) {
+                    // Kiểm tra xem lời gọi API có thành công không
+                    if (data.status === 'OK') {
+                        // Lấy thông tin vị trí từ kết quả API
+                        var locationData = data.results[0];
+                        var latitude = locationData.geometry.location.lat;
+                        var longitude = locationData.geometry.location.lng;
+
+                        // Gọi hàm để hiển thị bản đồ với tọa độ đã lấy được
+                        displayMap(latitude, longitude);
+                    } else {
+                        // Hiển thị thông báo nếu có lỗi khi lấy tọa độ
+                        console.error('Lỗi khi lấy tọa độ từ địa chỉ: ' + data.status);
+                    }
+                });
+            }
+
+            // Hàm để cập nhật tọa độ và hiển thị
+            function updateCoordinates(latitude, longitude) {
+                // Cập nhật hiển thị tọa độ
+                latitudeDisplay.textContent = 'Vĩ độ: ' + latitude;
+                longitudeDisplay.textContent = 'Kinh độ: ' + longitude;
+
+                //Cập nhật giá trị tọa độ
+                _Latitude = latitude;
+                _Longitude = longitude;
+
+                // Cập nhật giá trị tọa độ cho hidden fields
+                $('input[type="hidden"][id="Lat"]').val(latitude);
+                $('input[type="hidden"][id="Long"]').val(longitude);
+            }
+
+            // Hàm để hiển thị bản đồ với tọa độ được cung cấp
+            function displayMap(latitude, longitude) {
+
+                // Gọi hàm cập nhật tọa độ và hiển thị
+                updateCoordinates(latitude, longitude);
+
+                // Tạo đối tượng bản đồ
+                var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                    zoom: 18,
+                    center: new google.maps.LatLng(latitude, longitude),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+
+                // Tạo điểm đánh dấu có thể kéo
+                var draggableMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(latitude, longitude),
+                    draggable: true
+                });
+
+                // Lắng nghe sự kiện khi điểm đánh dấu được kéo
+                google.maps.event.addListener(draggableMarker, 'dragend', function (event) {
+
+                    var newLatitude = event.latLng.lat();
+                    var newLongitude = event.latLng.lng();
+
+                    $('input[type="hidden"][id="Lat"]').val(newLatitude);
+                    $('input[type="hidden"][id="Long"]').val(newLongitude);
+
+                    // Gọi hàm cập nhật tọa độ và hiển thị
+                    updateCoordinates(newLatitude, newLongitude);
+                });
+
+                // Đặt điểm đánh dấu lên bản đồ
+                draggableMarker.setMap(map);
+
+                // Lắng nghe sự kiện click của nút đi đến google map
+                document.getElementById('viewOnGoogleMapsBtn').addEventListener('click', function () {
+                    // Tạo liên kết và mở trong một tab mới
+                    var googleMapsLink = createGoogleMapsLink(_Latitude, _Longitude);
+                    window.open(googleMapsLink, '_blank');
+                });
+            }
+
+            // Hàm để lấy danh sách gợi ý từ Google Places AutocompleteService
+            function getSuggestions(query) {
+                // Tạo yêu cầu để lấy danh sách gợi ý
+                var request = {
+                    input: query,
+                    types: ['geocode'],
+                };
+
+                // Sử dụng AutocompleteService để lấy danh sách gợi ý
+                var service = new google.maps.places.AutocompleteService();
+                service.getPlacePredictions(request, function (predictions, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        // Hiển thị danh sách gợi ý nếu thành công
+                        showSuggestions(predictions);
+                    } else {
+                        // Hiển thị thông báo lỗi nếu có vấn đề
+                        console.error('Lỗi khi lấy danh sách gợi ý: ' + status);
+                    }
+                });
+            }
+
+            // Hàm để hiển thị danh sách gợi ý
+            function showSuggestions(predictions) {
+                var suggestionsList = document.getElementById('suggestionsList');
+
+                // Xóa nội dung cũ của danh sách
+                suggestionsList.innerHTML = '';
+
+                // Tạo mục gợi ý cho mỗi kết quả
+                predictions.forEach(function (prediction) {
+                    var suggestionItem = document.createElement('li');
+
+                    // Giới hạn độ dài của địa chỉ và thêm "..." nếu quá dài
+                    var displayText = prediction.description.length > 60
+                        ? prediction.description.substring(0, 60) + '...'
+                        : prediction.description;
+
+                    suggestionItem.textContent = displayText;
+                    suggestionItem.title = prediction.description; // Hiển thị toàn bộ địa chỉ khi di chuột qua
+
+                    suggestionItem.className = 'dropdown-item';
+
+                    // Lắng nghe sự kiện khi người dùng chọn một gợi ý
+                    suggestionItem.addEventListener('click', function () {
+                        getCoordinatesFromAddress(prediction.description);
+
+                        // Đồng thời tắt phần gợi ý
+                        //hideSuggestions();
+
+                        // Đặt giá trị cho ô tìm kiếm
+                    });
+
+                    // Thêm mục gợi ý vào danh sách
+                    suggestionsList.appendChild(suggestionItem);
+                });
+
+                // Hiển thị container chứa danh sách gợi ý
+                var suggestionsContainer = document.getElementById('suggestionsContainer');
+                suggestionsContainer.style.display = 'block';
+            }
+
+            //// Hàm để ẩn danh sách gợi ý
+            //function hideSuggestions() {
+            //    var suggestionsContainer = document.getElementById('suggestionsContainer');
+            //    suggestionsContainer.style.display = 'none';
+            //}
+
+            // Hàm để tạo liên kết đến Google Maps
+            function createGoogleMapsLink(latitude, longitude) {
+                return 'https://www.google.com/maps/search/?api=1&query=' + latitude + ',' + longitude;
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            // multiple with image preview
+            $('#RefImages').aceFileInput({
+                style: 'drop',
+                droppable: true,
+
+                container: 'border-1 border-dashed brc-grey-l1 brc-h-info-m2 shadow-sm table-responsive',
+
+                placeholderClass: 'text-125 text-600 text-grey-l1 my-2',
+                placeholderText: 'Kéo thả ảnh vào đây hoặc nhấn để chọn',
+                placeholderIcon: '<i class="fa fa-cloud-upload-alt fa-3x text-info-m2 my-2"></i>',
+
+                //previewSize: 64,
+                thumbnail: 'small',
+
+                //allowExt: 'gif|jpg|jpeg|png|webp|svg',
+                //allowMime: 'image/png|image/jpeg',
+                allowMime: 'image/*',
+
+                //maxSize: 100000,
+            });
+
+            _initGalary("#Dossier");
+            if ("@Model.ActiveTab".length <= 0) $('[role="tablist"] li:first a').click();
+            $('[role="tablist"] li').on("click", _onChangeTab);
+
+            var typeViolatorPersional = @((int)EnumTypeViolator.Persional);
+
+            if(@Model.TypeViolator == typeViolatorPersional) {
+                $("#ViolatorInfo #ForPersonal").removeClass("d-none");
+                $("#ViolatorInfo #ForOrganization").addClass("d-none");
+            }
+            else {
+                $("#ViolatorInfo #ForPersonal").addClass("d-none");
+                $("#ViolatorInfo #ForOrganization").removeClass("d-none");
+            }
+        });
+
+        function _onChangeTab(tab) {
+            if ($(tab.target).hasClass('active')) return;
+            var hrefActiveTab = $(tab.target).attr("href");
+            $("input[type=hidden][id='ActiveTab']").val(hrefActiveTab);
+        }
+
+    </script>
+}
+@section SubmitControl{
+
+}

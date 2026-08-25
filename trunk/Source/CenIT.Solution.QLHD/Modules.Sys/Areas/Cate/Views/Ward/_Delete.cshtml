@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Cate.CateWardModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Ward_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "Ward", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Ward_OnProcessSuccess(data, 'DeleteWard')"
+    }, new { @class = "form-horizontal", id = "DeleteWard" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.WardId)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

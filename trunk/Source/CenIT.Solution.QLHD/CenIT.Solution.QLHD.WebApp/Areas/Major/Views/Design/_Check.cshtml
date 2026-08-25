@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVFormModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Form_Title")} - {Model.FormName}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-cloud-download-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Export", "Form", new { area = "Major", id = Model.FormId }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportForm", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm" class="mx-2">
+            @Html.Raw(Model.ViewName)
+        </div>
+    }
+    <script type="text/javascript">
+        var formData =  @Html.Raw(Json.Encode(Model.FormData));
+
+        $(document).ready(function () {
+            for (var key in formData) {
+                if($("#bodyForm input[name='"+key+"']").is(':radio') || $("#bodyForm input[name='"+key+"']").is(':checkbox')){
+                    $("#bodyForm input[name='"+key+"'][value='"+formData[key]+"']").prop('checked', true);
+                }
+                else{
+                    $("#bodyForm input[name='"+key+"']").val(formData[key]);
+                }
+            }
+        });
+
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnExport" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-cloud-download-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Export")</button>
+}

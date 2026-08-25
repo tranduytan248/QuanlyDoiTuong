@@ -1,0 +1,36 @@
+﻿@using TSFramework.App.Processors
+<div class="back-footer position-b">
+    <div class="content-footer py-1">
+        <div class="body-content">
+            <div class="tag-line text-white">
+                <ul class="list-unstyled text-left m-2">
+                    <li class="mb-1">
+                        <span class="text-115 text-500">
+                            <i class="fas fa-building"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Owner_FullName")
+                        </span>
+                    </li>
+
+                    <li class="mb-1">
+                        <span class="">
+                            <i class="fas fa-map-marked-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Union_Address"): @AppProcessor.Messagor.GetMessage("DIACHICOQUAN")
+                        </span>
+                    </li>
+
+                    <li class="mb-1">
+                        <span class="">
+                            <i class="fas fa-phone-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("User_Label_Phone"): @AppProcessor.Messagor.GetMessage("DIENTHOAICOQUAN")
+                        </span>
+                    </li>
+
+                    <li class="mb-1">
+                        <span class="">
+                            <i class="fas fa-at"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Authorize_Email"): @AppProcessor.Messagor.GetMessage("EMAILCOQUAN")
+                        </span>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorSubjectModel
+@{
+    ViewBag.Title = "Cập nhật Thông tin Đối tượng";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-user-edit"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Edit", "Subject", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Subject_OnProcessSuccess(data, 'EditSubject')"
+    }, new { @class = "form-horizontal", id = "EditSubject" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Subject", Model)
+        </div>
+    }
+}

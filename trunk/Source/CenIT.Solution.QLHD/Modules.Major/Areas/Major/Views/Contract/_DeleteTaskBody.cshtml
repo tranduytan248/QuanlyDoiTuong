@@ -1,0 +1,27 @@
+﻿@model Cores.Major.Models.MajorContractTaskModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary()
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.ContentLandId)
+@Html.HiddenFor(model => model.TypeContractId)
+@Html.HiddenFor(model => model.TypeLandName)
+@Html.HiddenFor(model => model.Area)
+@Html.HiddenFor(model => model.ContentId)
+@Html.HiddenFor(model => model.Contents)
+@Html.HiddenFor(model => model.Unit)
+@Html.HiddenFor(model => model.Price)
+@Html.HiddenFor(model => model.Amount)
+@Html.HiddenFor(model => model.Total)
+@Html.HiddenFor(model => model.LandCalculationId)
+@Html.HiddenFor(model => model.SubSectionId)
+@Html.HiddenFor(model => model.SubSectionName)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+@*<div class="form-group row">
+        @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+            @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+        </div>
+    </div>*@

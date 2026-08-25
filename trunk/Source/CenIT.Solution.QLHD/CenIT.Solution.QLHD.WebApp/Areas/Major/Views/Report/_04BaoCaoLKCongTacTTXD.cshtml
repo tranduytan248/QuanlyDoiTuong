@@ -1,0 +1,31 @@
+﻿
+<div id="_04BaoCaoLKCongTacTTXD">
+	<div class="form-group row">
+		<div class="col-sm-2 col-form-label text-sm-right pr-0">
+			<label for="ForYear" class="mb-0">
+				Năm
+			</label>
+		</div>
+		<div class="col-sm-3">
+			<div class="input-group date">
+				<div class="input-group-addon input-group-prepend">
+					<div class="input-group-text">
+						<i class="fas fa-calendar-alt"></i>
+					</div>
+				</div>
+				@Html.TextBox("ForYear", DateTime.Now.ToString("yyyy"), new { @class = "form-control" })
+			</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#ForYear").datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+    });
+</script>

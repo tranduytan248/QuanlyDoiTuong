@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlingTimeModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Step_HandlingTime"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("DeleteHandlingTime", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "HandlingTimeStep_OnProcessSuccess(data, 'DeleteHandlingTime')"
+    }, new { @class = "form-horizontal", id = "DeleteHandlingTime" }))
+    {
+        <div id="bodyForm">
+	        @Html.Partial("_DeleteHandlingTimeBody")
+        </div>
+    }
+}

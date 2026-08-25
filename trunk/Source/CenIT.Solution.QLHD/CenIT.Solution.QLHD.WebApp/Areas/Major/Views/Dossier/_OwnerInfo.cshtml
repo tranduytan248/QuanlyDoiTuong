@@ -1,0 +1,190 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+<div id="OwnerInfo">
+    @{
+        if (Model.IsDisabled)
+        {
+            @Html.HiddenFor(model => model.OwnerInfo.LandParcelNo)
+            @Html.HiddenFor(model => model.OwnerInfo.MapNo)
+            @Html.HiddenFor(model => model.OwnerInfo.WardId)
+            @Html.HiddenFor(model => model.OwnerInfo.WardName)
+
+            @Html.HiddenFor(model => model.OwnerInfo.AddressNo)
+            @Html.HiddenFor(model => model.OwnerInfo.StreetId)
+            @Html.HiddenFor(model => model.OwnerInfo.StreetName)
+
+            @Html.HiddenFor(model => model.OwnerInfo.Owner)
+            @Html.HiddenFor(model => model.OwnerInfo.OwnerAddress)
+            @Html.HiddenFor(model => model.OwnerInfo.IdCard)
+
+            <div class="form-group row">
+                <div class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.LandParcelNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.LandParcelNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.LandParcelNo) })
+                </div>
+                <div class="col-3 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.MapNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.MapNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.MapNo) })
+                </div>
+                <div class="col-5 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.WardId, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.WardName, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.WardId) })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.AddressNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.AddressNo, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.AddressNo) })
+                </div>
+
+                <span class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.StreetId, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.StreetName, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.StreetId) })
+                </span>
+            </div>
+            <div class="form-group row">
+                <div class="col-6 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.Owner, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.Owner, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.Owner) })
+                </div>
+                <div class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.IdCard, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.IdCard, new { disabled = true, @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.IdCard) })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                <div class="col-3 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.LandParcelNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.LandParcelNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.LandParcelNo) })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.LandParcelNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-3 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.MapNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.MapNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.MapNo) })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.MapNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-6 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.WardId, new { @class = "text-500" })
+                    @Html.DropDownListFor(model => model.OwnerInfo.WardId, new SelectList(Model.OwnerInfo.ListWards, "Value", "Text"), new { @class = "form-control col-md-12", onchange = "_onChangeWard(this, '#OwnerInfo_WardName', '#OwnerInfo_StreetId');", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.WardId) })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.WardId, "", new { @class = "text-danger" })
+                </div>
+                @Html.HiddenFor(model => model.OwnerInfo.WardName)
+            </div>
+            <div class="form-group row">
+                <div class="col-5 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.StreetId, new { @class = "text-500" })
+                    @Html.DropDownListFor(model => model.OwnerInfo.StreetId, new SelectList(Model.OwnerInfo.ListStreets, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#OwnerInfo_StreetName', false);", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.StreetId) })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.StreetId, "", new { @class = "text-danger" })
+                </div>
+                @Html.HiddenFor(model => model.OwnerInfo.StreetName)
+
+                <div class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.AddressNo, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.AddressNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("OwnerInfo_AddressNo") })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.AddressNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-6 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.Owner, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.Owner, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.Owner) })
+                    @Html.ValidationMessageFor(model => model.OwnerInfo.Owner, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-4 text-blue-d2 brc-blue-m1">
+                    @Html.TitleFor(model => model.OwnerInfo.IdCard, new { @class = "text-500" })
+                    @Html.TextBoxFor(model => model.OwnerInfo.IdCard, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.OwnerInfo.IdCard) })
+                </div>
+                @Html.ValidationMessageFor(model => model.OwnerInfo.IdCard, "", new { @class = "text-danger" })
+            </div>
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+        $('input#OwnerInfo_LandParcelNo, input#OwnerInfo_MapNo').on("change", function () {
+            var landParcelNo = $("input#OwnerInfo_LandParcelNo").val();
+            var mapNo = $("input#OwnerInfo_MapNo").val();
+            var wardId = $('#OwnerInfo #OwnerInfo_WardId').val();
+
+            $.ajax({
+                url: "Major/Dossier/SearchingOwnerInfo",
+                data: {
+                    "landParcelNo": landParcelNo,
+                    "mapNo": mapNo,
+                    "wardId": wardId,
+                },
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    if (data != null && data != undefined) {
+                        $("[name='OwnerInfo.Owner']").val(data.Owner);
+                        $("[name='OwnerInfo.IdCard']").val(data.IdCard);
+                        $("[name='OwnerInfo.AddressNo']").val(data.AddressNo);
+                        $("[name='OwnerInfo.StreetId']").val(data.StreetId).trigger('change.select2');
+                        $("[name='OwnerInfo.StreetName']").val(data.StreetName);
+                        var typeViolator = $('[name="TypeViolator"]').val();
+                        var personalViolator = "@((int)EnumTypeViolator.Persional)";
+
+                        if (typeViolator == personalViolator) {
+                            $("[name='NguoiViPham_HoTen']").val(data.Owner);
+                            $("[name='NguoiViPham_CCCD']").val(data.IdCard);
+                        }
+                    }
+                }
+            });
+        });
+
+        $("[name='OwnerInfo.Owner']").on('change', function () {
+            $("[name='NguoiViPham_HoTen']").val($(this).val());
+        });
+
+        $("[name='OwnerInfo.IdCard']").on('change', function () {
+            $("[name='NguoiViPham_CCCD']").val($(this).val());
+        });
+        @{
+	        if (!Model.IsDisabled)
+	        {
+		        @Html.Raw("$('#OwnerInfo #OwnerInfo_WardId').trigger('change.select2');");
+		        @Html.Raw("$('#OwnerInfo #OwnerInfo_StreetId').trigger('change.select2');");
+	        }
+        }
+
+    });
+</script>
+
+<script type="text/javascript">
+
+    function _onChangeWard(cbbWard, eleWardName, cbbStreet) {
+        var $cbbStreet = $(cbbStreet);
+        $cbbStreet.empty();
+
+        var wardId = $(cbbWard).val();
+        if (wardId == undefined || wardId.length <= 0) return;
+
+        $(eleWardName).val($(cbbWard).children("option:selected").text());
+        var urlStreetsViaWard =
+            "@Url.Action("GetStreetsBelongWard", "Ajax", new { area = "Cate" })?wardId=" + wardId;
+        $.ajax({
+            type: "GET",
+            url: urlStreetsViaWard,
+            dataType: "JSON",
+            success: function (response) {
+                $cbbStreet.append('<option value=""></option>');
+                var streetId = "@Model.OwnerInfo.StreetId";
+                $.each(response.Streets, function (index, street) {
+                    $cbbStreet.append('<option value="' + street.StreetId + '">' + street.StreetName + "</option>");
+                });
+                $cbbStreet.val(streetId).trigger('change.select2');
+            }
+        });
+    }
+</script>

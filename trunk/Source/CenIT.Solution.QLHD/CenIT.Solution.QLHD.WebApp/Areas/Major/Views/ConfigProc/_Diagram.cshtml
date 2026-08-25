@@ -1,0 +1,116 @@
+﻿@model Cores.Major.Models.SAVProcedureModel
+
+@Html.HiddenFor(model => model.ProcedureId)
+
+<link rel="stylesheet" href="~/Areas/Major/Views/Procedure/_Diagram.css">
+
+<!-- required modeler styles -->
+@*<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/bpmn-js/assets/bpmn-js.css">*@
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@13.2.0/dist/assets/bpmn-js.css">
+
+<!-- modeler distro -->
+<script src="~/Contents/Modules/Major/plugins/bpmn-js/bpmn-navigated-viewer.development.js"></script>
+
+<div class="row h-100 w-100 p-0 mx-0" id="ProcDiagram">
+    <div class="col-12 col-sm-5 p-0 pos-rel mt-3 mt-sm-0 pt-0 pt-sm-0 text-center">
+        <div class="ccard h-100 d-flex flex-column">
+            <div id="diagram" style="height: calc(79vh - 0.5rem);"></div>
+            <div class="io-zoom-controls">
+                <div class="btn-group ml-2 mt-3 btn-group-vertical">
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-primary" onclick="_resetView();">
+                        <i class="fas fa-crosshairs w-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-green" onclick="_zoomIn();">
+                        <i class="fas fa-plus w-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-info" onclick="_zoomOut();">
+                        <i class="fas fa-minus w-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-7 p-0 pos-rel mt-3 mt-sm-0 pt-0 pt-sm-0 pl-3">
+        <div class="ccard h-100 d-flex flex-column" id="ConfigStep">
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Areas/Major/Views/Procedure/_Diagram.js"></script>
+
+<script type="text/javascript">
+    //debugger;
+
+    var xmlDiagram = '@(Html.Raw(string.IsNullOrEmpty(Model.Diagram) ? "" : XmlHelper.Minify(Model.Diagram)))';
+
+    $("#modal_ConfigProcedure").on('shown.bs.modal', function () {
+        _initBpmnJS(false, '#diagram', _onEventHandler);
+        if (xmlDiagram != null && xmlDiagram.length) {
+            _openDiagram(xmlDiagram);
+        }
+    });
+
+    function _onEventHandler() {
+        var typeElement = 'bpmn:Task';
+        const events = [
+          // "commandStack.elements.create.postExecuted",
+          // "commandStack.elements.delete.postExecuted",
+          // "commandStack.elements.move.postExecuted",
+          // "elements.changed",
+          // "elements.delete",
+          // "element.changed"
+          "element.click",
+          // "element.dblclick"
+        ];
+
+        var overlays = bpmnModeler.get('overlays');
+        var elementRegistry = bpmnModeler.get('elementRegistry');
+        var eventBus = bpmnModeler.get("eventBus");
+
+        eventBus.on([...events], function (e) {
+            //const taskElement = elementRegistry.get(e.element.id);
+
+            var otherElements = elementRegistry.filter(function (element) {
+                return element.type.toLowerCase() == typeElement.toLowerCase() &&
+                    element.id != event.delegateTarget.dataset.elementId;
+            });
+
+            var elements = elementRegistry.filter(function (element) {
+                return element.type.toLowerCase() == typeElement.toLowerCase() &&
+                    element.id == event.delegateTarget.dataset.elementId;
+            });
+
+            switch (event.type) {
+                case "click":
+                    _onClickElement(otherElements, elements);
+                    break;
+            }
+        });
+    };
+
+    function _onClickElement(otherElements, selectedElements) {
+        if(selectedElements != null && selectedElements.length > 0){
+            var selectedElement = selectedElements[0];
+            var canvas = bpmnModeler.get('canvas');
+            $.each(otherElements, function (idx, element) {
+                canvas.removeMarker(element.id, 'highlight');
+            });
+
+            canvas.addMarker(selectedElement.id, 'highlight');
+            $("#ProcDiagram #ConfigStep").load("@Url.Action("ConfigStep",new{ procId = Model.ProcedureId})&stepName=" + selectedElement.id);
+        }
+    }
+
+    function ConfigProc_OnProcessSuccess(response, formId) {
+        if (response.status != undefined) {
+            eval(response.message);
+            response.status = undefined;
+        } else {
+            $("#" + formId).html(response);
+        }
+    }
+
+</script>

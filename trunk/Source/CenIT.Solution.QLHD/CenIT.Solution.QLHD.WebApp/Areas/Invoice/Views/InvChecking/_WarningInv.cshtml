@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model int
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Warning_Title");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fas fa-exclamation-circle"></i>
+}
+
+@section FormBody{
+    <div class="alert fade show bgc-white brc-secondary-l2 rounded" role="alert">
+        <div class="position-tl h-102 border-l-4 brc-danger m-n1px rounded-left"></div><!-- the big red line on left -->
+
+        <h5 class="alert-heading text-danger-m1 font-bolder">
+            <i class="fas fa-exclamation-triangle mr-1 mb-1"></i>
+            Lỗi
+        </h5>
+        <p class="text-500 text-primary-d2 text-115">@(Model == 2? AppProcessor.Messagor.GetMessage("Err_InvServiceAccount_Incorrect"): AppProcessor.Messagor.GetMessage("Err_InvAccount_Empty"))</p>   
+    </div>
+}
+
+@section SubmitControl{
+
+}

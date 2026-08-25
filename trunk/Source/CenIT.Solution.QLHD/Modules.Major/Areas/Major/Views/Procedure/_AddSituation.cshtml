@@ -1,0 +1,32 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepSituationModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("Situation_Title")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddSituation", "Procedure", new { area = "Major", stepId = Model.StepId, procedureId = Model.ProcedureId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SituationStep_OnProcessSuccess(data, 'AddSituation')"
+    }, new { @class = "form-horizontal", id = "AddSituation" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Situation")
+        </div>
+    }
+}
+@section ContinueForm{
+
+}

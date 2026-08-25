@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Modal_Title_RollbackPrev")} - {Model.PrevStepView.StepName}";
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("RollbackPrev", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Dossier_OnProcessSuccess(data, 'RollbackPrev')"
+    }, new { @class = "form-horizontal", id = "RollbackPrev" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_RollbackPrevBody")
+        </div>
+    }
+}

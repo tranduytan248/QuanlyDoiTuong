@@ -1,0 +1,83 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVHandlingDossierModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.DossierId)
+
+<div id="HandlingProcess">
+	<div class="form-group row">
+		<div class="col-8 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.PenalizeDeterminationNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.PenalizeDeterminationNo) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.PenalizeDeterminationNo)
+			</span>
+		</div>
+		<div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.PenalizeDeterminationReleaseDate,"{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = Html.DisplayNameFor(model => model.PenalizeDeterminationReleaseDate) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.PenalizeDeterminationReleaseDate)
+			</span>
+		</div>
+	</div>
+	<div class="form-group row">
+		<span class="has-float-label input-floating-label col-8 brc-danger-m1">
+			@Html.SelectFor(model => model.PenalizeDeterminationReleaseBy, Model.ListUnionReleases, "", new { @class = "form-control col-11", placeholder = Html.DisplayNameFor(model => model.PenalizeDeterminationReleaseBy), onchange = "_onChangeCombo(this, '#Complain #ReflectName', true)" })
+			@Html.TitleFor(model => model.PenalizeDeterminationReleaseBy, new { @class = "floating-label text-grey-m3 text-500" })
+		</span>
+		<div class="col-4"></div>
+		@Html.HiddenFor(model => model.PenalizeDeterminationReleaseName)
+	</div>
+	<div class="form-group">
+		@Html.TitleFor(model => model.PenalizeDeterminationRef, new { @class = "col-12 col-form-label pr-0 font-bold text-danger" })
+		<div class="col-12">
+			@Html.FileFor(model => model.PenalizeDeterminationRef, ".doc,.docx,.pdf", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+			@Html.ValidationMessageFor(model => model.PenalizeDeterminationRef, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<hr/>
+	<div class="form-group row">
+		<div class="col-8 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.ForcedDeterminationNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.ForcedDeterminationNo) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.ForcedDeterminationNo)
+			</span>
+		</div>
+		<div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.ForcedDeterminationReleaseDate, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = Html.DisplayNameFor(model => model.ForcedDeterminationReleaseDate) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.ForcedDeterminationReleaseDate)
+			</span>
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.TitleFor(model => model.ForcedDeterminationRef, new { @class = "col-12 col-form-label pr-0 font-bold text-danger" })
+		<div class="col-12">
+			@Html.FileFor(model => model.ForcedDeterminationRef, ".doc,.docx,.pdf", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+			@Html.ValidationMessageFor(model => model.ForcedDeterminationRef, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<hr/>
+	<div class="form-group row">
+		<div class="col-8 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.ForcedPlanNo, new { @class = "form-control col-md-12", placeholder = Html.DisplayNameFor(model => model.ForcedPlanNo) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.ForcedPlanNo)
+			</span>
+		</div>
+		<div class="col-4 input-floating-label text-blue-d2 brc-blue-m1">
+			@Html.TextBoxFor(model => model.ForcedPlanReleaseDate, "{0:dd/MM/yyyy}", new { @class = "form-control col-md-12 datepicker", placeholder = Html.DisplayNameFor(model => model.ForcedPlanReleaseDate) })
+			<span class="floating-label text-grey-m3">
+				@Html.DisplayNameFor(model => model.ForcedPlanReleaseDate)
+			</span>
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.TitleFor(model => model.ForcedPlanRef, new { @class = "col-12 col-form-label pr-0 font-bold text-danger" })
+		<div class="col-12">
+			@Html.FileFor(model => model.ForcedPlanRef, ".doc,.docx,.pdf", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+			@Html.ValidationMessageFor(model => model.ForcedPlanRef, "", new { @class = "text-danger" })
+		</div>
+	</div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)

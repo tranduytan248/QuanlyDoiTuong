@@ -1,0 +1,32 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Invoice.Data.ConfirmInvModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Modal_Title_RollbackInv")} <b>[{Model.Pattern};{Model.Serial}-{Model.InvKey}]</b>";
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("RollbackInv", "InvPending", new { area = "Invoice" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "PendingInv_OnProcessSuccess(data, 'RollbackInv')"
+    }, new { @class = "form-horizontal", id = "RollbackInv" }))
+    {
+        <div id="bodyForm">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.InvId)
+            @Html.HiddenFor(model => model.InvKey)
+            @Html.HiddenFor(model => model.InvNo)
+            @Html.HiddenFor(model => model.Pattern)
+            @Html.HiddenFor(model => model.Serial)
+            @Html.HiddenFor(model => model.CreatedOn)
+            <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+            <hr />
+        </div>
+    }
+}

@@ -1,0 +1,31 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateViolationBehaviorModel
+@{
+    ViewBag.Title = "Xác nhận xóa Hành vi vi phạm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fa fa-trash-alt"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "ViolationBehavior", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ViolationBehavior_OnProcessSuccess(data, 'DeleteViolationBehavior')"
+    }, new { @class = "form-horizontal", id = "DeleteViolationBehavior" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.BehaviorId)
+        @Html.HiddenFor(model => model.BehaviorName)
+
+        <div class="alert alert-warning text-center">
+            @Html.Raw(ViewBag.ConfirmMessage ?? $"Bạn có chắc chắn muốn xóa Hành vi vi phạm <b>[{Model.BehaviorName}]</b> không?")
+        </div>
+    }
+}

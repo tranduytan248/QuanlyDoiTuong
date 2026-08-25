@@ -1,0 +1,84 @@
+﻿@model Cores.Major.Models.SAVProcedureModel
+
+@Html.HiddenFor(model => model.ProcedureId)
+
+<link rel="stylesheet" href="~/Areas/Major/Views/Procedure/_Diagram.css">
+
+<!-- required modeler styles -->
+<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/bpmn-js/assets/bpmn-js.css">
+<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/bpmn-js/assets/diagram-js.css">
+<link rel="stylesheet" href="~/Contents/Modules/Major/plugins/bpmn-js/assets/bpmn-font/css/bpmn.css">
+
+<!-- modeler distro -->
+<script src="~/Contents/Modules/Major/plugins/bpmn-js/bpmn-modeler.development.js"></script>
+
+<div class="row h-100 w-100 p-0 mx-0">
+    <div class="col-12 col-sm-12 p-0 pos-rel mt-3 mt-sm-0 pt-0 pt-sm-0 text-center">
+        <div class="ccard h-100 d-flex flex-column">
+            <div id="diagram" style="height: calc(79vh - 0.5rem);"></div>
+            <div class="io-zoom-controls">
+                <div class="btn-group ml-2 mt-3 btn-group-vertical">
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-primary" onclick="_resetView();">
+                        <i class="fas fa-crosshairs w-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-green" onclick="_zoomIn();">
+                        <i class="fas fa-plus w-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-bgc-tp btn-outline-lightgrey btn-h-light-lightgrey btn-a-info" onclick="_zoomOut();">
+                        <i class="fas fa-minus w-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="io-import-export">
+                <div class="btn-group ml-2 mt-3">
+                    <form id="xmlForm" name="xmlForm" class="d-none">
+                        <input id="inputFile" type="file"> <input type="submit">
+                    </form>
+
+                    <button type="button" class="btn btn-bgc-tp btn-lighter-grey btn-h-light-primary btn-a-light-primary" onclick="_uploadDiagram();">
+                        <i class="fas fa-folder-open w-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-bgc-tp btn-lighter-grey btn-h-light-primary btn-a-light-primary" onclick="_createDiagram();">
+                        <i class="fas fa-plus w-2"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div><!-- /.ccard -->
+    </div>
+</div>
+
+<script src="~/Areas/Major/Views/Procedure/_Diagram.js"></script>
+
+<script type="text/javascript">
+    //debugger;
+
+    var xmlDiagram = $("#Procedure #Diagram").val();
+
+    $("#modal_Diagram").on('shown.bs.modal', function () {
+        _initBpmnJS(true, '#diagram');
+        if(xmlDiagram != null && xmlDiagram.length){
+            _openDiagram(xmlDiagram);
+        }
+    });
+
+    function _uploadDiagram() {
+        $("#xmlForm #inputFile").click();
+    }
+
+    $("form[id=xmlForm] input[type=file]").on('change', function () {
+        var diagramFile = this.files[0];
+        if (diagramFile != null) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                readXml = e.target.result;
+                _openDiagram(readXml);
+            }
+            reader.readAsText(diagramFile);
+        }
+    });
+
+</script>

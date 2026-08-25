@@ -1,0 +1,44 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Cate.Areas.Cate.Models.SearchMainSectionModel
+
+<div class="card dcard" id="SearchMainSection">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <select id="ListTypeContractIds" name="ListTypeContractIds" class="form-control none-select2 selectpicker show-menu-arrow" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("ContractType_Title")" data-selected-text-format="count > 4">
+                        @{
+                            var arrTypeContracts = new Dictionary<string, string> { { "1", "primary" }, { "2", "success" }, { "3", "info" }, { "4", "warning" }, { "5", "purple" } };
+
+                            foreach (var typeContract in Model.ListTypeContracts)
+                            {
+                                <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrTypeContracts[typeContract.Value] brc-@arrTypeContracts[typeContract.Value] '>@typeContract.Text</span>" value="@typeContract.Value">@typeContract.Text</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </div>
+
+            @*<div class="form-group row col-md-12">
+                @Html.LabelFor(model => model.ContractTypeId, new { @class = "col-form-label text-sm-right pr-0 font-bold col-md-3" })
+                <div class="col-md-7 dropdownlist_search">
+                    @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "form-control" })
+                </div>
+            </div>*@
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableMainSection.ajax.reload(null, false);"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+            </div>
+        </div>
+    </div>
+</div>

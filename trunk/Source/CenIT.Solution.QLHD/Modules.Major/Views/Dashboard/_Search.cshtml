@@ -1,0 +1,241 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchContractModel
+
+<style type="text/css">
+    .bootstrap-select .dropdown-toggle {
+        word-wrap: break-word !important;
+        text-overflow: inherit !important;
+        white-space: normal !important;
+    }
+
+        .bootstrap-select .dropdown-toggle:focus {
+            border-color: #80bdff !important;
+            outline: unset !important;
+        }
+</style>
+
+@using (Html.BeginForm("ExportContract", "Dashboard", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportContract", @class = "form-horizontal" }))
+{
+    <div class="card dcard mb-2">
+        <div class="card-header">
+            <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+            <div class="card-toolbar no-border">
+                <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                    <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0 collapse show">
+            <div class="col-md-12 form-horizontal mt-3" id="Search">
+                @{
+                    if (Model.ListUnions?.Count > 1)
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-12 mb-2">
+                                <select id="ListUnionIds" name="ListUnionIds" class="form-control none-select2 selectpicker show-menu-arrow" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Union_Manager_Title")" data-selected-text-format="count > 8">
+                                    @{
+                                        foreach (var union in Model.ListUnions)
+                                        {
+                                            <option data-content='<span class="m-1 badge bgc-primary-l4 border-1 brc-primary-m3 text-primary-d2 px-3 text-95"><span class="pos-rel">@union.Text</span></span>' value="@union.Value">@union.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="border-none border-t-3 brc-grey-l2 border-double w-100">
+                    }
+                }
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.SearchValue, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("SearchDossier_Value"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("SearchDossier_Value") })
+                    </div>
+                    <div class="col-md-4">
+                        <div id="receivedOn-wrapper">
+                            <div class="form-row">
+                                <div class="col">
+                                    @Html.TextBoxFor(model => model.FromDate, "dd/MM/yyyy", new { @class = "form-control ex-inputs-start", placeholder = AppProcessor.Messagor.GetMessage("Dossier_ReceiveDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Dossier_ReceiveDate") })
+                                </div>
+
+                                <div class="text-grey-l2"> _ </div>
+
+                                <div class="col">
+                                    @Html.TextBoxFor(model => model.ToDate, "dd/MM/yyyy", new { @class = "form-control ex-inputs-end", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Dossier_ReceiveDate") })
+                                </div>
+                            </div>
+
+                            <div id="receivedOn-container" class="dp-daterange-picker"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="giveResultOn-wrapper">
+                            <div class="form-row">
+                                <div class="col">
+                                    @Html.TextBoxFor(model => model.GiveResultFromDate, "dd/MM/yyyy", new { @class = "form-control ex-inputs-start", placeholder = AppProcessor.Messagor.GetMessage("Contract_GiveResultOnDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Contract_GiveResultOnDate") })
+                                </div>
+
+                                <div class="text-grey-l2"> _ </div>
+
+                                <div class="col">
+                                    @Html.TextBoxFor(model => model.GiveResultToDate, "dd/MM/yyyy", new { @class = "form-control ex-inputs-end", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Contract_GiveResultOnDate") })
+                                </div>
+                            </div>
+
+                            <div id="giveResultOn-container" class="dp-daterange-picker"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <select id="ListContractStatusIds" name="ListContractStatusIds" class="form-control none-select2 selectpicker show-menu-arrow mr-1" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Contract_Status")" data-selected-text-format="count > 8">
+                            @{
+                                var arrStatus = new Dictionary<string, string> { { "-1", "info" }, { "0", "warning" }, { "1", "primary" }, { "2", "secondary" }, { "3", "success" }, { "4", "purple" }, { "99", "danger" } };
+
+                                foreach (var status in Model.ListContractStatus)
+                                {
+                                    <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrStatus[status.Value] brc-@arrStatus[status.Value]'>@status.Text</span>" value="@status.Value">@status.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="ListTypeContractIds" name="ListTypeContractIds" class="form-control none-select2 selectpicker show-menu-arrow mr-1" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("ContractType_Title")" data-selected-text-format="count > 4">
+                            @{
+                                var arrTypeContracts = new Dictionary<string, string> { { "1", "primary" }, { "2", "success" }, { "3", "info" }, { "4", "warning" }, { "5", "purple" } };
+
+                                foreach (var typeContract in Model.ListTypeContracts)
+                                {
+                                    <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrTypeContracts[typeContract.Value] brc-@arrTypeContracts[typeContract.Value] '>@typeContract.Text</span>" value="@typeContract.Value">@typeContract.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="ListTypeCusIds" name="ListTypeCusIds" class="form-control none-select2 selectpicker show-menu-arrow mr-1" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Customer_TypeCus")" data-selected-text-format="count > 2">
+                            @{
+                                var arrTypeCustomers = new Dictionary<string, string> { { "CONSUMER", "info" }, { "BUSINESS", "success" } };
+
+                                foreach (var typeCustomer in Model.ListTypeCus)
+                                {
+                                    <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrTypeCustomers[typeCustomer.Value] brc-@arrTypeCustomers[typeCustomer.Value] '>@typeCustomer.Text</span>" value="@typeCustomer.Value">@typeCustomer.Text</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+                    <div class="col-md-3">
+                        <select id="ListTypeTermIds" name="ListTypeTermIds" class="form-control none-select2 selectpicker show-menu-arrow mr-1" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Contract_TimeRemaining")" data-selected-text-format="count > 2">
+                            @{
+                                var arrTypeTerms = new Dictionary<string, string> { { "0", "warning" }, { "1", "danger" } };
+
+                                foreach (var typeTerm in Model.ListTypeTerms)
+                                {
+                                    <option data-content="<span class='badge text-white badge-lg arrowed arrowed-in-right mb-1 bgc-@arrTypeTerms[typeTerm.Value] brc-@arrTypeTerms[typeTerm.Value] '>@typeTerm.Text</span>" value="@typeTerm.Value">@typeTerm.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bgc-transparent">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-outline-primary" onclick="_tableContracts.ajax.reload(null, false);"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>
+
+                @*<button type="button" class="btn btn-outline-primary" onclick="searchContract();"><i class="fa fa-search-plus"></i>&nbsp;Tìm kiếm</button>*@
+
+                <button id="btnExport" type="submit" class="btn btn-outline-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_ExportExcel")</button>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    function _initDateRangePicker(eleContainer, eleWrapper, eleFromDate, eleToDate) {
+        // Give Result Contract Date
+        var daterange_container = document.querySelector(eleContainer)
+        // Inject DateRangePicker into our container
+        var daterangePicker = DateRangePicker.DateRangePicker(daterange_container, {
+            mode: 'dp-permanent',
+            startOpts: {
+                lang: {
+                    days: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    months: [
+                        'Tháng 1',
+                        'Tháng 2',
+                        'Tháng 3',
+                        'Tháng 4',
+                        'Tháng 5',
+                        'Tháng 6',
+                        'Tháng 7',
+                        'Tháng 8',
+                        'Tháng 9',
+                        'Tháng 10',
+                        'Tháng 11',
+                        'Tháng 12',
+                    ],
+                    today: 'Hôm nay',
+                    clear: 'Xoá',
+                    close: 'Đóng',
+                }
+            },
+            endOpts: {
+                lang: {
+                    days: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    months: [
+                        'Tháng 1',
+                        'Tháng 2',
+                        'Tháng 3',
+                        'Tháng 4',
+                        'Tháng 5',
+                        'Tháng 6',
+                        'Tháng 7',
+                        'Tháng 8',
+                        'Tháng 9',
+                        'Tháng 10',
+                        'Tháng 11',
+                        'Tháng 12',
+                    ],
+                    today: 'Hôm nay',
+                    clear: 'Xoá',
+                    close: 'Đóng',
+                },
+            }
+        }).on('statechange', function (_, rp) {
+            // Update the inputs when the state changes
+            var range = rp.state
+            $(eleFromDate).val(range.start ? moment(range.start).format("DD/MM/YYYY") : '')
+            $(eleToDate).val(range.end ? moment(range.end).format("DD/MM/YYYY") : '')
+        })
+
+        $(eleFromDate).on('focus', function () {
+            daterange_container.classList.add('visible')
+        });
+
+        $(eleToDate).on('focus', function () {
+            daterange_container.classList.add('visible')
+        })
+
+        var daterange_wrapper = document.querySelector(eleWrapper)
+        var previousTimeout = null;
+        $(daterange_wrapper).on('focusout', function () {
+            if (previousTimeout) clearTimeout(previousTimeout)
+            previousTimeout = setTimeout(function () {
+                if (!daterange_wrapper.contains(document.activeElement)) {
+                    daterange_container.classList.remove('visible')
+                }
+            }, 10)
+        })
+    }
+
+    $(function () {
+
+        _initDateRangePicker('#receivedOn-container', '#receivedOn-wrapper', '#FromDate', '#ToDate');
+        _initDateRangePicker('#giveResultOn-container', '#giveResultOn-wrapper', '#GiveResultFromDate', '#GiveResultToDate');
+
+        $('.selectpicker').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            $(this).next('button').tooltip({ trigger: 'hover' });
+        });
+
+    });
+</script>

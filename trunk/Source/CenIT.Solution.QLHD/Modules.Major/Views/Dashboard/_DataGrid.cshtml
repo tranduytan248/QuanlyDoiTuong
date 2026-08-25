@@ -1,0 +1,227 @@
+﻿@using Syncfusion.EJ2
+@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchContractModel
+
+<script src="~/Contents/Modules/Major/plugins/ej2/ej2.min.js"></script>
+<link href="~/Contents/Modules/Major/plugins/ej2/bootstrap5.css" rel="stylesheet" />
+
+<div class="card bcard h-auto">
+    <div class="p-2 table-responsive-md">
+
+        @{
+            var contracts = Html.EJS().Grid("Contracts").EmptyRecordTemplate("#EmptyTemplate")
+                .DataSource(dataManger =>
+                {
+                    dataManger.Url(Url.Action("GetAll")).CrossDomain(true).Adaptor("UrlAdaptor").EnableCaching(true);
+                }).DataBound("dataBound")
+                .AllowMultiSorting().AllowSorting().AllowFiltering().AllowResizing().AllowTextWrap().ShowColumnChooser()
+                .EnableHover().EnableStickyHeader().Height("calc(80vh)").FrozenColumns(1).AllowPdfExport().AllowExcelExport()
+                .Columns(col =>
+                {
+                    col.Field("ContractNoInfo")
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Contract_ContractNo"))
+                        .Width("160").MinWidth("160").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+
+                    col.Field("ConfirmOn")
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Contract_ReceivedOn"))
+                        .Width("190").MinWidth("190").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center)
+                        .Format(new { type = "dateTime", format = "HH:mm:ss dd/MM/yyyy" }).Add();
+
+                    col.Field("GiveResultOn")
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Contract_GiveResultOn"))
+                        .Width("190").MinWidth("190").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center)
+                        .Format(new { type = "dateTime", format = "dd/MM/yyyy" }).Add();
+
+                    col.Field("CusName")
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Customer_Title"))
+                        .Width("250").MinWidth("210").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+
+                    col.Field("PurposeName").EnableGroupByFormat(true)
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Purpose_Title"))
+                        .Width("250").MinWidth("210").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+
+                    col.Field("Address")
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Contract_Address"))
+                        .Width("250").MinWidth("210").HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+
+                    col.Field("StatusName").EnableGroupByFormat(true)
+                        .HeaderText(AppProcessor.Messagor.GetMessage("Contract_Status")).Width("250").MinWidth("250")
+                        .HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Template("#StatusTemplate").Add();
+
+                    col.Field("RemainingTime").HeaderText(AppProcessor.Messagor.GetMessage("Contract_RemainingTime")).Width("160").MinWidth("160").Format(new { format = "N0" }).Template("#RemainingTimeTemplate")
+                        .HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+
+                    col.HeaderText(AppProcessor.Messagor.GetMessage("Procedure_Title"))
+                        .Width("100").Template("#ActionTemplate")
+                        .HeaderTextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).TextAlign(Syncfusion.EJ2.Grids.TextAlign.Center).Add();
+                })
+                .AllowGrouping().RowDataBound("rowDataBound")
+                .AllowPaging().PageSettings(page => { page.PageCount(5).PageSize(100); })
+                .FilterSettings(filter => { filter.Type(Syncfusion.EJ2.Grids.FilterType.Excel); })
+                .LoadingIndicator(l => { l.IndicatorType(Syncfusion.EJ2.Grids.IndicatorType.Shimmer); })
+                //.GroupSettings(group => group.Columns(new[] { "StatusName", "PurposeName" }))
+                .Toolbar(new List<string> { "ColumnChooser", "Print" });
+            //.Toolbar(new List<string> { "ColumnChooser", "ExcelExport", "PdfExport", "Print" });
+        }
+        @contracts.Render()
+    </div>
+</div>
+
+<script id="ActionTemplate" type="text/x-template">
+    ${if(Status > 0)}
+    <a data-width="1024" id="MajorDossierActivity${ContractId}" data-aside-placement="right" data-aside-dismiss="true" data-modal="" data-modal-id="Activity" class="btn px-4 btn-outline-info mr-1 v-hover" data-rel="tooltip" title="Quy trình xử lý" href="/Major/Dossier/Activity/${ContractId}"><i class="fas fa-clipboard-list text-120"></i></a>
+    ${/if}
+</script>
+
+<script id="StatusTemplate" type="text/x-template">
+
+    <div class="mx-2 my-auto"><span class="badge bgc-${StatusColor} brc-${StatusColor} text-white badge-lg arrowed arrowed-in-right mb-1">${StatusName}</span></div>
+
+</script>
+
+<script id="EmptyTemplate" type="text/x-template">
+    <div class='text-center text-120'>
+        Không có dữ liệu để hiển thị
+    </div>
+</script>
+
+<script type="text/x-jsrender" id="RemainingTimeTemplate">
+    ${remainingTimeStatus(data)}
+</script>
+
+<script type="text/javascript">
+    //debugger;
+    function rowDataBound(args) {
+        if (args.data.Status == 1 && args.data.RemainingTime <= 0) {
+            $(args.row).addClass('bgc-danger-l4');
+        }
+    }
+
+    function actionFailure(args) {
+        var span = document.createElement('span');
+        this.element.parentNode.insertBefore(span, this.element);
+        span.style.color = '#FF0000'
+        span.innerHTML = 'Server exception: 404 Not found';
+    }
+
+    function searchContract() {
+        var gridContracts = document.getElementById("Contracts").ej2_instances[0];
+
+        if (!gridContracts.query.params.some(item => item.key === "SearchValue")) {
+            gridContracts.query.params.push({
+                key: "SearchValue", value: $("#Search #SearchValue").val() != null &&
+                    $("#Search #SearchValue").val().length > 0
+                    ? $("#Search #SearchValue").val()
+                    : null
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "SearchValue");
+            gridContracts.query.params[existIdx].value = $("#Search #SearchValue").val() != null &&
+                $("#Search #SearchValue").val().length > 0
+                ? $("#Search #SearchValue").val()
+                : null;
+        }
+
+        if (!gridContracts.query.params.some(item => item.key === "FromDate")) {
+            gridContracts.query.params.push({
+                key: "FromDate", value: $("#Search #FromDate").val() != null &&
+                    $("#Search #FromDate").val().length > 0
+                    ? $("#Search #FromDate").val()
+                    : null
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "FromDate");
+            gridContracts.query.params[existIdx].value = $("#Search #FromDate").val() != null &&
+                $("#Search #FromDate").val().length > 0
+                ? $("#Search #FromDate").val()
+                : null;
+        }
+
+        if (!gridContracts.query.params.some(item => item.key === "ToDate")) {
+            gridContracts.query.params.push({
+                key: "ToDate", value: $("#Search #ToDate").val() != null &&
+                    $("#Search #ToDate").val().length > 0
+                    ? $("#Search #ToDate").val()
+                    : null
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "ToDate");
+            gridContracts.query.params[existIdx].value = $("#Search #ToDate").val() != null &&
+                $("#Search #ToDate").val().length > 0
+                ? $("#Search #ToDate").val()
+                : null;
+        }
+
+        if (!gridContracts.query.params.some(item => item.key === "ContractStatus")) {
+            gridContracts.query.params.push({
+                key: "ContractStatus", value: $("#Search select#ListContractStatusIds").val() != null &&
+                    $("#Search select#ListContractStatusIds").val().length > 0
+                    ? $("#Search select#ListContractStatusIds").val().toString()
+                    : ""
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "ContractStatus");
+            gridContracts.query.params[existIdx].value = $("#Search select#ListContractStatusIds").val() != null &&
+                $("#Search select#ListContractStatusIds").val().length > 0
+                ? $("#Search select#ListContractStatusIds").val().toString()
+                : "";
+        }
+
+        if (!gridContracts.query.params.some(item => item.key === "TypeContractIds")) {
+            gridContracts.query.params.push({
+                key: "TypeContractIds", value: $("#Search select#ListTypeContractIds").val() != null &&
+                    $("#Search select#ListTypeContractIds").val().length > 0
+                    ? $("#Search select#ListTypeContractIds").val().toString()
+                    : ""
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "TypeContractIds");
+            gridContracts.query.params[existIdx].value = $("#Search select#ListTypeContractIds").val() != null &&
+                $("#Search select#ListTypeContractIds").val().length > 0
+                ? $("#Search select#ListTypeContractIds").val().toString()
+                : "";
+        }
+
+        if (!gridContracts.query.params.some(item => item.key === "TypeCusIds")) {
+            gridContracts.query.params.push({
+                key: "TypeCusIds", value: $("#Search select#ListTypeCusIds").val() != null &&
+                    $("#Search select#ListTypeCusIds").val().length > 0
+                    ? $("#Search select#ListTypeCusIds").val().toString()
+                    : ""
+            });
+        }
+        else {
+            var existIdx = gridContracts.query.params.findIndex(p => p.key === "TypeCusIds");
+            gridContracts.query.params[existIdx].value = $("#Search select#ListTypeCusIds").val() != null &&
+                $("#Search select#ListTypeCusIds").val().length > 0
+                ? $("#Search select#ListTypeCusIds").val().toString()
+                : "";
+        }
+        gridContracts.refresh();
+    }
+
+    function remainingTimeStatus(e) {
+        var span = document.createElement('span');
+        if (e.RemainingTime != null && e.RemainingTime < 0) {
+            span.className = 'text-danger-d1 text-500';
+        } else if (e.RemainingTime != null) {
+            span.className = 'text-500';
+        }
+        span.textContent = e.RemainingTime;
+        return span.outerHTML;
+    }
+
+    function dataBound(args) {
+        //$("table#Contracts_content_table td.e-groupcaption").addClass('text-110 text-500 text-danger-d2');
+
+        $("#Contracts_content_table tbody[role='rowgroup'] .e-groupcaptionrow:not(:has('.e-indentcell'))").children('td.e-groupcaption').addClass('text-110 text-500 text-danger-d2');
+
+        $("#Contracts_content_table tbody[role='rowgroup'] .e-groupcaptionrow:has('.e-indentcell')").children('td.e-groupcaption').addClass('text-105 text-500 text-pink-d4');
+    } 
+
+</script>

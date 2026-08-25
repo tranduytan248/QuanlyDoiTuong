@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ReportModel
+
+<div id="_06BaoCaoChiTietHoaDon">
+    <div class="form-group row">
+        <label class="col-md-12 col-form-label pr-0 font-bold text-danger-d1">
+            <i class="fas fa-university"></i>&nbsp;Đơn vị/Chi nhánh
+        </label>
+        <div class="col-md-12">
+            <select id="UnionId" name="UnionId" class="form-control none-select2 selectpicker show-menu-arrow" data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Union_Using")" onchange="_onChangeCombo(this, '#_06BaoCaoChiTietHoaDon #UnionName', false)">
+                @{
+                    foreach (var union in Model.ListUnions)
+                    {
+                        <option data-content='<span class="m-1 badge bgc-primary-l4 border-1 brc-primary-m3 text-primary-d2 px-3 text-95"><span class="pos-rel">@union.Text</span></span>' value="@union.Value">@union.Text</option>
+                    }
+                }
+            </select>
+            @Html.HiddenFor(model => model.UnionName)
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-12 col-form-label pr-0 font-bold text-danger-d1">
+            <i class="fas fa-calendar-alt"></i>&nbsp;Ngày hoá đơn
+        </label>
+        <div class="col-md-8" id="confirmOn-wrapper">
+            <div class="form-row">
+                <div class="col">
+                    @Html.TextBox("FromDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("dd/MM/yyyy"), new { @class = "form-control ex-inputs-start", placeholder = "Ngày hoá đơn từ ngày", data_rel = "tooltip", title = "Ngày hoá đơn từ ngày" })
+                </div>
+
+                <div class="text-grey-l2"> _ </div>
+
+                <div class="col">
+                    @Html.TextBox("ToDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1).ToString("dd/MM/yyyy"), new { @class = "form-control ex-inputs-end", placeholder = "Đến ngày", data_rel = "tooltip", title = "Đến ngày" })
+                </div>
+            </div>
+
+            <div id="confirmOn-container" class="dp-daterange-picker"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        _initDateRangePicker('#confirmOn-container', '#confirmOn-wrapper', '#FromDate', '#ToDate');
+        $('.selectpicker').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            $(this).next('button').tooltip({ trigger: 'hover' });
+        });
+
+        $('#UnionId').selectpicker();
+    });
+
+</script>

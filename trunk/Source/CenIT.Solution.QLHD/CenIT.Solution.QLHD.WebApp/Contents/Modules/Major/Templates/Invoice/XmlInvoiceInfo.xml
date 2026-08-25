@@ -1,0 +1,10 @@
+﻿<Invoice>
+  <Content>
+    <InvoiceName>HÓA ĐƠN GIÁ TRỊ GIA TĂNG</InvoiceName>
+    <InvoicePattern>{0}</InvoicePattern>
+    <SerialNo>{1}</SerialNo>
+    <InvoiceNo>0000000</InvoiceNo>
+    <Company>{2}</Company>
+    <InvInfo>{3}</InvInfo>
+  </Content>
+</Invoice>

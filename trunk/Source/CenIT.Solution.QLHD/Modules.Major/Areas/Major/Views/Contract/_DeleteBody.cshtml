@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.ContractNo)
+@Html.HiddenFor(model => model.ContractSignal)
+@Html.HiddenFor(model => model.CusName)
+@Html.HiddenFor(model => model.PurposeId)
+@Html.HiddenFor(model => model.LandParcelNo)
+@Html.HiddenFor(model => model.MapNo)
+@Html.HiddenFor(model => model.Address)
+@Html.HiddenFor(model => model.ContractTypeId)
+@Html.HiddenFor(model => model.ContractTypeName)
+@Html.HiddenFor(model => model.IsNew)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+<hr />
+<div class="form-group row">
+    @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-9">
+        @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+        @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+    </div>
+</div>

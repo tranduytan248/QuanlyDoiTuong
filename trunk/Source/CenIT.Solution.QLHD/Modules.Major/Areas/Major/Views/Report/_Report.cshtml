@@ -1,0 +1,135 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ReportModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Major_Report_Title")} [{Model.ReportName}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fas fa-file-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ViewReport", "Report", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ViewReport", @class = "form-horizontal" }))
+    {
+        @Html.HiddenFor(model => model.ReportKey)
+        @Html.HiddenFor(model => model.ReportName)
+
+        <div id="bodyForm">
+            @Html.Partial(Model.ViewName)
+        </div>
+    }
+
+    @using (Html.BeginForm("ExportReport", "Report", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportReport", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm" class="d-none">
+        </div>
+    }
+
+    <script type="text/javascript">
+        debugger;
+
+        $('form#ViewReport').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                _onWaiting();
+            },
+            success: function (response) {
+                if (response != undefined) {
+                    _showModal(response, "ViewReport_@Model.ReportKey", "fullscreen", "ViewReport");
+                }
+                _endWaiting();
+            }
+        });
+
+        function exportReport() {
+            //const clonedElements = $('form#ViewReport').children().clone(true);
+
+            //// Optional: clear form2 first
+            //$('form#ExportReport #bodyForm').empty();
+
+            //// Append cloned elements to form2
+            //$('form#ExportReport #bodyForm').append(clonedElements);
+
+            $('form#ViewReport').find('input, select, textarea').each(function () {
+                const $el = $(this);
+                const tag = $el.prop('tagName').toLowerCase();
+                const type = $el.attr('type');
+                const name = $el.attr('name');
+
+                if (!name) return; // bỏ qua nếu không có name
+
+                let $newEl;
+
+                if (tag === 'input') {
+                    if (type === 'checkbox' || type === 'radio') {
+                        $newEl = $('<input>').attr({
+                            type: type,
+                            name: name,
+                            value: $el.val()
+                        });
+                        if ($el.prop('checked')) {
+                            $newEl.prop('checked', true);
+                        }
+                    } else {
+                        $newEl = $('<input>').attr({
+                            type: type || 'text',
+                            name: name,
+                            value: $el.val()
+                        });
+                    }
+
+                } else if (tag === 'select') {
+                    $newEl = $('<select>')
+                        .attr({
+                            name: name,
+                            multiple: $el.prop('multiple') ? true : false
+                        })
+                        .addClass($el.attr('class')); // giữ class bootstrap-select
+
+                    $el.find('option').each(function () {
+                        const $opt = $(this);
+                        const $newOpt = $('<option>')
+                            .val($opt.val())
+                            .text($opt.text());
+
+                        if ($opt.prop('selected')) {
+                            $newOpt.prop('selected', true);
+                        }
+
+                        if ($opt.prop('disabled')) {
+                            $newOpt.prop('disabled', true);
+                        }
+
+                        $newEl.append($newOpt);
+                    });
+
+                    // Nếu dùng bootstrap-select, khởi tạo lại
+                    setTimeout(() => {
+                        $newEl.selectpicker('refresh'); // Khởi tạo lại plugin
+                    }, 0);
+
+                } else if (tag === 'textarea') {
+                    $newEl = $('<textarea>').attr('name', name).val($el.val());
+                }
+
+                // Thêm dòng ngắt và append vào form2
+                $('form#ExportReport #bodyForm').append($newEl).append('<br>');
+            });
+
+            $('form#ExportReport').submit();
+        }
+
+    </script>
+}
+
+@section SubmitControl{
+    <button type="button" id="btnExportReport" onclick="exportReport();" class="btn px-4 btn-outline-success mb-1"><i class="fas fa-file-download"></i>&nbsp;Xuất excel</button>
+
+    <button type="button" id="btnRenderReport" onclick="$('form#ViewReport').submit();" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-file-import"></i>&nbsp;Xem</button>
+}

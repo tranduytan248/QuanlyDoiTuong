@@ -1,0 +1,89 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVProcedureModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Flow_Title");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-project-diagram"></i>
+}
+
+@section FormBody{
+
+    @Html.HiddenFor(model => model.DrawFlow)
+
+    <div class="row modal-body" id="bodyForm">
+        <div id="flowCanvas" class="table-responsive"></div>
+    </div>
+
+    <script src="~/Contents/Modules/Major/plugins/flowchart/raphael.min.js"></script>
+    <script src="~/Contents/Modules/Major/plugins/flowchart/flowchart-latest.js"></script>
+
+    <script type="text/javascript">
+
+        $('#modal_Flow').on('shown.bs.modal', function (e) {
+            var flowCode = $("input[type='hidden'][id='DrawFlow']").val();
+            var chart;
+            if (flowCode.length <= 0) return;
+
+            if (chart) {
+                chart.clean();
+            }
+
+            chart = flowchart.parse(flowCode);
+            chart.drawSVG('flowCanvas', {
+                'line-width': 2,
+                'font': 'normal',
+                'font-family': 'Helvetica',
+                'font-weight': 'normal',
+                'font-color': '#165f9d',
+                'line-color': '#dc3545',
+                'element-color': '#ffbe50',
+                'fill': '#f8f9fa',
+                'yes-text': 'Có',
+                'no-text': 'Không',
+                'arrow-end': 'block',
+                'scale': 1,
+                //'symbols': {
+                //    'start': {
+                //        'font-color': '#0d6ce1',
+                //        'element-color': '#ffbe50',
+                //        'fill': '#ffbe50'
+                //    },
+                //    'end': {
+                //        'font-color': '#0d6ce1',
+                //        'element-color': '#3f923f',
+                //        'fill': '#ffbe50'
+                //    }
+                //},
+                'flowstate': {
+                    //'begin': { 'fill': '#ffbe50', 'font-color': '#2c86d1' },
+                    'begin': { 'fill': '#ffbe50', 'font-color': '#2c86d1', 'element-color': '#ffbe50' },
+                    'finish': { 'fill': '#e8f4e8', 'font-color': '#2d6d2d', 'element-color': '#6faa6f' },
+                    'element': { 'fill': 'transparent', 'font-color': '#165f9d', 'element-color': '#64a0d3' },
+                    'situation': { 'fill': '#fefbea', 'font-color': '#7b6e23', 'element-color': '#f6db51' },
+
+                    'past': { 'fill': 'transparent', 'font-size': 12 },
+                    'current': { 'fill': 'transparent', 'font-color': 'red', 'font-weight': 'bold' },
+                    'future': { 'fill': '#ffbe50' },
+                    'request': { 'fill': '#83b8e5', 'font-color': '#165f9d' },
+                    'invalid': { 'fill': '#444444' },
+                    'approved': { 'fill': '#58C4A3', 'font-size': 12, 'yes-text': 'Có', 'no-text': 'Không' },
+                    'rejected': { 'fill': '#C45879', 'font-size': 12, 'yes-text': 'Có', 'no-text': 'Không' }
+                }
+            });
+        })
+
+    </script>
+}
+@section SubmitControl{
+
+}
+
+

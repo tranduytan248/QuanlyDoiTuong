@@ -1,0 +1,306 @@
+﻿@using Modules.Major.Cores.Enums
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@using EnumHelper = TSFramework.Core.Helpers.EnumHelper
+@model Cores.Major.Models.SAVComplainModel
+@Html.AntiForgeryToken()
+
+<div id="Complain">
+    <div class="row">
+        <div class="col-12 col-md-5">
+            @Html.HiddenFor(model => model.ComplainId)
+            @Html.HiddenFor(model => model.Title)
+            @Html.HiddenFor(model => model.SourceId)
+            @Html.HiddenFor(model => model.SourceName)
+            @Html.HiddenFor(model => model.Contents)
+            @Html.HiddenFor(model => model.Location)
+            @Html.HiddenFor(model => model.ReflectBy)
+
+            @Html.HiddenFor(model => model.TypeSenderObjName)
+            @Html.HiddenFor(model => model.SenderName)
+            @Html.HiddenFor(model => model.ProvinceName)
+            @Html.HiddenFor(model => model.DistrictName)
+            @Html.HiddenFor(model => model.WardName)
+            @Html.HiddenFor(model => model.AddressDetail)
+            @Html.HiddenFor(model => model.Phone)
+            @Html.HiddenFor(model => model.Email)
+
+            <div class="form-group row">
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.TypeSenderObjName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.TypeSenderObj, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                    <div class="col-8 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.SenderName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.SenderName, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                </div>
+            @* <div class="form-group row">
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.ProvinceName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.ProvinceName, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.DistrictName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.DistrictName, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.WardName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.WardName, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-7 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.AddressDetail, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.AddressDetail, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                </div>*@
+            @*<div class="form-group row">
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.Phone, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                    <div class="col-4 input-floating-label text-danger-d2 brc-danger-m1">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.Email, new { @class = "floating-label text-grey-m3 text-500" })
+                    </div>
+                </div>*@
+            <div class="form-group row">
+                <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+                    @Html.TextAreaFor(model => model.Title, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                    @Html.LabelFor(model => model.Title, new { @class = "floating-label text-grey-m3 text-500" })
+                </span>
+            </div>
+            <div class="form-group row">
+                <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+                    @Html.TextAreaFor(model => model.Contents, new { rows = 10, @class = "form-control shadow-none text-primary-d2", disabled = true })
+                    @Html.LabelFor(model => model.Contents, new { @class = "floating-label text-grey-m3 text-500" })
+                </span>
+            </div>
+            <div class="form-group row">
+                    <span class="has-float-label input-floating-label col-12 text-blue-d2 brc-blue-m1">
+                        @Html.TextAreaFor(model => model.Location, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                        @Html.LabelFor(model => model.Location, new { @class = "floating-label text-grey-m3 text-500" })
+                    </span>
+                </div>
+            <div class="form-group row">
+                <div class="col-8 input-floating-label text-danger-d2 brc-danger-m1">
+                    @Html.TextBoxFor(model => model.ReflectName, new { @class = "form-control shadow-none text-primary-d2", disabled = true })
+                    @Html.LabelFor(model => model.ReflectName, new { @class = "floating-label text-grey-m3 text-500" })
+                </div>
+            </div>
+            @{if (Model.ListRefImgs.Count > 0)
+                {
+                    <hr />
+                    <div class="row mx-0">
+                        @{foreach (var k in Model.ListRefImgs.Keys)
+                            {
+                                int idx;
+                                if (k == 0)
+                                {
+                                    idx = 0;
+									<!-- column 1 -->
+                                    <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                        @foreach (var img in Model.ListRefImgs[k])
+                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                            idx += 1;
+                                        }
+                                    </div>
+                                }
+                                else if (k == 1)
+                                {
+                                    idx = 0;
+									<!-- column 2 -->
+                                    <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                        @foreach (var img in Model.ListRefImgs[k])
+                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                            idx += 1;
+                                        }
+                                    </div>
+                                }
+                                else if (k == 2)
+                                {
+                                    idx = 0;
+									<!-- column 3 -->
+                                    <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                        @foreach (var img in Model.ListRefImgs[k])
+                                        {
+                                            <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                                <a href="#" class="show-lightbox">
+                                                    <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                                </a>
+                                            </div>
+                                            idx += 1;
+                                        }
+                                    </div>
+                                }
+
+                            }
+                        }
+
+                    </div>
+                            }
+            }
+
+            <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+        </div>
+        <div class="col-12 col-md-7">
+            <div class="form-group row">
+                <label for="Status" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Complain_ResultChecking")</label>
+                <label class="col-form-label col-4">
+                    @Html.RadioButtonFor(model => model.HandleStatus, (int)EnumComplainHandleStatus.WrongInfo, new { id = "WrongInfo", onchange = "_onChangeStatus(this);" })
+                    @Html.Label(AppProcessor.Messagor.GetMessage("HandleComplain_WrongInfo"), new { @for = "WrongInfo" })
+                </label>
+                <label class="col-form-label col-4">
+                    @Html.RadioButtonFor(model => model.HandleStatus, (int)EnumComplainHandleStatus.ForwardToHandle, new { id = "ForwardToHandle", onchange = "_onChangeStatus(this);" })
+                    @Html.Label(AppProcessor.Messagor.GetMessage("HandleComplain_ForwardToHandle"), new { @for = "ForwardToHandle" })
+                </label>
+            </div>
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Note, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Complain_Note") })
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="RefFiles" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold text-danger">@AppProcessor.Messagor.GetMessage("Doc_Ref") (*)</label>
+                <div class="col-md-8">
+                    @Html.FileFor(model => model.RefFiles, ".doc,.docx,.pdf", false, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Form_RefDocs") })
+                    @Html.ValidationMessageFor(model => model.RefFiles, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div id="TransferToHandle" class="@(Model.Status == (int)EnumComplainHandleStatus.ForwardToHandle? "":"d-none")">
+                    <div class="form-group row">
+                        <label for="ProcedureId" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold text-danger">@AppProcessor.Messagor.GetMessage("Complain_Handle_ViaProc") (*)</label>
+                        <div class="col-md-8">
+                            @Html.SelectFor(model => model.ProcedureId, Model.ListProcedures, "", new { @class = "form-control col-md-12", onchange = "_onChangeProcedure(this, '#TransferToHandle #ProcedureName')" })
+                            @Html.ValidationMessageFor(model => model.ProcedureId, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.ProcedureName)
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HandleInStep" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold text-danger">@AppProcessor.Messagor.GetMessage("Dossier_ForwardToHandle") (*)</label>
+                        <div class="col-md-8">
+                            @Html.SelectFor(model => model.HandleInStep, Model.ListUnionHandles, "", new { @class = "form-control col-md-12" })
+                            @Html.ValidationMessageFor(model => model.HandleInStep, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>*@
+            <hr />
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.RefImages, new { type = "file", multiple = true, @class = "ace-file-input" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script type="text/javascript">
+    $(function () {
+        // multiple with image preview
+        $('#RefImages').aceFileInput({
+            style: 'drop',
+            droppable: true,
+
+            container: 'border-1 border-dashed brc-grey-l1 brc-h-info-m2 shadow-sm table-responsive',
+
+            placeholderClass: 'text-125 text-600 text-grey-l1 my-2',
+            placeholderText: 'Kéo thả ảnh vào đây hoặc nhấn để chọn',
+            placeholderIcon: '<i class="fa fa-cloud-upload-alt fa-3x text-info-m2 my-2"></i>',
+
+            //previewSize: 64,
+            thumbnail: 'small',
+
+            //allowExt: 'gif|jpg|jpeg|png|webp|svg',
+            //allowMime: 'image/png|image/jpeg',
+            allowMime: 'image/*',
+
+            //maxSize: 100000,
+        });
+
+        let fileInput = document.getElementById('RefImages')
+        fileInput.addEventListener('changed.ace.file', function (e) {
+            $(this)[0].files = fileListFrom(e.$_selectedFiles.list);
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    //debugger;
+    jQuery(function ($) {
+        _initGalary("#Complain");
+        $("#Complain #Note").val("@Html.Raw(AppProcessor.Messagor.GetMessage(EnumHelper.GetDescription((EnumComplainHandleStatus)Model.HandleStatus)))");
+    });
+
+    //$(document).ready(function(){
+    //    _onChangeProcedure($('#TransferToHandle #ProcedureId'),'#TransferToHandle #ProcedureName');
+    //});
+
+    function _onChangeStatus(cbb) {
+        var statusId = $(cbb).val();
+        var forwardToHandle = @((int)EnumComplainHandleStatus.ForwardToHandle);
+
+        var cbbId = $(cbb).attr('id');
+        var handleInfo = $('label[for="{0}"]'.format(cbbId)).text();
+
+        $("#Complain #Note").val(handleInfo);
+        if(statusId == forwardToHandle )
+        {
+            $("#TransferToHandle").removeClass("d-none");
+        }
+        else{
+            $("#TransferToHandle").addClass("d-none");
+        }
+    }
+
+    @*function _onChangeProcedure(cbb, eleName){
+        $(eleName).val($(cbb).children("optgroup").children("option:selected").text());
+        var procId = $(cbb).val();
+        if(procId.length > 0){
+            var inStep = '@Model.HandleInStep';
+            var urlUnionViaAuthority ="@Url.Action("UnionViaAuthority", "Complain")?procId=" + procId;
+
+            $.ajax({
+                type: "GET",
+                url: urlUnionViaAuthority,
+                dataType: "JSON",
+                success: function(response) {
+                    $("#TransferToHandle #HandleInStep").empty();
+                    $("#TransferToHandle #HandleInStep").append('<option value=""></option>');
+
+                    $.each(response.Unions,function(index, union) {
+                        if(union.UnionId == inStep){
+                            $("#TransferToHandle #HandleInStep").append('<option selected value="' + union.UnionId + '">' + union.UnionName + "</option>");
+                        }else{
+                            $("#TransferToHandle #HandleInStep").append('<option value="' + union.UnionId + '">' + union.UnionName + "</option>");
+                        }
+                    });
+                }
+            });
+        }
+    }*@
+
+</script>

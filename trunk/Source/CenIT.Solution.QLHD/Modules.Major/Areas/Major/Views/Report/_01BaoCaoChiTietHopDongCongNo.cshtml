@@ -1,0 +1,62 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ReportModel
+
+<div id="_01BaoCaoChiTietHopDongCongNo">
+
+    <div class="form-group row">
+        <label class="col-md-12 col-form-label pr-0 font-bold text-danger-d1">
+            <i class="fas fa-calendar-alt"></i>&nbsp;Ngày hợp đồng
+        </label>
+        <div class="col-md-8" id="confirmOn-wrapper">
+            <div class="form-row">
+                <div class="col">
+                    @Html.TextBox("FromDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("dd/MM/yyyy"), new { @class = "form-control ex-inputs-start", placeholder = AppProcessor.Messagor.GetMessage("Contract_ConfirmOnFromDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Contract_ConfirmOnDate") })
+                </div>
+
+                <div class="text-grey-l2"> _ </div>
+
+                <div class="col">
+                    @Html.TextBox("ToDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1).ToString("dd/MM/yyyy"), new { @class = "form-control ex-inputs-end", placeholder = AppProcessor.Messagor.GetMessage("Common_ToDate"), data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("Common_ToDate") })
+                </div>
+            </div>
+
+            <div id="confirmOn-container" class="dp-daterange-picker"></div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @*<div class="col-2 col-form-label text-sm-right pr-0 font-bold mt-1 mr-3">
+                <label for="UnionId" class="mb-0">
+                    Địa bàn
+                </label>
+            </div>*@
+        <label class="col-md-12 col-form-label pr-0 font-bold text-danger-d1">
+            <i class="fas fa-university"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Union_Using")
+        </label>
+        <div class="col-md-12">
+            <select id="Unions" name="Unions" class="form-control none-select2 selectpicker show-menu-arrow" multiple data-actions-box="true" title="@AppProcessor.Messagor.GetMessage("Union_Using")" onchange="_onChangeCombo(this, '#_01BaoCaoChiTietHopDongCongNo #UnionName', true)">
+                @{
+                    foreach (var union in Model.ListUnions)
+                    {
+                        <option data-content='<span class="m-1 badge bgc-primary-l4 border-1 brc-primary-m3 text-primary-d2 px-3 text-95"><span class="pos-rel">@union.Text</span></span>' value="@union.Value">@union.Text</option>
+                    }
+                }
+            </select>
+
+            @*@Html.SelectFor(model => model.Unions, Model.ListUnions, AppProcessor.Messagor.GetMessage("Union_Title"), new { multiple = true, @class = "form-control col-11", onchange = "_onChangeCombo(this, '#_01BaoCaoChiTietHopDongCongNo #UnionName', true)" })*@
+            @Html.HiddenFor(model => model.UnionName)
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(function () {
+        _initDateRangePicker('#confirmOn-container', '#confirmOn-wrapper', '#FromDate', '#ToDate');
+        $('.selectpicker').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            $(this).next('button').tooltip({ trigger: 'hover' });
+        });
+
+        $('#Unions').selectpicker();
+    });
+
+</script>

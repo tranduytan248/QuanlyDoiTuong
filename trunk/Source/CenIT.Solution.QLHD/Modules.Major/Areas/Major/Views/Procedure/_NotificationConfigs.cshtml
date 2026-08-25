@@ -1,0 +1,49 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepModel
+
+<div class="card dcard mb-3 col-12" id="eleNotificationConfigs">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-500 text-primary-d2 my-auto">
+            <i class="fas fa-comments"></i>&nbsp;@Html.LabelFor(model => model.NotificationConfigs)
+        </h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="p-3">
+            <div class="form-group row col-12">
+                <label class="col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Cus_NotificationConfigs_Title")</label>
+                <div class="input-group mt-1 ml-1">
+                    @foreach (var option in Model.NotificationConfigs)
+                    {
+                        if (Model.CusActiveNotifications != null && Model.CusActiveNotifications.Contains(option.Value))
+                        {
+                            var isChecked = Model.ListCusNotificationConfigs != null && Model.ListCusNotificationConfigs.Contains(option.Value);
+                            <label class="checkbox-inline col-4">
+                                <input type="checkbox" name="ListCusNotificationConfigs" value="@option.Value" @(isChecked ? "checked" : "") class="checkbox" /> @option.Text
+                            </label>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="form-group row col-12">
+                <label class="col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Staff_NotificationConfigs_Title")</label>
+                <div class="input-group mt-1 ml-1">
+                    @foreach (var option in Model.NotificationConfigs)
+                    {
+                        if (Model.StaffActiveNotifications != null && Model.StaffActiveNotifications.Contains(option.Value))
+                        {
+                            var isChecked = Model.ListStaffNotificationConfigs != null && Model.ListStaffNotificationConfigs.Contains(option.Value);
+                            <label class="checkbox-inline col-4">
+                                <input type="checkbox" name="ListStaffNotificationConfigs" value="@option.Value" @(isChecked ? "checked" : "") class="checkbox" /> @option.Text
+                            </label>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

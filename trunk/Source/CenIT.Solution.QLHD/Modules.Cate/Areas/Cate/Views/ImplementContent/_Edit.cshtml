@@ -1,0 +1,59 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("ImplementContent_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Edit", "ImplementContent", new { area = "Cate" }, FormMethod.Post, new { encType = "multipart/form-data", id = "EditImplementContent", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ImplementContent")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+$('form#EditImplementContent').ajaxForm({
+    success: function (response) {
+        if (response.status != undefined) {
+            if ($("#ModalContent #modal_EditImplementContent #chkNotDismissModal").is(":checked")) {
+                if (response.status != undefined) {
+                    eval(response.message);
+                    _tableImplementContent.ajax.reload(null, false);
+                    response.status = undefined;
+                    $("#ModalContent #modal_EditImplementContent form")[0].reset();
+                }
+            } else {
+                if (!response.status && response.errorCode == 1) {
+                    eval(response.message);
+                    response.status = undefined;
+                } else {
+                    $("#ModalContent #modal_EditImplementContent").modal("hide");
+                    $("#ModalContent #modal_EditImplementContent").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableImplementContent.ajax.reload(null, true);
+                                response.status = undefined;
+                            }
+                        });
+                    location.reload();
+                }
+            }
+        } else {
+            $("#ModalContent #modal_EditImplementContent" + " #bodyForm").html(response);
+        }
+    }
+});
+    </script>
+}

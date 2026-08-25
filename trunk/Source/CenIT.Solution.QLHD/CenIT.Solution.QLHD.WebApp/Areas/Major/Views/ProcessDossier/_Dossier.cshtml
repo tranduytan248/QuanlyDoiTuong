@@ -1,0 +1,114 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.DossierId)
+
+<div id="Dossier" class="row">
+    <div class="col-12 col-md-7">
+        <div class="form-group row">
+            @*@Html.LabelFor(model => model.Title, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })*@
+            <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Dossier_Title")</label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Title, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Dossier_Title_Title") })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Contents, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Contents, new { disabled = true, rows = 4, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Dossier_Contents") })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Location, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Location, new { disabled = true, rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Dossier_Location") })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.ReflectBy, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.ReflectBy, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Dossier_ReflectBy") })
+                @Html.ValidationMessageFor(model => model.ReflectBy, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @{
+            if (Model.ListRefImgs.Count > 0)
+            {
+                <hr />
+                <div class="row mx-0">
+                    @{
+                        foreach (var k in Model.ListRefImgs.Keys)
+                        {
+                            int idx;
+                            if (k == 0)
+                            {
+                                idx = 0;
+                                    <!-- column 1 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+                            else if (k == 1)
+                            {
+                                idx = 0;
+                                    <!-- column 2 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+                            else if (k == 2)
+                            {
+                                idx = 0;
+                                    <!-- column 3 -->
+                                <div class="col-6 col-sm-4 col-md-3 text-center px-2">
+                                    @foreach (var img in Model.ListRefImgs[k])
+                                    {
+                                        <div class="pos-rel d-style my-3 radius-1 shadow-sm overflow-hidden bgc-brown-m3" id="@img.FileId">
+                                            <a href="#" class="show-lightbox">
+                                                <img alt="Hình ảnh @($"{k}{idx}")" src="@img.FilePath" class="w-100 d-zoom-2 " data-size="@img.Dimensions" />
+                                            </a>
+                                        </div>
+                                        idx += 1;
+                                    }
+                                </div>
+                            }
+
+                        }
+                    }
+
+                </div>
+
+                        }
+        }
+        <div class="position-rc h-100 border-l-1 brc-secondary-l3"></div>
+    </div>
+    <div class="col-12 col-md-5">
+
+    </div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        _initGalary("#Dossier");
+    });
+
+</script>

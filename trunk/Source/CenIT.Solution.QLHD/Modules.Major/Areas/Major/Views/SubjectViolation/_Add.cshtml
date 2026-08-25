@@ -1,0 +1,26 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = "Thêm mới Lần vi phạm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormIcon{
+    <i class="fa fa-exclamation-triangle"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Add", "SubjectViolation", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SubjectViolation_OnProcessSuccess(data, 'AddSubjectViolation')"
+    }, new { @class = "form-horizontal", id = "AddSubjectViolation" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Violation")
+        </div>
+    }
+}

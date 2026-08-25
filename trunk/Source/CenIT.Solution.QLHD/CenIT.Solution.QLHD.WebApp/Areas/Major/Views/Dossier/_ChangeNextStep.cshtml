@@ -1,0 +1,55 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Modal_Title_ChangeNextStep")} {AppProcessor.Messagor.GetMessage("Dossier_Title")} [{Model.DossierCode}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-exchange-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ChangeNextStep", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ChangeNextStep", @class = "" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ChangeNextStepBody")
+        </div>
+    }
+
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+    <script type="text/javascript">
+        //debugger;
+        $('form#ChangeNextStep').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_ChangeNextStep").modal("hide");
+                    $("#ModalContent #modal_ChangeNextStep").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_ChangeNextStep" + " #bodyForm").html(response).promise().done(function () {_initElements(this);});
+                }
+            }
+        });
+
+        $("#modal_ChangeNextStep .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_ChangeNextStep .modal-body").addClass("ace-scrollbar");
+
+    </script>
+}
+@section SubmitControl{
+    <button type="submit" id="btnComplete" class="btn px-4 btn-outline-success btn-text-slide-x mb-1"><i class="btn-text-2 move-right fas fa-clipboard-check text-120 align-text-bottom "></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

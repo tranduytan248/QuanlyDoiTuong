@@ -1,0 +1,104 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVDossierModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Dossier_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Add", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "CreateDossier", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Dossier")
+        </div>
+    }
+
+    <script type="text/javascript">
+        //debugger;
+        $('form#CreateDossier').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                var diaChiLapBBVPHC = "@(AppProcessor.Messagor.GetMessage("Construction_LandParcelNo")) {0}, @(AppProcessor.Messagor.GetMessage("Construction_MapNo").ToLower()) {1}, {2}, {3}{4}".format($("#Construction #Construction_LandParcelNo").val(), $("#Construction #Construction_MapNo").val(), lcFirstCharacter($("#Construction #Construction_AddressNo").val()), lcFirstCharacter($("#Construction #Construction_StreetId").val() != undefined && $("#Construction #Construction_StreetId").val().length > 0 ? $("#Construction #Construction_StreetName").val() + ", " : ""), lcFirstCharacter($("#Construction #Construction_WardName").val()));
+
+                var nguoiViPhamDanhXungObj = arr.find(v => v.name == "NguoiViPham_DanhXung");
+                var nguoiViPhamHoTenObj = arr.find(v => v.name == "NguoiViPham_HoTen");
+                nguoiViPhamHoTenObj.value = nguoiViPhamHoTenObj.value.length > 0 ? nguoiViPhamDanhXungObj.value + nguoiViPhamHoTenObj.value : "";
+
+                var nguoiDaiDienDanhXungObj = arr.find(v => v.name == "NguoiDaiDien_DanhXung");
+                var nguoiDaiDienHoTenObj = arr.find(v => v.name == "NguoiDaiDien_HoTen");
+                var nguoiDaiDienGioiTinhObj = arr.find(v => v.name == "NguoiDaiDien_GioiTinh");
+                nguoiDaiDienHoTenObj.value = nguoiDaiDienHoTenObj.value.length > 0 ? nguoiDaiDienDanhXungObj.value + nguoiDaiDienHoTenObj.value : "";
+                nguoiDaiDienGioiTinhObj.value = nguoiDaiDienHoTenObj.value.length < 0 ? "" : nguoiDaiDienGioiTinhObj.value;
+
+                arr.push({ name: "XaPhuong", value: "@Html.Raw(Model.UnionName)" });
+
+                arr.push({ name: "DiaChiLapBBVPHC", value: diaChiLapBBVPHC });
+                arr.push({ name: "DonViLapBBVPHC", value: "@Html.Raw(Model.UnionName)" });
+
+                var toChucViPhamObj = arr.find(v => v.name == "TenToChucViPham");
+                var tenDoiTuongViPham = toChucViPhamObj.value.length == 0 ? nguoiViPhamHoTenObj.value : toChucViPhamObj.value;
+
+                arr.push({ name: "TenDoiTuongViPham", value: tenDoiTuongViPham });
+
+                if (!$('#CreateDossier').valid()) {
+                    $('[role="tablist"] li a[href="#handlingDossier"]').click();
+                    return false;
+                }
+                var activeTabObj = arr.find(v => v.name == "ActiveTab");
+                activeTabObj.value = "#infoDossier";
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_CreateDossier #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            if (typeof _tableDossier != "undefined")
+                                _tableDossier.ajax.reload(null, false);
+                            if (typeof _tableComplain != "undefined")
+                                _tableComplain.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_CreateDossier form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_CreateDossier").modal("hide");
+                        $("#ModalContent #modal_CreateDossier").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    if (typeof _tableDossier != "undefined")
+                                        _tableDossier.ajax.reload(null, false);
+                                    if (typeof _tableComplain != "undefined")
+                                        _tableComplain.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_CreateDossier" + " #bodyForm").html(response);
+                }
+            }
+        });
+
+        $("#modal_CreateDossier .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_CreateDossier .modal-body").addClass("ace-scrollbar");
+
+        function lcFirstCharacter(str) {
+            return str.charAt(0).toLowerCase() + str.slice(1);
+        }
+
+    </script>
+
+}
+
+@section ContinueForm{
+
+}

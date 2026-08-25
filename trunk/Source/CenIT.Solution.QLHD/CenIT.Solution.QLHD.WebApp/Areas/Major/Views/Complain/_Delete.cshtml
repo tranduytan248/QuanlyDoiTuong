@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVComplainModel
+
+@{
+    ViewBag.Title = Html.Raw(string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), $"<b>[{Model.ComplainCode} - {AppProcessor.Messagor.GetMessage("Complain_Title")} {Model.Title}]</b>"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Delete", "Complain", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Complain_OnProcessSuccess(data, 'DeleteComplain')"
+    }, new { @class = "form-horizontal", id = "DeleteComplain" }))
+    {
+	    <div id="bodyForm">
+		    @Html.Partial("_DeleteBody")
+	    </div>
+    }
+}

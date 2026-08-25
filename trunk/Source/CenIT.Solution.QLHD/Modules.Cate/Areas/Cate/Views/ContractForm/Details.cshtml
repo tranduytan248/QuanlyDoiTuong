@@ -1,0 +1,133 @@
+﻿@model Cores.eContract.Models.Response.ResDetailTemplateContractModel
+@using TSFramework.App.Processors
+@using Newtonsoft.Json.Linq;
+@{ 
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Detail"), AppProcessor.Messagor.GetMessage("ContractForm_Label_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="far fa-eye"></i>
+}
+@section FormBody{
+    <div class="table-responsive">
+        <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("TemplateName"): </label> @Model.TemplateName
+                </div>
+                <div class="col-md-6">
+                    <label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ContractType"): </label> @Model.TemplateType
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("TemplatePath"): </label> <a href="@Model.TemplatePath">@AppProcessor.Messagor.GetMessage("FilePath")</a>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-sm-C pr-0 font-bold">
+                        @AppProcessor.Messagor.GetMessage("Status"):
+                    </label>  
+                    @if (@Model.Status == "ACTIVE")
+                    {
+                        <span class="badge badge-pill badge-success">@AppProcessor.Messagor.GetMessage("ACTIVE")</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-pill badge-danger">@AppProcessor.Messagor.GetMessage("DEACTIVE")</span>
+                    }
+                </div>
+            </div>
+        </div>
+       
+        <div class="mt-1">
+            <h6><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("ListVar")</label></h6>
+        </div>
+        <div>
+            @if (Model.TemplateFields != null)
+            {
+                <table class="table table-striped table-product">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("STT")</label></th>
+                            <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Value")</label></th>
+                            <th><label class="text-sm-C pr-0 font-bold">@AppProcessor.Messagor.GetMessage("VarName")</label></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rowNum = 1;
+                        }
+                        @foreach (var item in (JObject)Model.TemplateFields)
+                        {
+                            <tr>
+                                <td><span class="pr-0">@rowNum</span></td>
+                                <td>
+                                    <span class="pr-0"><strong>@item.Key</strong></span><br />
+                                    @if (item.Value is JArray)
+                                    {
+                                        var jsonArray = (JArray)item.Value;
+                                        foreach (var subItem in jsonArray)
+                                        {
+                                            foreach (var subSubItem in (JObject)subItem)
+                                            {
+                                                <span class="pr-0"> <strong>@subSubItem.Key</strong></span><br />
+                                            }
+                                        }
+                                    }
+                                    else if (item.Value is JObject)
+                                    {
+                                        var jsonObject = (JObject)item.Value;
+                                        foreach (var subItem in jsonObject)
+                                        {
+                                            <span class="pr-0"><strong>@item.Key</strong></span><br />
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Value is JArray)
+                                    {
+                                        var jsonArray = (JArray)item.Value;
+                                        foreach (var subItem in jsonArray)
+                                        {
+                                            foreach (var subSubItem in (JObject)subItem)
+                                            {
+                                                <br /> <span class="pr-0">@subSubItem.Value</span>
+                                            }
+                                        }
+                                    }
+                                    else if (item.Value is JObject)
+                                    {
+                                        var jsonObject = (JObject)item.Value;
+                                        foreach (var subItem in jsonObject)
+                                        {
+                                            <br /> <span class="pr-0">@subItem.Value</span>
+                                        }
+                                    }
+                                    else if (item.Value is JValue)
+                                    {
+                                        <span class="pr-0">@((JValue)item.Value)</span>
+                                    }
+                                    else
+                                    {
+                                <span class="pr-0">@AppProcessor.Messagor.GetMessage("NoData").</span>
+                                    }
+                                </td>
+                            </tr>
+                            rowNum++;
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>@AppProcessor.Messagor.GetMessage("NoData")</p>
+            }
+        </div>
+
+
+    </div>
+  }

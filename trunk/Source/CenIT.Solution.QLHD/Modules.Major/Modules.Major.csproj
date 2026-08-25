@@ -1,0 +1,787 @@
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F0734907-1281-45DE-86C6-8BA3CC67C304}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Modules.Major</RootNamespace>
+    <AssemblyName>Modules.Major</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44320</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BPMN.Sharp, Version=1.0.7.5326, Culture=neutral, PublicKeyToken=e11a3c302b993b1a, processorArchitecture=MSIL">
+      <HintPath>..\packages\BPMN.Sharp.1.0.7\lib\net20\BPMN.Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
+    </Reference>
+    <Reference Include="HarfBuzzSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\HarfBuzzSharp.2.6.1.9\lib\net462\HarfBuzzSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.60\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.ProcessingObjectModel.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.1\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.5.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.5.0\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc, Version=11.6.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.11.6.0\lib\net40\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.9\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="CenIT.Lib.VNPTInvoice">
+      <HintPath>..\dlls\CenIT.Lib.VNPTInvoice.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.EJ2">
+      <HintPath>..\packages\Syncfusion.EJ2.MVC5.26.1.41\lib\net45\Syncfusion.EJ2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.Licensing">
+      <HintPath>..\packages\Syncfusion.Licensing.26.1.41\lib\net45\Syncfusion.Licensing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\Modules\Major_StoredProcedures.xml" />
+    <Content Include="Areas\Major\Views\Complain\Complain.js" />
+    <Content Include="Areas\Major\Views\ConfigProc\_Diagram.js" />
+    <Content Include="Areas\Major\Views\Dossier\Dossier.js" />
+    <Content Include="Areas\Major\Views\Dossier_BK\Dossier.js" />
+    <Content Include="Areas\Major\Views\Form\Form.js" />
+    <Content Include="Areas\Major\Views\HandledDossier\HandledDossier.js" />
+    <Content Include="Areas\Major\Views\LegislationDoc\LegislationDoc.js" />
+    <Content Include="Areas\Major\Views\Procedure\Procedure.js" />
+    <Content Include="Areas\Major\Views\Procedure\_Diagram.css" />
+    <Content Include="Areas\Major\Views\Procedure\_Diagram.js" />
+    <Content Include="Areas\Major\Views\ProcessDossier\ProcessDossier.js" />
+    <Content Include="Areas\Major\Views\RegulationViolations\RegulationViolations.js" />
+    <Content Include="Areas\Major\Views\Report\Report.js" />
+    <Content Include="Areas\Major\Views\Subject\Subject.js" />
+    <Content Include="Areas\Major\Views\SubjectViolation\SubjectViolation.js" />
+    <Content Include="Areas\Major\Views\StepPermit\StepPermit.js" />
+    <Content Include="Areas\Major\Views\StepSituation\StepSituation.js" />
+    <Content Include="Areas\Major\Views\Step\Step.js" />
+    <Content Include="Contents\Modules\Major\imgs\excel.png" />
+    <Content Include="Contents\Modules\Major\imgs\pdf.png" />
+    <Content Include="Contents\Modules\Major\imgs\word.png" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\css\bpmn-codes.css" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\css\bpmn-embedded.css" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\css\bpmn.css" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\font\bpmn.svg" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-js.css" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\diagram-js.css" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-modeler.development.js" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-modeler.production.min.js" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-navigated-viewer.development.js" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-navigated-viewer.production.min.js" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-viewer.development.js" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\bpmn-viewer.production.min.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\baboon.png" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\baboon_vector.svg" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\compress.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\docs.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\internals.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\manual.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\oldrelease.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\realworld.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\reporting.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\doc\upgrade_v2.2.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\codemirror.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\codemirror.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\closetag.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\continuecomment.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\continuelist.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\dialog.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\dialog.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\foldcode.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\formatting.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\javascript-hint.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\loadmode.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\match-highlighter.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\multiplex.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\overlay.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\pig-hint.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\runmode-standalone.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\runmode.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\search.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\searchcursor.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\simple-hint.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\simple-hint.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\lib\util\xml-hint.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\apl\apl.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\apl\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\clike\clike.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\clike\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\clike\scala.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\clojure\clojure.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\clojure\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\coffeescript\coffeescript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\coffeescript\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\commonlisp\commonlisp.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\commonlisp\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\css\css.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\css\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\css\test.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\diff\diff.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\diff\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\d\d.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\d\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ecl\ecl.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ecl\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\erlang\erlang.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\erlang\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\gfm\gfm.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\gfm\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\gfm\test.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\go\go.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\go\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\groovy\groovy.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\groovy\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\haskell\haskell.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\haskell\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\haxe\haxe.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\haxe\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\htmlembedded\htmlembedded.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\htmlembedded\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\htmlmixed\htmlmixed.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\htmlmixed\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\http\http.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\http\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\javascript\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\javascript\javascript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\javascript\typescript.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\jinja2\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\jinja2\jinja2.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\less\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\less\less.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\lua\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\lua\lua.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\markdown\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\markdown\markdown.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\markdown\test.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\mysql\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\mysql\mysql.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ntriples\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ntriples\ntriples.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ocaml\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ocaml\ocaml.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\pascal\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\pascal\pascal.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\perl\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\perl\perl.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\php\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\php\php.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\pig\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\pig\pig.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\plsql\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\plsql\plsql.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\properties\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\properties\properties.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\python\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\python\LICENSE.txt" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\python\python.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rpm\changes\changes.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rpm\changes\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rpm\spec\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rpm\spec\spec.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rpm\spec\spec.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rst\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rst\rst.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ruby\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ruby\ruby.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rust\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\rust\rust.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\r\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\r\r.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sass\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sass\sass.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\scheme\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\scheme\scheme.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\shell\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\shell\shell.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sieve\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sieve\sieve.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\smalltalk\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\smalltalk\smalltalk.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\smarty\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\smarty\smarty.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sparql\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sparql\sparql.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sql\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sql\sql.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\stex\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\stex\stex.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\stex\test.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiddlywiki\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiddlywiki\tiddlywiki.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiddlywiki\tiddlywiki.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiki\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiki\tiki.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\tiki\tiki.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\vbscript\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\vbscript\vbscript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\vb\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\vb\LICENSE.txt" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\vb\vb.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\velocity\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\velocity\velocity.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\verilog\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\verilog\verilog.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xml\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xml\xml.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testBase.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testEmptySequenceKeyword.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testMultiAttr.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testNamespaces.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testProcessingInstructions.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\test\testQuotes.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\xquery.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\yaml\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\yaml\yaml.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\z80\index.html" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\z80\z80.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\ambiance-mobile.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\ambiance.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\blackboard.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\cobalt.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\eclipse.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\elegant.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\erlang-dark.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\lesser-dark.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\monokai.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\neat.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\night.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\rubyblue.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\twilight.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\vibrant-ink.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\theme\xq-dark.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\baboon.png" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\baboon_vector.svg" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\csscolors.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\docs.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\font.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\jscolors.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\people.jpg" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\sparqlcolors.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\css\xmlcolors.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\codemirror.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\codemirror.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\css.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\docs.css" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\formatting.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\htmlmixed.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\javascript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\dist\xml.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\codemirror.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\editor.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\formatting.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\highlight.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\mirrorframe.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsecss.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsedummy.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsehtmlmixed.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsejavascript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsesparql.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\parsexml.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\select.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\stringstream.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\tokenize.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\tokenizejavascript.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\undo.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\unittests.js" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror\js\util.js" />
+    <Content Include="Contents\Modules\Major\plugins\flowchart\flowchart-latest.js" />
+    <Content Include="Contents\Modules\Major\plugins\flowchart\raphael.min.js" />
+    <Content Include="Contents\Modules\Major\plugins\jquery.masknumber\jquery.masknumber.js" />
+    <Content Include="Contents\Modules\Major\plugins\jquery.masknumber\jquery.masknumber.min.js" />
+    <Content Include="Contents\Modules\Major\plugins\money2string\money2string.js" />
+    <Content Include="Contents\Modules\Major\plugins\money2string\money2text.js" />
+    <Content Include="Global.asax" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Invoice\InvoiceAreaRegistration.cs" />
+    <Compile Include="Areas\Invoice\Controllers\EInvoiceAdjustController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvAdjustController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvCheckingController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvConfigController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvPatternController.cs" />
+    <Compile Include="Areas\Invoice\Controllers\InvPendingController.cs" />
+    <Compile Include="Areas\Invoice\Data\CheckingInvModel.cs" />
+    <Compile Include="Areas\Invoice\Data\ConfirmInvModel.cs" />
+    <Compile Include="Areas\Invoice\Data\InvPatternSerialInfoModel.cs" />
+    <Compile Include="Areas\Major\MajorAreaRegistration.cs" />
+    <Compile Include="Areas\Major\Controllers\ContractController.cs" />
+    <Compile Include="Areas\Major\Controllers\ContractPaymentController.cs" />
+    <Compile Include="Areas\Major\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Major\Controllers\DossierController.cs" />
+    <Compile Include="Areas\Major\Controllers\ProcedureController.cs" />
+    <Compile Include="Areas\Major\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Major\Controllers\SubjectController.cs" />
+    <Compile Include="Areas\Major\Controllers\SubjectViolationController.cs" />
+    <Compile Include="Areas\Major\Models\AcceptantContractModel.cs" />
+    <Compile Include="Areas\Major\Models\ContractModel.cs" />
+    <Compile Include="Areas\Major\Models\DropzoneUploadModel.cs" />
+    <Compile Include="Areas\Major\Models\PayAcceptantRecordModel.cs" />
+    <Compile Include="Areas\Major\Models\PayRecieptModel.cs" />
+    <Compile Include="Areas\Major\Models\ProcedurePermitModel.cs" />
+    <Compile Include="Areas\Major\Models\PublishInvModel.cs" />
+    <Compile Include="Areas\Major\Models\ReportModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchContractModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchContractPaymentModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchCustomerModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchDossierModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchInvoiceModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchProcedureModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchSubjectModel.cs" />
+    <Compile Include="Areas\Major\Models\SearchSubjectViolationModel.cs" />
+    <Compile Include="Areas\Major\Models\UploadFileModel.cs" />
+    <Compile Include="Areas\Major\Models\ViewContractModel.cs" />
+    <Compile Include="Areas\Major\Models\ViewInvModel.cs" />
+    <Compile Include="Areas\Major\Models\Diagram\BPMNDiagramModel.cs" />
+    <Compile Include="Areas\Major\Models\Exts\ResRecommentdationModel.cs" />
+    <Compile Include="Areas\Major\Models\Exts\RestResponse.cs" />
+    <Compile Include="Areas\Major\Models\Exts\ResUnitFieldModel.cs" />
+    <Compile Include="Contents\Modules\Major\TemplateReports\BangKeThuTienHDDoDac03.Designer.cs">
+      <DependentUpon>BangKeThuTienHDDoDac03.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Contents\Modules\Major\TemplateReports\BaoCaoChiTietCongNo011.Designer.cs">
+      <DependentUpon>BaoCaoChiTietCongNo01.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Contents\Modules\Major\TemplateReports\BaoCaoChiTietHoaDon06.Designer.cs">
+      <DependentUpon>BaoCaoChiTietHoaDon06.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Contents\Modules\Major\TemplateReports\BaoCaoTongHopCongNo021.Designer.cs">
+      <DependentUpon>BaoCaoTongHopCongNo02.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Contents\Modules\Major\TemplateReports\BaoCaoTongHopDoDac04.Designer.cs">
+      <DependentUpon>BaoCaoTongHopDoDac04.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Contents\Modules\Major\TemplateReports\ThongKeHoSoHoanThanh05.Designer.cs">
+      <DependentUpon>ThongKeHoSoHoanThanh05.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Major\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Major\Controllers\SubjectController.cs" />
+    <Compile Include="Areas\Major\Controllers\SubjectViolationController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Models\MajorDashboardModel.cs" />
+    <Compile Include="Providers\MajorProvider.cs" />
+    <Compile Include="Providers\MajorReportProvider.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="Areas\Major\Views\Complain\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Complain.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_ComplainViaApi.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_DeleteBody.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_ResultChecking.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_ResultDetail.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Review.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Complain\_Violator.cshtml" />
+    <Content Include="Areas\Major\Views\ConfigProc\_Config.cshtml" />
+    <Content Include="Areas\Major\Views\ConfigProc\_ConfigStep.cshtml" />
+    <Content Include="Areas\Major\Views\ConfigProc\_Diagram.cshtml" />
+    <Content Include="Areas\Major\Views\Design\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Design\_Check.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Activity.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_AnonymousViolator.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ConstructionInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_DecisionPenalize.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_DetailForm.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Dossier.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_DossierDetail.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_DossierHandling.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_DossierInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ForwardToHandle.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Handle.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_HandlingProcess.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_LandInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_OwnerInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_PreviewResultForm.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ProcDetail.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_SelectViolation.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_View.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ViewForm.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ViewForms.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ViolationConstructionInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ViolationLanInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_Violator.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_ViolatorInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier\_WarningTasks.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier_BK\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier_BK\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier_BK\_ConstructionInfo.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier_BK\_DecisionPenalize.cshtml" />
+    <Content Include="Areas\Major\Views\Dossier_BK\_Dossier.cshtml" />
+    <Content Include="Areas\Major\Views\Form\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Check.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_DelBody.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_DetailForm.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Form.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_FormTest.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_PreviewResultForm.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_Test.cshtml" />
+    <Content Include="Areas\Major\Views\Form\_ViewForms.cshtml" />
+    <Content Include="Areas\Major\Views\HandledDossier\Index.cshtml" />
+    <Content Include="Areas\Major\Views\HandledDossier\_Activity.cshtml" />
+    <Content Include="Areas\Major\Views\HandledDossier\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\Index.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\_DelBody.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\LegislationDoc\_LegislationDoc.cshtml" />
+    <Content Include="Areas\Major\Views\PermitMember\_Permit.cshtml" />
+    <Content Include="Areas\Major\Views\PermitMember\_PermitFieldViolation.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_AddSituation.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_AddSituationForm.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_AddStep.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_AddStepForm.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_DeleteBody.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Diagram.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_EditSituation.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_EditStep.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Flow.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_FlowDiagram.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Procedure.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_StepsBelong.cshtml" />
+    <Content Include="Areas\Major\Views\Procedure\_View.cshtml" />
+    <Content Include="Areas\Major\Views\ProcessDossier\Index.cshtml" />
+    <Content Include="Areas\Major\Views\ProcessDossier\_Dossier.cshtml" />
+    <Content Include="Areas\Major\Views\ProcessDossier\_Handle.cshtml" />
+    <Content Include="Areas\Major\Views\ProcessDossier\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\Index.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\_RegulationViolations.cshtml" />
+    <Content Include="Areas\Major\Views\RegulationViolations\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_01BaoCaoChiTiet.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_02BaoCaoTongHopTTXD.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_03BaoCaoDinhKyQLTTXD.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_04BaoCaoLKCongTacTTXD.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_05BaoCaoLuyKeNamTTXD.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_Permit.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_PermitReport.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_Report.cshtml" />
+    <Content Include="Areas\Major\Views\Report\_Viewer.cshtml" />
+    <Content Include="Areas\Major\Views\StepPermit\Index.cshtml" />
+    <Content Include="Areas\Major\Views\StepPermit\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\StepPermit\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\StepPermit\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\StepPermit\_StepPermit.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\Index.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\_AddSituationForm.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\StepSituation\_StepSituation.cshtml" />
+    <Content Include="Areas\Major\Views\Step\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_AddStepForm.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Flow.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Permits.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Situations.cshtml" />
+    <Content Include="Areas\Major\Views\Step\_Step.cshtml" />
+    <Content Include="Areas\Major\Views\web.config" />
+    <Content Include="Areas\Major\Views\_ViewStart.cshtml" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\font\bpmn.eot" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\font\bpmn.ttf" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\font\bpmn.woff" />
+    <Content Include="Contents\Modules\Major\plugins\bpmn-js\assets\bpmn-font\font\bpmn.woff2" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\coffeescript\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\pascal\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\perl\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\ruby\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\r\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\sieve\LICENSE" />
+    <Content Include="Contents\Modules\Major\plugins\codemirror-2\mode\xquery\LICENSE" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.01.xsc">
+      <DependentUpon>DataReport.01.xsd</DependentUpon>
+    </Content>
+    <None Include="Contents\Modules\Major\TemplateReports\DataReport.01.xsd" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.01.xss">
+      <DependentUpon>DataReport.01.xsd</DependentUpon>
+    </Content>
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.02.xsc">
+      <DependentUpon>DataReport.02.xsd</DependentUpon>
+    </Content>
+    <None Include="Contents\Modules\Major\TemplateReports\DataReport.02.xsd" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.02.xss">
+      <DependentUpon>DataReport.02.xsd</DependentUpon>
+    </Content>
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.03.xsc">
+      <DependentUpon>DataReport.03.xsd</DependentUpon>
+    </Content>
+    <None Include="Contents\Modules\Major\TemplateReports\DataReport.03.xsd" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.03.xss">
+      <DependentUpon>DataReport.03.xsd</DependentUpon>
+    </Content>
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.04.xsc">
+      <DependentUpon>DataReport.04.xsd</DependentUpon>
+    </Content>
+    <None Include="Contents\Modules\Major\TemplateReports\DataReport.04.xsd" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.04.xss">
+      <DependentUpon>DataReport.04.xsd</DependentUpon>
+    </Content>
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.05.xsc">
+      <DependentUpon>DataReport.05.xsd</DependentUpon>
+    </Content>
+    <None Include="Contents\Modules\Major\TemplateReports\DataReport.05.xsd" />
+    <Content Include="Contents\Modules\Major\TemplateReports\DataReport.05.xss">
+      <DependentUpon>DataReport.05.xsd</DependentUpon>
+    </Content>
+    <Content Include="Contents\Modules\Major\Templates\_WarningTaskTemplate.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\_ChartForYear.cshtml" />
+    <Content Include="Views\Home\_StatisticComplain.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <None Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\Major\Views\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\rptDashboardContract.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_01BaoCaoChiTietHopDongCongNo.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_02BaoCaoTongHopCongNo.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_03BangKeThuTienHDDoDac.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_04BaoCaoTongHopDoDac.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_05ThongKeHoSoHoanThanh.rdlc" />
+    <EmbeddedResource Include="Contents\Modules\Major\TemplateReports\_06BaoCaoChiTietHoaDon.rdlc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Inv\Core.Inv.csproj">
+      <Project>{8BAF0151-73F7-40B0-B165-154E8DB1063C}</Project>
+      <Name>Core.Inv</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Base\Cores.Base.csproj">
+      <Project>{3170eec6-3de7-4b91-a0ff-9617ea9ef9f2}</Project>
+      <Name>Cores.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Cate\Cores.Cate.csproj">
+      <Project>{10BF9925-7656-4F18-9181-9626D8ADDDF8}</Project>
+      <Name>Cores.Cate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.eContract\Cores.eContract.csproj">
+      <Project>{A5A845DF-55E7-4517-9806-1153C3CAFC0D}</Project>
+      <Name>Cores.eContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Major\Cores.Major.csproj">
+      <Project>{872A1104-A149-4125-97F2-9D55411D0BC0}</Project>
+      <Name>Cores.Major</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.Sys\Cores.Sys.csproj">
+      <Project>{2D1B4978-0E30-4207-8CAA-A51634745941}</Project>
+      <Name>Cores.Sys</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TSFramework.App\TSFramework.App.csproj">
+      <Project>{0577F056-6B2C-4CDA-B85B-4E47AA37DDB4}</Project>
+      <Name>TSFramework.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TSFramework.Core\TSFramework.Core.csproj">
+      <Project>{04290B90-CB09-4C09-8F26-1BE6728ED3F7}</Project>
+      <Name>TSFramework.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cores.VNPT.SmsMarketing\Cores.VNPT.SmsMarketing.csproj">
+      <Project>{D0FB8CD0-BA79-4941-B3AF-51DFAC57BB14}</Project>
+      <Name>Cores.VNPT.SmsMarketing</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>59743</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44320/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\HarfBuzzSharp.2.6.1.9\build\net462\HarfBuzzSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\HarfBuzzSharp.2.6.1.9\build\net462\HarfBuzzSharp.targets'))" />
+  </Target>
+  <Import Project="..\packages\HarfBuzzSharp.2.6.1.9\build\net462\HarfBuzzSharp.targets" Condition="Exists('..\packages\HarfBuzzSharp.2.6.1.9\build\net462\HarfBuzzSharp.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>Robocopy $(ProjectDir)App_Data\Modules $(SolutionDir)\CenIT.Solution.QLHD.WebApp\App_Data\Modules /s
+Robocopy $(ProjectDir)Configs\Modules $(SolutionDir)\CenIT.Solution.QLHD.WebApp\Configs\Modules /s
+Robocopy $(ProjectDir)Areas\Major\Views $(SolutionDir)\CenIT.Solution.QLHD.WebApp\Areas\Major\Views /s
+Robocopy $(ProjectDir)\Views $(SolutionDir)\CenIT.Solution.QLHD.WebApp\Views *.cshtml /s
+Robocopy $(ProjectDir)Contents\Modules $(SolutionDir)\CenIT.Solution.QLHD.WebApp\Contents\Modules /s
+xcopy /Y "$(ProjectName).dll" "$(SolutionDir)\CenIT.Solution.QLHD.WebApp\bin"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

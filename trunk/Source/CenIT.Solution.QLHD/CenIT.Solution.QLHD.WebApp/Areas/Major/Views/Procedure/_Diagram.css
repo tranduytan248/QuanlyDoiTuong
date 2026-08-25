@@ -1,0 +1,80 @@
+﻿:root {
+    --purple: #776bbe;
+    --pink: #da3776;
+    --brown: #b6703f;
+    --yellow: #fbe77a;
+    --white: #ffffff;
+    --dark: #2c3034;
+    --light: #f8f9fb;
+    --grey: #767679;
+    --lightgrey: #787d82;
+    --blue: #2d81e7;
+    --green: #3f923f;
+    --lightgreen:rgba(66, 180, 21, 0.7);
+    --red: #df4b30;
+    --orange: #ffbe50;
+    --main:#2d81e7;
+}
+
+html, body, #diagram {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.io-zoom-controls {
+    width: auto;
+    position: absolute;
+    right: 10px;
+    bottom: 80px;
+}
+
+.io-import-export {
+    position: absolute;
+    left: 10px;
+    bottom: 5px;
+}
+
+
+.stroke-task:not(.djs-connection) .djs-visual > :nth-child(1) {
+    stroke: var(--lightgreen) !important;
+}
+
+.startEvent:not(.djs-connection) .djs-visual > :nth-child(1) {
+    stroke: var(--blue) !important;
+}
+
+.endEvent:not(.djs-connection) .djs-visual > :nth-child(1) {
+    stroke: var(--red) !important;
+}
+
+.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+    fill: var(--main) !important;
+    /* color elements as green */
+    border-color: var(--main) !important;
+    /*stroke: none !important;*/
+    stroke: var(--orange) !important;
+    color: var(--light);
+}
+
+    .highlight:not(.djs-connection) .djs-visual text {
+        color: var(--light);
+    }
+
+.highlight-overlay {
+    background-color: var(--main);
+    /* color elements as green */
+    opacity: 0.4;
+    pointer-events: none;
+    /* no pointer events, allows clicking through onto the element */
+    border-radius: 10px;
+}
+
+.highlight {
+    color: var(--main);
+    text-align: center;
+    font-weight: 600;
+    opacity: 1;
+    pointer-events: none;
+    font-size: smaller;
+}

@@ -1,0 +1,128 @@
+﻿@using Cores.eContract.Consts
+@using Cores.Major.Enums
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@*<div class="form-group row">
+        <div class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">
+            @Html.Button(true, "FindCustomer", Url.Action("FindCustomer", new { area = "Major", typeCus = ConstsCusType.CONSUMER }), "<i class='fas fa-search'></i>", AppProcessor.Messagor.GetMessage("Button_FindConsumer"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1024px" })
+
+        </div>
+    </div>
+    <hr />*@
+
+<div id="Consumer">
+    @Html.Hidden("CusInfo", "CusId;CusName;Gender;TypeIdentifier;TypeIdentifierName;IdentifierNo;Phone;Email;ProvinceId;ProvinceName;DistrictId;DistrictName;WardId;WardName;StreetName;AddressNo;Address", new { disabled = true })
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CusInfo.CusName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.CusInfo.CusName, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Customer_Name") })
+                <div class="input-group-append">
+                    <a class="btn btn-outline-primary" data-modal="true" data-modal-id="FindCustomer" data_width="1024px" href="@Url.Action("FindCustomer", new { area = "Major", typeCus = ConstsCusType.CONSUMER, prefix = "CusInfo" })"><i class="fas fa-search"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</a>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.CusInfo.CusName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CusInfo.Gender, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            <label class="px-0 pt-2">
+                @Html.RadioButtonFor(model => model.CusInfo.Gender, 1, new { })
+                <span class="badge bgc-danger brc-danger text-white badge-lg arrowed arrowed-in-right mb-1">
+                    <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Male")</span>
+                </span>
+            </label>
+            <label class="px-0 pt-2">
+                @Html.RadioButtonFor(model => model.CusInfo.Gender, 0, new { })
+                <span class="badge bgc-purple brc-purple text-white badge-lg arrowed arrowed-in-right mb-1">
+                    <span class="px-3">@AppProcessor.Messagor.GetMessage("Gender_Female")</span>
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <div class="ccard h-100 d-flex flex-column mx-2 px-2 py-3">
+        <div class="form-group row">
+            @Html.TitleFor(model => model.CusInfo.TypeIdentifier, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-9">
+                <label class="px-0">
+                    @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.DefinitionDoc, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc") + "')" })
+                    <span class="badge bgc-primary brc-primary text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_DefinitionDoc")</span>
+                    </span>
+                </label>
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.IdCard, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard") + "')" })
+                    <span class="badge bgc-warning brc-warning text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_IdCard")</span>
+                    </span>
+                </label>
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.TypeIdentifier, (int)EnumTypeIdentifier.Passport, new { onchange = "_onChangeTypeIdentifier('#Consumer #CusInfo_TypeIdentifierName', '" + AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport") + "')" })
+                    <span class="badge bgc-green brc-green text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("TypeIdentifier_Passport")</span>
+                    </span>
+                </label>
+                @Html.HiddenFor(model => model.CusInfo.TypeIdentifierName)
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.TitleFor(model => model.CusInfo.IdentifierNo, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.CusInfo.IdentifierNo, new { @class = "form-control col-md-8", placeholder = AppProcessor.Messagor.GetMessage("Customer_IdentifierNo") })
+                @Html.ValidationMessageFor(model => model.CusInfo.IdentifierNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="form-group row">
+        <label for="Email" class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">
+            <span>Email</span>
+        </label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.CusInfo.Email, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Customer_Email") })
+            @Html.ValidationMessageFor(model => model.CusInfo.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CusInfo.Phone, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.CusInfo.Phone, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Customer_Phone") })
+            @Html.ValidationMessageFor(model => model.CusInfo.Phone, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.CusInfo.ProvinceId)
+    @Html.HiddenFor(model => model.CusInfo.ProvinceName)
+    @Html.HiddenFor(model => model.CusInfo.DistrictId)
+    @Html.HiddenFor(model => model.CusInfo.DistrictName)
+    @Html.HiddenFor(model => model.CusInfo.WardId)
+    @Html.HiddenFor(model => model.CusInfo.WardName)
+    @Html.HiddenFor(model => model.CusInfo.StreetName)
+    @Html.HiddenFor(model => model.CusInfo.AddressNo)
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CusInfo.Address, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.CusInfo.Address, new { rows = 3, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Customer_Address"), onclick = "_onTypeAddress('#Consumer #CusInfo_',$('#Consumer #CusInfo_ProvinceId').val(),$('#Consumer #CusInfo_DistrictId').val(),$('#Consumer #CusInfo_WardId').val(),$('#Consumer #CusInfo_StreetName').val(),$('#Consumer #CusInfo_AddressNo').val());" })
+            @Html.ValidationMessageFor(model => model.CusInfo.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    function _onChangeTypeIdentifier(eleName, name) {
+        $(eleName).val(name);
+    }
+
+    $(document).ready(function () {
+        $("input[name='CusInfo.Phone'],input[name='CusInfo.IdentifierNo']").inputFilter(function (value) {
+            return /^\d*$/.test(value);
+        }, "Phải nhập số nguyên không dấu");
+    });
+
+</script>

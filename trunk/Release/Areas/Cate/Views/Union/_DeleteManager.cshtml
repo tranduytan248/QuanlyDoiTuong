@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateUnionMemberModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), $"{AppProcessor.Messagor.GetMessage("Union_Manager_Title")} - {Model.FullName}");
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("DeleteManager", "Union", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "UnionManager_OnProcessSuccess(data, 'DeleteManager')"
+    }, new { @class = "form-horizontal", id = "DeleteManager" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.UnionId)
+        @Html.HiddenFor(model => model.UnionName)
+        @Html.HiddenFor(model => model.UserName)
+        @Html.HiddenFor(model => model.FullName)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

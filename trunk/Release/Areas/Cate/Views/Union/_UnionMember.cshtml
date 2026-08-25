@@ -1,0 +1,49 @@
+﻿@model Cores.Cate.Models.CateUnionManagerModel
+
+@Html.AntiForgeryToken()
+<div id="UnionBelong">
+    @Html.HiddenFor(model => model.UserName)
+    @Html.HiddenFor(model => model.FullName)
+    @Html.HiddenFor(model => model.UnionName)
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.FullName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.FullName, new { disabled = true, @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @{
+        if (Model.CanEdit || Model.UnionId == null || Model.UnionId == Guid.Empty)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.UnionId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.UnionId, new SelectList(Model.ListUnions, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#UnionBelong #UnionName')" })
+                    @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.UnionName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-9">
+                    @Html.HiddenFor(model => model.UnionId)
+                    @Html.TextBoxFor(model => model.UnionName, new { disabled = true, @class = "form-control col-md-12" })
+                </div>
+            </div>
+        }
+    }
+
+    @*<div class="form-group row">
+        @Html.TitleFor(model => model.Permit, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <label class="col-form-label col-3">
+            @Html.RadioButtonFor(model => model.Permit, (int)EnumUnionMemberPermit.View, new { tabindex = 0, id = "MemberPermit_View" }) @Html.Label(AppProcessor.Messagor.GetMessage("MemberPermit_View"), new { @for = "MemberPermit_View" })
+        </label>
+        <label class="col-form-label col-3">
+            @Html.RadioButtonFor(model => model.Permit, (int)EnumUnionMemberPermit.Handler, new { tabindex = 0, id = "MemberPermit_Handler" }) @Html.Label(AppProcessor.Messagor.GetMessage("MemberPermit_Handler"), new { @for = "MemberPermit_Handler" })
+        </label>
+    </div>*@
+
+</div>

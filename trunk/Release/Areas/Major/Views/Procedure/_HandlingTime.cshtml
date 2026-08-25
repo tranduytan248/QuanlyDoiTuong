@@ -1,0 +1,76 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlingTimeModel
+
+<link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/css/bootstrap-select.css">
+
+<div id="HandlingTime">
+    @Html.HiddenFor(model => model.HandlingTimeId)
+    @Html.HiddenFor(model => model.StepId)
+    @Html.HiddenFor(model => model.ProcedureId)
+    @Html.HiddenFor(model => model.IsEdit)
+    @Html.HiddenFor(model => model.PurposeIds)
+    @Html.HiddenFor(model => model.PurposeNames)
+
+    @{
+        @*if (Model.IsEdit)
+        {
+            <div class="form-row">
+                <div class="col-md-4">
+                    @Html.TitleFor(model => model.HandlingTime, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.HandlingTime, new { @readonly = true, type = "number", min = 0, max = 100, step = 0.1, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_HandlingTime") })
+                        <div class="input-group-append">
+                            <span class="input-group-text">Ngày</span>
+                        </div>
+                    </div>
+
+                    @Html.ValidationMessageFor(model => model.HandlingTime, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else*@
+        {
+            <div class="form-row">
+                <div class="col-md-4">
+                    @Html.TitleFor(model => model.HandlingTime, new { @class = "col-form-label pr-0 font-bold" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.HandlingTime, new { type = "number", min = 0, max = 100, step = 0.1, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_HandlingTime") })
+                        <div class="input-group-append">
+                            <span class="input-group-text">Ngày</span>
+                        </div>
+                    </div>
+
+                    @Html.ValidationMessageFor(model => model.HandlingTime, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+
+    <div class="form-row">
+        <div class="col-md-11">
+            @Html.TitleFor(model => model.ListPurposeIds, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.SelectFor(model => model.ListPurposeIds, Model.ListPurposes, AppProcessor.Messagor.GetMessage("Combobox_Select"), new { multiple = true, @class = "form-control col-md-12 none-select2", title = AppProcessor.Messagor.GetMessage("Combobox_Select") })
+            @Html.ValidationMessageFor(model => model.ListPurposeIds, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/bootstrap-select.js")"></script>
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootstrap-select/dist/js/defaults-vi_VN.min.js")"></script>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+        var purposeIds = '@Model.PurposeIds';
+        if (purposeIds != null && purposeIds != undefined && purposeIds.length > 0) {
+            var arrPurposeIds = purposeIds.split(',');
+            $('#HandlingTime #ListPurposeIds').val(arrPurposeIds).trigger('change');
+        }
+
+        // bootstrap select
+        $.fn.selectpicker.Constructor.DEFAULTS.tickIcon = 'far fa-check-square text-125 text-danger-m3 my-2';
+        $('#HandlingTime select#ListPurposeIds').selectpicker()
+    });
+
+</script>

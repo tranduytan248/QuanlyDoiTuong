@@ -1,0 +1,22 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateMainSectionModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.MainSectionId)
+<div id="MainSection">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.MainSectionName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.MainSectionName, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("MainSection_Label_Name") })
+            @Html.ValidationMessageFor(model => model.MainSectionName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Cate_ContractTypeId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-6">
+            @Html.DropDownListFor(model => model.Cate_ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "col-md-10" })
+            @Html.ValidationMessageFor(model => model.Cate_ContractTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

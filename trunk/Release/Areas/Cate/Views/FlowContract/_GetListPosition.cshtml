@@ -1,0 +1,54 @@
+﻿@model Cores.eContract.Models.Response.BaseResponseModel<object>
+@using TSFramework.App.Processors
+@using Newtonsoft.Json.Linq;
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Detail"), AppProcessor.Messagor.GetMessage("Position_Label_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section FormType{
+    info
+}
+
+@section FormIcon{
+    <i class="far fa-eye"></i>
+}
+@section FormBody{
+    <div class="container">
+        <h2>Position Details</h2>
+        @if (Model != null && Model.ResData != null)
+        {
+            var obj = JObject.Parse(Model.ResData.ToString());
+            var results = obj["result"];
+
+            foreach (var result in results)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Position Key: @result["key"]</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>BBox Sign</th>
+                                    <th>Page Sign</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var position in result["position"])
+                                {
+                                    <tr>
+                                        <td>@position["bboxSign"][0], @position["bboxSign"][1], @position["bboxSign"][2], @position["bboxSign"][3]</td>
+                                        <td>@position["pageSign"]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No data available.</p>
+        }
+    </div>
+}

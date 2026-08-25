@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepSituationModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Step_Situation")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditSituation", "Procedure", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SituationStep_OnProcessSuccess(data, 'EditSituation')"
+    }, new { @class = "form-horizontal", id = "EditSituation" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Situation")
+        </div>
+    }
+}
+

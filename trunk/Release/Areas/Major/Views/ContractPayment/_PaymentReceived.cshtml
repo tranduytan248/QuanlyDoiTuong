@@ -1,0 +1,209 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractPaymentModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.PaymentId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.ContractNo)
+
+@Html.HiddenFor(model => model.IsEdit)
+
+<div id="Payment">
+    @Html.HiddenFor(model => model.Total)
+    @Html.HiddenFor(model => model.RemainingAmount)
+    @Html.HiddenFor(model => model.Status)
+    @Html.HiddenFor(model => model.StatusName)
+    @{
+        if (Model.IsEdit)
+        {
+            @Html.HiddenFor(model => model.TypePaymentName)
+            @Html.HiddenFor(model => model.TypePayment)
+            @Html.HiddenFor(model => model.PercentAdvance)
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.TypePayment, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+
+                <div class="col-md-5">
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypePayment, 1, new { disabled = true })
+                        <span class="badge bgc-warning brc-warning text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypePayment_Advance")</span>
+                        </span>
+                    </label>
+
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypePayment, 2, new { disabled = true })
+                        <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypePayment_PayOff")</span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="row col-md-5" id="TypePaymentAdvance" class="@(Model.TypePayment == 1 ? "" : "d-none")">
+                    <div class="col-8">
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.PercentAdvance, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance") })
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PercentAdvance, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.TypePayment, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+
+                <div class="col-md-5">
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypePayment, 1, new { onchange = $"_onChangeTypePayment(this, '{AppProcessor.Messagor.GetMessage("TypePayment_Advance")}', '#ContractInfo #TypePaymentName')" })
+                        <span class="badge bgc-warning brc-warning text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypePayment_Advance")</span>
+                        </span>
+                    </label>
+
+                    <label class="px-0 pt-2">
+                        @Html.RadioButtonFor(model => model.TypePayment, 2, new { onchange = $"_onChangeTypePayment(this, '{AppProcessor.Messagor.GetMessage("TypePayment_PayOff")}', '#ContractInfo #TypePaymentName')" })
+                        <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1">
+                            <span class="px-3">@AppProcessor.Messagor.GetMessage("TypePayment_PayOff")</span>
+                        </span>
+                    </label>
+                    @Html.HiddenFor(model => model.TypePaymentName)
+
+                </div>
+
+                <div class="row col-md-5" id="TypePaymentAdvance" class="@(Model.TypePayment == 1 ? "" : "d-none")">
+                    <div class="col-8">
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.PercentAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance"), onchange = "_onChangePercentAdvance(this, '#Payment #RemainingAmount', '#Payment #FormatterPaidAmount');" })
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PercentAdvance, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+
+    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+    <div class="form-row">
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.RefDocNo, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.RefDocNo, new { @readonly = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_RefDocNo") })
+            @Html.ValidationMessageFor(model => model.RefDocNo, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.PaidAmount, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.FormatterPaidAmount, new { @readonly = true, @class = "form-control text-500 text-danger-d1 text-110", rawValue = Model.PaidAmount, placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount"), onchange = "_onChangePaidAmount(this,'#Payment #PaidAmount');" })
+                <div class="input-group-append">
+                    <span class="input-group-text">đ</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.FormatterTotal, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PaidAmount)
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.PaymentMethod, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PaymentMethodName)
+        </div>
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.PaidOn, new { @class = "col-form-label pr-0 font-bold" })
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.PaidOn, "{0:dd/MM/yyyy}", new { @class = "form-control  datepicker", placeholder = AppProcessor.Messagor.GetMessage("Contract_PaidOn") })
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.PaidOn, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            @Html.TitleFor(model => model.Note, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextAreaFor(model => model.Note, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractPayment_Note") })
+            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @{
+        if (Model.IsEdit)
+        {
+            <hr class="border-none border-t-3 brc-grey-l2 border-double">
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.Reason, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+        $('#Payment [name="FormatterTotal"],#Payment [name="FormatterPaidAmount"],#Payment [name="FormatterRemainingAmount"]').maskNumber({ integer: true });
+        $('#Payment [name="FormatterTotal"],#Payment [name="FormatterPaidAmount"],#Payment [name="FormatterRemainingAmount"]').trigger('keyup');
+
+        $('#Payment #PercentAdvance').trigger("change");
+});
+
+function _onChangePercentAdvance(elePercent, eleRemainingAmount, eleAmountViaPercent) {
+        var percentAdvance = $(elePercent).val();
+        var rate = parseInt(percentAdvance) / 100;
+        var remainingAmount = $(eleRemainingAmount).val();
+        var amountViaPercent = Math.round(remainingAmount * rate);
+        $(eleAmountViaPercent).val(amountViaPercent).trigger('keyup');
+}
+
+function _onChangePaidAmount(eleFormatterPaidAmount, elePaidAmount) {
+        var formatterPaidAmount = $(eleFormatterPaidAmount).val();
+        var realPaidAmount = Number(formatterPaidAmount.replace(/[^0-9.-]+/g, ""));
+        $(elePaidAmount).val(realPaidAmount);
+}
+
+</script>
+
+<script type="text/javascript">
+
+function _onChangeTypePayment(rdbTypePayment, typePaymentName, eleTypePaymentName) {
+        var remainingAmount = $('#Payment [name="RemainingAmount"]').val();
+
+        //var rawPaidAmount = $('#Payment [name="FormatterPaidAmount"]').attr("rawValue");
+        //if (isEdit) {
+        //    //var paidAmount = $('#Payment [name="PaidAmount"]').val();
+        //    remainingAmount = parseFloat(rawPaidAmount) + parseFloat(remainingAmount);
+        //}
+
+        $(eleTypePaymentName).val(typePaymentName);
+        var typePayment = $(rdbTypePayment).val();
+        if (typePayment == "1") {
+            $("#TypePaymentAdvance").removeClass('d-none');
+
+            var percentAdvance = $('#Payment [name="PercentAdvance"]').val();
+            var rate = parseInt(percentAdvance) / 100;
+            var amountViaPercent = Math.round(remainingAmount * rate);
+            $('#Payment [name="FormatterPaidAmount"]').val(amountViaPercent).trigger('keyup');
+        } else {
+            $("#TypePaymentAdvance").addClass('d-none');
+            $("#PercentAdvanceContractVal").val(100);
+            $('#Payment [name="PaidAmount"]').val(remainingAmount);
+            $('#Payment [name="FormatterPaidAmount"]').val(remainingAmount).trigger('keyup');
+        }
+}
+</script>

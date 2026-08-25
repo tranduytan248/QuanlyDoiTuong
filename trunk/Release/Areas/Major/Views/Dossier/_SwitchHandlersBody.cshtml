@@ -1,0 +1,12 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierSwitchHandlerTaskModel
+
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.DossierName)
+<div class="form-row">
+    <div class="col-md-12">
+        @Html.TitleFor(model => model.HandlingComments, new { @class = "col-form-label pr-0 font-bold" })
+        @Html.TextAreaFor(model => model.HandlingComments, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Task_HandlingComments") })
+        @Html.ValidationMessageFor(model => model.HandlingComments, "", new { @class = "text-danger" })
+    </div>
+</div>

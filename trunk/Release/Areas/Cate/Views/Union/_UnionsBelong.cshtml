@@ -1,0 +1,166 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Sys.Models.Sys.SysUserModel
+
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("Union_Manager_Title")} - <b>{AppProcessor.Messagor.GetMessage("User_Title")} [{Model.FullName}]</b>");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fas fa-layer-group"></i>
+}
+
+@section FormBody{
+    @Html.HiddenFor(model => model.UserName)
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @Html.Button(true, "AddUnion", Url.Action("AddUnion", "Union", new { area = "Cate", userName = Model.UserName }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="card dcard">
+                    <div class="p-2 table-responsive-md">
+                        <table id="Unions" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85">
+                                <tr>
+                                    <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                                    <th class="w-50">@AppProcessor.Messagor.GetMessage("Union_Title")</th>
+                                    @*<th>@AppProcessor.Messagor.GetMessage("User_Title")</th>*@
+                                    @*<th>@AppProcessor.Messagor.GetMessage("Union_Member_Permit")</th>*@
+                                    <th class="w-25">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var _UnionActionURLs = {
+            Union_GetData: "@Url.Action("GetUnionsViaManager", "Union", new { area = "Cate" })"
+        };
+        var _tableUnions;
+        $(document).ready(function () {
+            initTableUnion();
+        });
+
+        function initTableUnion() {
+            _tableUnions = $("#Unions").DataTable({
+                "Responsive": true,
+                "language": {
+                    "processing": "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+                },
+                "lengthChange": false,
+                "info": false,
+                "pageLength": 50,
+                "searching": false,
+                "processing": true,
+                "serverSide": true,
+                "autoWidth": false,
+                "ordering": false,
+                "ajax":
+                {
+                    "url": _UnionActionURLs.Union_GetData,
+                    "type": "POST",
+                    "dataType": "JSON",
+                    "data": {
+                        "userName": function () {
+                            return "@Model.UserName";
+                        }
+                    }
+                },
+                "columns": [
+                    {
+                        "data": "",
+                        "defaultContent": "1",
+                        "render": function (data, type, row, meta) {
+                            return meta.settings._iDisplayStart + meta.row + 1;
+                        }
+                    },
+                    {
+                        "data": "UnionName",
+                        "width": "45%",
+                        "defaultContent": ""
+                    },
+                    //{
+                    //    "data": "PermitName",
+                    //    //"width": "20%",
+                    //    "defaultContent": ""
+                    //},
+                    {
+                        "data": "UnionId",
+                        "width": "15%",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+                            var html = '<span class="d-none d-lg-inline">';
+
+                            if (type === "display") {
+                                //html += _renderButton(true,
+                                //    "EditUnion",
+                                //    "btn px-4 btn-lighter-primary mr-1 v-hover",
+                                //    "/Cate/Union/EditUnion?unionId={0}&userName={1}".format(data, row["UserName"]),
+                                //    '<i class="far fa-edit text-primary text-120"></i>',
+                                //    "Cập nhật");
+
+                                html += _renderButton(true,
+                                    "DeleteUnion",
+                                    "btn px-4 btn-lighter-danger mr-1 v-hover",
+                                    "/Cate/Union/DeleteUnion?unionId={0}&userName={1}".format(data, row["UserName"]),
+                                    '<i class="far fa-trash-alt text-danger text-120"></i>',
+                                    "Xoá");
+                            }
+                            html += "</span>";
+
+                            return html;
+                        }
+                    }
+                ]
+            });
+        }
+
+        function Union_OnProcessSuccess(response, formId) {
+            if (response.status != undefined) {
+                if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                    if (response.status != undefined) {
+                        eval(response.message);
+                        _tableUnions.ajax.reload(null, false);
+                        response.status = undefined;
+                        var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                        $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                            _initElement();
+                        });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableUnions.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+            }
+        }
+
+    </script>
+}
+@section SubmitControl{
+
+}

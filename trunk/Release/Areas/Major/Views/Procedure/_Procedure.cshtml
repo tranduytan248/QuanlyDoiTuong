@@ -1,0 +1,114 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureModel
+
+@Html.AntiForgeryToken()
+
+<div id="Procedure">
+    @Html.HiddenFor(model => model.ProcedureId)
+    @{
+        if (Model.ProcedureId == null || Model.ProcedureId == Guid.Empty)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.ProcedureCode, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+                <div class="col-12 col-md-12 col-sm-12">
+                    @Html.TextBoxFor(model => model.ProcedureCode, new { @class = "form-control col-md-6", placeholder = AppProcessor.Messagor.GetMessage("Procedure_Code") })
+                    @Html.ValidationMessageFor(model => model.ProcedureCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.ProcedureCode, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+                <div class="col-12 col-md-12 col-sm-12">
+                    @Html.TextBoxFor(model => model.ProcedureCode, new { disabled = true, @class = "form-control col-md-6", placeholder = AppProcessor.Messagor.GetMessage("Procedure_Code") })
+                    @Html.ValidationMessageFor(model => model.ProcedureCode, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.ProcedureCode)
+                </div>
+            </div>
+        }
+    }
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ProcedureName, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+        <div class="col-12 col-md-12 col-sm-12">
+            @Html.TextBoxFor(model => model.ProcedureName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Procedure_Name") })
+            @Html.ValidationMessageFor(model => model.ProcedureName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ContractTypeId, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+        <div class="col-12 col-md-12 col-sm-12">
+            @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListContractTypes, "Value", "Text"), "", new { @class = "form-control col-md-8", onchange = "_onChangeTypeContract(this, '#Procedure #ContractTypeName', '#Procedure #UnionIds')" })
+            @Html.ValidationMessageFor(model => model.ContractTypeId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ContractTypeName)
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.UnionIds, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+        <div class="col-12 col-md-12 col-sm-12">
+            @Html.SelectFor(model => model.UnionIds, Model.ListUnions, null, new { multiple = true, @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Combobox_Select") })
+            @Html.ValidationMessageFor(model => model.UnionIds, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @{
+        if (Model.ProcedureId != null)
+        {
+            <hr class="border-none border-t-3 brc-grey-l2 border-double" />
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Reason, new { @class = "col-12 col-md-12 col-sm-12 col-form-label r-0 font-bold" })
+                <div class="col-12 col-md-12 col-sm-12">
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@Html.HiddenFor(model => model.SelectedUnions)
+
+<script type="text/javascript">
+        
+    $(document).ready(function () {        
+        _onChangeTypeContract('#Procedure #ContractTypeId', '#Procedure #ContractTypeName', '#Procedure #UnionIds');
+    });
+
+    function _onChangeTypeContract(cbbTypeContracts, eleTypeContractName, cbbUnions) {
+        if ($(cbbTypeContracts).length > 0) {
+            $(eleTypeContractName).val($(cbbTypeContracts).children("option:selected").text());
+        }
+
+        var typeContractId = $(cbbTypeContracts).val();
+        if (typeContractId != null && typeContractId.length > 0) {
+            var urlUnionsNotUsingProc = "@Url.Action("GetUnionsNotUsingProc", "Union", new { area = "Cate" })?procId=@Model.ProcedureId" + "&contractType=" + typeContractId;
+
+            $.ajax({
+                type: "GET",
+                url: urlUnionsNotUsingProc,
+                dataType: "JSON",
+                success: function (response) {
+                    $(cbbUnions).empty();
+                    $(cbbUnions).append('<option value=""></option>');
+
+                    $.each(response,
+                        function (index, unions) {
+                            $(cbbUnions).append('<optgroup label="' + index + '">');
+                            $.each(unions, function (idx, union) {
+                                $(cbbUnions).append('<option value="' + union.UnionId.toUpperCase() + '">' + union.UnionName + "</option>");
+                            });
+                            $(cbbUnions).append('</optgroup>');
+                        });
+                    var selectedUnions = '@Model.SelectedUnions';
+                    if (selectedUnions != undefined && selectedUnions.length > 0) {
+                        $(cbbUnions).val(selectedUnions.split(','));
+                        $(cbbUnions).trigger("change");
+                    }
+                }
+            });
+        }
+    }
+</script>

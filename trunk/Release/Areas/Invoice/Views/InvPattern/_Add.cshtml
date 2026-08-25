@@ -1,0 +1,56 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("InvPattern_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+	@using (Html.BeginForm("Add", "InvPattern", new { area = "Invoice" }, FormMethod.Post, new { encType = "multipart/form-data", id = "AddPattern", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_InvPattern")
+        </div>
+    }
+    
+	<script type="text/javascript">
+        $('form#AddPattern').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_AddPattern #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableInvPattern.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_AddPattern form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_AddPattern").modal("hide");
+                        $("#ModalContent #modal_AddPattern").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableInvPattern.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_AddPattern" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+
+@section ContinueForm{
+
+}

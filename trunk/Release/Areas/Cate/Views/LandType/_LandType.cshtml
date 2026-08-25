@@ -1,0 +1,22 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateLandTypeModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.LandType_ID)
+<div id="LandType">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.LandTypeCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.LandTypeCode, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("LandType_Label_Code") })
+            @Html.ValidationMessageFor(model => model.LandTypeCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.LandTypeName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.LandTypeName, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("LandType_Label_Name") })
+            @Html.ValidationMessageFor(model => model.LandTypeName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

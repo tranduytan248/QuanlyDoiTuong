@@ -1,0 +1,37 @@
+﻿@using TSFramework.App.Processors
+@using Cores.Major.Enums
+@model Cores.Major.Models.MajorContractPaymentModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("ContractPayment_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditPayment", "ContractPayment", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "ContractPayment_OnProcessSuccess(data, 'EditPayment')"
+    }, new { @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @if (Model.Status == (int)EnumPaymentStatus.Received)
+            {
+                @Html.Partial("_PaymentReceived")
+            }
+            else
+            {
+                @Html.Partial("_PaymentRefunded")
+            }
+        </div>
+    }
+}

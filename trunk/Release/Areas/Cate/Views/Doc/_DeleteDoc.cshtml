@@ -1,0 +1,36 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateDocModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("Doc_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("DeleteDoc", "Doc", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Doc_OnProcessSuccess(data, 'DeleteDoc')"
+    }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.FileId)
+        @Html.HiddenFor(model => model.FileName)
+        @Html.HiddenFor(model => model.FileExt)
+        @Html.HiddenFor(model => model.FilePath)
+        @Html.HiddenFor(model => model.ObjectId)
+        @Html.HiddenFor(model => model.TypeObject)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+        <hr/>
+        <div class="form-group row">
+            @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-9">
+                @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+}

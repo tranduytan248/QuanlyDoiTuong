@@ -1,0 +1,29 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateLandCalculationSearchModel
+
+<div class="card dcard" id="SearchLandCalculation">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="row col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-group row col-md-12">
+                <label class="col-form-label text-sm-right pr-0 font-bold col-md-3">@AppProcessor.Messagor.GetMessage("ContentLand_Label_Name")</label>
+                <div class="col-md-7 dropdownlist_search">
+                    @Html.SelectFor(model => model.ContractTypeName, Model.ListContentLands, "", new { @class = "form-control col-md-10" })
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="Search()"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+            </div>
+        </div>
+    </div>
+</div>

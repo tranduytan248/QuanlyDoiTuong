@@ -1,0 +1,30 @@
+﻿@model Cores.Major.Models.MajorProcedureStepModel
+@using TSFramework.App.Processors
+
+<div class="card dcard mb-3 col-12" id="eleStepConfig">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-500 text-primary-d2 my-auto">
+            <i class="fas fa-wrench"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Step_Config_Other")
+        </h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="p-3">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label text-sm-right pr-0 font-bold"></label>
+                <div class="col-md-9">
+                    <label class="checkbox-inline">
+                        @Html.CheckBoxFor(model => model.AttachResultFile, new { @class = "checkbox" })
+                        <span class="badge bgc-danger brc-danger text-white badge-lg arrowed arrowed-in-right mb-1">
+                            @Html.LabelFor(model => model.AttachResultFile, new { @class = "px-3" })
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Form_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Add", "Form", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "AddForm", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Form")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#AddForm').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                var requiredInfoObj = arr.find(v => v.name == "RequiredInfo");
+                requiredInfoObj.value = editor.getValue();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_AddForm #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableForm.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_AddForm form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_AddForm").modal("hide");
+                        $("#ModalContent #modal_AddForm").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableForm.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_AddForm" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+
+@section ContinueForm{
+
+}

@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Modal_Title_Approve");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-check-double"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Approve", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Dossier_OnProcessSuccess(data, 'ApproveDossier')"
+    }, new { @class = "form-horizontal", id = "ApproveDossier" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ApproveBody")
+        </div>
+    }
+}
+@section SubmitControl{
+    <button type="submit" id="btnApprove" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-check-double"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Approve")</button>
+}

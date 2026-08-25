@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ReportModel
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Major_Report_Title")} [{Model.ReportName}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-question-circle"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("ViewReport", "Report", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "ViewReport", @class = "form-horizontal" }))
+    {
+        @Html.HiddenFor(model => model.ReportKey)
+        @Html.HiddenFor(model => model.ReportName)
+
+        <div id="bodyForm">
+            @Html.Partial(Model.ViewName)
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#ViewReport').ajaxForm({
+            success: function (response) {
+                if (response != undefined) {
+                    _showModal(response, "ViewReport_@Model.ReportKey", "fullscreen", "ViewReport");
+                }
+            }
+        });
+    </script>
+}
+
+@section SubmitControl{
+	<button type="submit" id="btnRenderReport" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-file-export"></i>&nbsp;Xem</button>
+}

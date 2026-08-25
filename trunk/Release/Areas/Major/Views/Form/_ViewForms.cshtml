@@ -1,0 +1,80 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.ViewDossierFormModel
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Form_Title");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-cloud-download-alt"></i>
+}
+
+@section FormBody{
+    <div id="DetailForm">
+        @{
+            Html.RenderAction("DetailForm", new { id = Model.CurrentForm, currentIdx = Model.CurrentIdx, dossierId = Model.DossierId, situationId = Model.SituationId });
+        }
+    </div>
+
+    <script type="text/javascript">
+        //debugger;
+        function _detailForm(formId, currentIdx, dossierId ) {
+            _saveFormData();
+            $("#DetailForm").load("@Url.Action("DetailForm")?id=" + formId + "&currentIdx={1}&dossierId={0}".format(dossierId, currentIdx));
+        }       
+
+    </script>
+
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#modal_ViewForms [data-dismiss="modal"]').attr('dismiss-modal', true);
+            $('#modal_ViewForms [data-dismiss="modal"]').removeAttr('data-dismiss');
+
+            $('#modal_ViewForms [dismiss-modal]').click(function (e) {
+                //debugger;
+                bootbox.confirm({
+                    title: '<span class="text-danger text-500 text-120"><i class="fas fa-exclamation-triangle"></i>&nbsp;Cảnh báo</span>',
+                    message: '<p class="alert bgc-secondary-l4 brc-danger-m1 border-0 border-l-4 radius-0 text-dark-tp2"><i class="far fa-hand-point-right mr-1"></i><span>Dữ liệu bạn đã nhập có thể không được lưu. Vui lòng lưu trước khi thoát.</span></p><hr/><div class="alert bgc-primary-l4 brc-primary-m4 d-flex align-items-center text-dark-tp2" role="alert"><i class="fas fa-info-circle mr-3 fa-2x text-blue"></i><span class="text-500">Bạn có muốn lưu trước khi thoát?</span></div>',
+                    onEscape: true,
+                    closeButton: false,
+                    buttons: {
+                        confirm: {
+                            label: '<i class="fas fa-check text-geen"></i> Có',
+                            className: 'btn-outline-success'
+                        },
+                        cancel: {
+                            label: '<i class="fas fa-ban text-danger"></i>  Không',
+                            className: 'btn-outline-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            _saveFormData();
+                        }
+                        $('#modal_ViewForms').modal('hide');
+
+                    }
+                })
+            });
+        });
+
+    </script>
+}
+
+@section SubmitControl{
+
+    <button id="btnPrev" class="btn btn-outline-primary sw-btn-prev radius-l-1 mr-2px @(Model.PrevForm == null ? "disabled" :"")" onclick="_detailForm('@Model.PrevForm', @Model.PrevIdx, '@Model.DossierId')"><i class="fa fa-arrow-left mr-15"></i> Trước</button>
+
+    <button id="btnNext" class="btn btn-outline-primary sw-btn-next sw-btn-hide radius-r-1 @(Model.NextForm == null ? "disabled" :"")" onclick="_detailForm('@Model.NextForm', @Model.NextIdx, '@Model.DossierId')">Tiếp <i class="fa fa-arrow-right mr-15"></i></button>
+
+    <button type="button" id="btnReview" class="btn px-4 btn-outline-info mb-1" onclick="_previewForm();"><i class="fas fa-eye"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Preview")</button>
+
+    <button type="submit" id="btnExport" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-cloud-download-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Export")</button>
+
+}

@@ -1,0 +1,123 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.AcceptantContractModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.CusName)
+@Html.HiddenFor(model => model.ContractNoInfo)
+
+<div id="ApproveContract">
+    <div class="row mt-1">
+        <div class="col-12">
+            @Html.Button(true, "ShowAcceptant", Url.Action("ShowAcceptant", new { area = "Major", contractId = Model.ContractId, fileType = ".pdf" }), "<i class=\"fas fa-eye mr-2 f-n-hover\"></i>", AppProcessor.Messagor.GetMessage("Acceptant_Title"), new { @class = "d-style btn btn-white btn-h-lighter-blue btn-a-blue shadow-sm radius-round text-600 letter-spacing px-4 mb-1", data_width = "fullscreen" })
+            <hr />
+        </div>
+        <div class="col-12">
+
+            <div class="alert bgc-secondary-l4 brc-secondary-m4 align-items-center text-dark-tp2" role="alert">
+                <h5 class="alert-heading text-primary-m1 font-bolder">
+                    <i class="fas fa-user-tie mr-1 mb-1"></i>
+                    Thông tin khách hàng
+                </h5>
+                <hr class="border-none border-t-3 brc-primary-l2 border-double">
+                <div class="text-110 text-500 text-primary-d1">@Model.CusName</div>
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <span class="px-2">@Model.TypeCusName</span>
+                </span>
+                @{
+                    if (!Model.CusInfo.IsRepresenter)
+                    {
+                        <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                            <span class="px-2">@(Html.Raw(Model.CusInfo.Gender == 1 ? $"<i class=\"fas fa-male text-primary-d1\"></i> {AppProcessor.Messagor.GetMessage("Gender_Male")}" : $"<i class=\"fas fa-female text-pink-d1\"></i> {AppProcessor.Messagor.GetMessage("Gender_Female")}"))</span>
+                        </span>
+                        <span class="badge badge-secondary badge-lg arrowed-in-right mb-1">
+                            @Model.CusInfo.TypeIdentifierName
+                        </span>
+                        <span class="badge btn-secondary badge-lg arrowed ml-n1 mb-1">
+                            @Model.CusInfo.IdentifierNo
+                        </span>
+                    }
+                }
+
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-phone text-purple"></i> @Model.CusInfo.Phone
+                </span>
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-map-marker text-orange-d1"></i> @Model.CusInfo.Address
+                </span>
+            </div>
+
+            <div class="alert bgc-warning-l4 brc-warning-m4 align-items-center text-dark-tp2" role="alert">
+                <h5 class="alert-heading text-success-m1 font-bolder">
+                    <i class="fas fa-file-contract mr-1 mb-1"></i>Thông tin hợp đồng
+                </h5>
+                <hr class="border-none border-t-3 brc-info-l2 border-double">
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="far fa-hand-point-right"></i> @Model.PurposeName
+                </span>
+                <span class="d-inline-block radius-round bgc-default-l2 text-primary-d1 px-25 py-3px mx-2px my-2px text-500">
+                    <i class="fa fa-map-marker"></i> @($"Thửa đất số {Model.LandParcelNo} thuộc bản đồ số {Model.MapNo} - {Model.Address}")
+                </span>
+                <hr class="border-none border-t-3 brc-info-l2 border-double">
+
+                <div class="row mt-3 ">
+                    <div class="col-12 col-sm-5 mt-2 mt-lg-0">
+                    </div>
+                    <div class="col-12 col-sm-7 text-dark-l1 text-100 text-500 text-danger-d3 order-first order-sm-last">
+                        <div class="row my-2">
+                            <div class="col-7 text-right my-auto">
+                                @AppProcessor.Messagor.GetMessage("ContractPayment_LiquidationAmount")
+                            </div>
+
+                            <div class="col-5">
+                                <span class="text-125 text-secondary-d3">
+                                    @($"{Model.LiquidationAmount:N0}")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row my-2">
+                            <div class="col-7 text-right my-auto">
+                                @AppProcessor.Messagor.GetMessage("ContractPayment_DiscountAmount")
+                            </div>
+
+                            <div class="col-5">
+                                <span class="text-115 text-secondary-d3">
+                                    @($"{Model.DiscountAmount:N0}")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row my-3 align-items-center bgc-green-d3 p-2 radius-1">
+                            <div class="col-7 text-right text-white text-110">
+                                @AppProcessor.Messagor.GetMessage("ContractPayment_TotalPaidAmount")
+                            </div>
+
+                            <div class="col-5">
+                                <span class="text-150 text-white">
+                                    @($"{Model.TotalPaidAmount:N0}")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div role="alert" class="alert alert-danger bgc-danger-l4 brc-danger-m3 border-2 d-flex align-items-center">
+                <i class="fas fa-question-circle mr-3 fa-2x text-danger"></i>
+
+                <div class="text-dark-tp2 text-110 text-500">
+                    @AppProcessor.Messagor.GetMessage("Message_Confirm_AcceptantContract")
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@Html.RenderScripts(ScriptPosition.BodyInside)
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>

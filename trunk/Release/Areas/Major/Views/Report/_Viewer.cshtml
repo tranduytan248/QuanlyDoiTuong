@@ -1,0 +1,40 @@
+﻿@using Microsoft.Reporting.WebForms
+@using ReportViewerForMvc
+@using TSFramework.App.Processors
+
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Major_Report_Title")} [{ViewBag.Title}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+@section FormIcon{
+    <i class="fas fa-eye"></i>
+}
+
+@section FormBody{
+    @if (ViewBag.ReportViewer != null)
+    {
+        <div id="ReportBody" class="table-responsive no-padding" style="height: calc(90vh); height: -moz-calc(90vh); height: -webkit-calc(90vh)">
+            @Html.ReportViewer(ViewBag.ReportViewer as ReportViewer, new { onload = "loadReport()" })
+        </div>
+    }
+    <script type="text/javascript">
+        //debugger;
+        function loadReport() {
+            _endWaiting();
+            $('#ReportBody iframe').css("width", "100%").css("height", "100%");
+        }
+
+        $(document).ready(function () {
+            _onWaiting();
+            $('#ReportBody iframe').on('load', function () {
+                _endWaiting();
+                $('#ReportBody iframe').css("width", "100%").css("height", "100%");
+            });
+        });
+
+    </script>
+}

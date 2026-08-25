@@ -1,0 +1,24 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Message_Title_Continue"), $"{AppProcessor.Messagor.GetMessage("Dossier_Task_Title")} [{Model.InStepName}]");
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    info
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("ContinueTask", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Dossier_OnProcessSuccess(data, 'ContinueTask')"
+    }, new { @class = "form-horizontal", id = "ContinueTask" }))
+    {
+        <div id="bodyForm">
+	        @Html.Partial("_ContinueTaskBody")
+        </div>
+    }
+}

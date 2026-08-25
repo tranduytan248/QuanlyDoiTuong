@@ -1,0 +1,9 @@
+﻿@model Cores.Major.Models.MajorDossierTaskModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.TaskId)
+@Html.HiddenFor(model => model.DossierId)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.HandlingTime)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>

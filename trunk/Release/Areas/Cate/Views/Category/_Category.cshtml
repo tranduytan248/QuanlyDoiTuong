@@ -1,0 +1,100 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateCategoryModel
+
+@Html.AntiForgeryToken()
+<div id="Cate">
+    @Html.HiddenFor(model => model.CateId)
+    @{
+        if (Model.CateId != null && Model.CateId != Guid.Empty)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.CateCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.CateCode, new { @class = "form-control col-md-7", @readonly = "readonly" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.CateCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.CateCode, new { @class = "form-control col-md-7", placeholder = AppProcessor.Messagor.GetMessage("Category_Code") })
+
+                </div>
+            </div>
+        }
+    }
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CateName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.CateName, new { @class = "form-control col-md-8", placeholder = AppProcessor.Messagor.GetMessage("Category_Name") })
+            @Html.ValidationMessageFor(model => model.CateName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CateType, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.CateType, new SelectList(Model.ListCateTypes, "Value", "Text"), "", new { @class = "form-control col-md-8", onchange = "_onChangeCateType(this);" })
+            @Html.ValidationMessageFor(model => model.CateType, "", new { @class = "text-danger" })
+            @*@Html.HiddenFor(model => model.CateTypeName)*@
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.CateParentId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @*@Html.DropDownListFor(model => model.CateParentId, new SelectList(Model.ListParentCates, "Value", "Text"), "", new { @class = "form-control col-md-8" })*@
+            @Html.SelectFor(model => model.CateParentId, Model.ListParentCates, "", new { @class = "form-control col-md-10" })
+            @Html.ValidationMessageFor(model => model.CateParentId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.CateParentName)
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Priority, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.Priority, new { type = "number", min = 0, @class = "form-control col-md-3", placeholder = AppProcessor.Messagor.GetMessage("Category_Priority") })
+            @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <hr />
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Note, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Category_Note") })
+            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //debugger;
+    function _onChangeCateType(cbb) {
+        var cateType = $(cbb).val();
+        var urlCatesViaType = "@Url.Action("CatesViaType")?cateType=" + cateType;
+
+        $.ajax({
+            type: "GET",
+            url: urlCatesViaType,
+            dataType: "JSON",
+            success: function (response) {
+                $("#Cate select#CateParentId").empty();
+                $("#Cate select#CateParentId").append('<option value=""></option>');
+
+                $.each(response.Cates, function (index, cates) {
+                    if (index != null && index.length > 0) {
+                        var htmlCates = "";
+                        $.each(cates, function (idx, cate) {
+                            htmlCates += '<option value="' + cate.CateId + '">' + cate.CateName + "</option>";
+                        });
+                        $("#Cate select#CateParentId").append('<optgroup label="' + index + '">' + htmlCates + '</optgroup>');
+                    } else {
+                        $.each(cates, function (idx, cate) {
+                            $("#Cate select#CateParentId").append('<option value="' + cate.CateId + '">' + cate.CateName + "</option>");
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+</script>

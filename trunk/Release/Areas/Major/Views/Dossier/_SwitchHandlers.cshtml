@@ -1,0 +1,192 @@
+﻿@using Newtonsoft.Json
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierSwitchHandlerTaskModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_SwitchHandler"), AppProcessor.Messagor.GetMessage("Dossier_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-exchange-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("SwitchHandlers", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Dossier_OnProcessSuccess(data, 'SwitchHandlers')"
+    }, new { @class = "form-horizontal", id = "SwitchHandlers" }))
+    {
+        <div id="bodyForm">
+            @Html.HiddenFor(model => model.TaskId)
+            @Html.HiddenFor(model => model.DossierName)
+            <div class="form-row">
+                <div class="col-md-12">
+                    @Html.TitleFor(model => model.HandlingComments, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.TextAreaFor(model => model.HandlingComments, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Task_HandlingComments") })
+                    @Html.ValidationMessageFor(model => model.HandlingComments, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="border-none border-t-3 brc-grey-l2 border-double" />
+        </div>
+    }
+
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @{
+                        @Html.Button(true, "AddHandler", Url.Action("AddHandler", "Dossier", new { area = "Major", taskId = Model.TaskId }), "<i class='fa fa-plus'></i>", $"{AppProcessor.Messagor.GetMessage("Button_Add")} {AppProcessor.Messagor.GetMessage("Task_HandledBy")}", new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_rel = "tooltip", title = "Thêm người xử lý" })
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="p-2 table-responsive-md px-1">
+                    <table id="ListHandlers" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                        <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                            <tr>
+                                <th class="">@AppProcessor.Messagor.GetMessage("Task_HandledBy")</th>
+                                <th class="w-75">@AppProcessor.Messagor.GetMessage("Task_HandledBy")</th>
+                                <th class="w-25">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    //debugger;
+
+        $(document).ready(function () {
+            _initTableHandlers();
+        });
+
+        var _tableHandlers;
+
+        function _initTableHandlers() {
+            _tableHandlers = $("#ListHandlers").DataTable({
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                "Responsive": true,
+                "language": {
+                    "processing":
+                        "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+                },
+                "lengthChange": false,
+                "processing": true,
+                "serverSide": false,
+                "searching": false,
+                "paging": false, "info": false,
+                "columns": [
+                    {
+                        "data": "IsPrimary",
+                        "visible": false,
+                        "defaultContent": "0"
+                    },
+                    {
+                        "data": "StaffName",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+
+                            if (type === "display") {
+                                if (row.IsPrimary) {
+                                    var htmlTemplate = "{0}<div><span class='d-inline-block radius-round bgc-danger-l2 text-danger-d2 text-95 px-25 py-3px mx-2px my-2px'>{2}</span><span class='badge bgc-primary-d1 text-white'>{1}</span></div>";
+                                    return htmlTemplate.format(data, "Xử lý chính", row.PositionName);
+                                } else {
+                                    return "{0}<div><span class='d-inline-block radius-round bgc-danger-l2 text-danger-d2 text-95 px-25 py-3px mx-2px my-2px'>{1}</span></div>".format(data, row.PositionName);
+                                }
+                            }
+
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "HandlerId",
+                        "style": "width:100px;",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+                            var html = '<span class="d-none d-lg-inline">';
+
+                            if (type === "display") {
+                                //html += _renderButton(true,
+                                //    "EditHandler",
+                                //    "btn px-4 btn-outline-primary mr-1 v-hover",
+                                //    "/Major/Dossier/EditHandler?taskId=" + row.TaskId + "&handlerId=" + data,
+                                //    '<i class="far fa-edit text-120"></i>',
+                                //    "Cập nhật");
+
+                                html += _renderButton(true,
+                                    "DeleteHandler",
+                                    "btn px-4 btn-outline-danger mr-1 v-hover",
+                                    "/Major/Dossier/DeleteHandler?taskId=" + row.TaskId + "&handlerId=" + data,
+                                    '<i class="far fa-trash-alt text-120"></i>',
+                                    "Xoá");
+                            }
+                            html += "</span>";
+
+                            return html;
+                        }
+                    }
+                ]
+            });
+
+            var dataHandlers = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.DataHandlers))');
+            if (typeof dataHandlers != null) {
+                _tableHandlers.clear().rows.add(dataHandlers).draw();
+                _tableHandlers.column(0).order('desc').draw();
+            }
+        }
+
+        function StepHandler_OnProcessSuccess(response, formId) {
+        if (response.status != undefined) {
+            if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                if (response.status != undefined) {
+                    eval(response.message);
+                    var jsonDataHandlers = JSON.parse(response.data);
+                    _tableHandlers.clear().rows.add(jsonDataHandlers).draw();
+                    _tableHandlers.column(0).order('desc').draw();
+
+                    response.status = undefined;
+                    var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                    $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                        _initElement();
+                    });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId).modal("hide");
+                $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                    function () {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            var jsonDataHandlers = JSON.parse(response.data);
+                            _tableHandlers.clear().rows.add(jsonDataHandlers).draw();
+                            _tableHandlers.column(0).order('desc').draw();
+                            response.status = undefined;
+                        }
+                    });
+            }
+        } else {
+            $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+        }
+    }
+
+    </script>
+
+}
+@*@section SubmitControl{
+
+    }*@

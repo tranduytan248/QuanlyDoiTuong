@@ -1,0 +1,39 @@
+﻿@using TSFramework.App.Processors
+@model List<Cores.Base.Interfaces.IReport>
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Major_Report_Title");
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @*@Html.Button(true, "InstallReport", Url.Action("Install", new { area = "Major" }), "<i class='fa fa-cloud-upload'></i>", AppProcessor.Messagor.GetMessage("Button_Upload"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right" })*@
+}
+
+<div class="card ccard radius-t-0 h-100">
+    <div class="card-header brc-secondary-l3 pb-3">
+        <h5 class="card-title mb-2 mb-md-0 text-dark-m3"></h5>
+    </div>
+    <div class="card-body bgc-white p-0 pb-15" style="min-height:calc(68vh);">
+        @{
+            <div class="col-md-12 mt-2">
+                @foreach (var report in Model)
+                {
+                    <p class="text-light-blue">
+                        <a class="bgc-h-blue-l3 text-primary-tp2 no-underline text-110" data-modal="" data-modal-id="@report.ReportKey" href="@Url.Action("ViewReport")?report=@report.ReportKey">@report.ReportName</a>
+                    </p>
+                }
+            </div>
+        }
+
+    </div>
+</div>
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Major/Views/Report/Report.js")"></script>
+}

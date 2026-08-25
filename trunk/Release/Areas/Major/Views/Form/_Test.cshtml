@@ -1,0 +1,61 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = $"Test {AppProcessor.Messagor.GetMessage("Form_Title")}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+	success
+}
+
+@section FormIcon{
+	<i class="fas fa-cloud-download-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Test", "Form", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "TestForm", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_FormTest")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#TestForm').ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                var requiredInfoObj = arr.find(v => v.name == "RequiredInfo");
+                requiredInfoObj.value = editor.getValue();
+            },
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_TestForm #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableForm.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_TestForm form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_TestForm").modal("hide");
+                        $("#ModalContent #modal_TestForm").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableForm.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_TestForm" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}
+
+@section SubmitControl{
+
+	@Html.Button(true, "ViewForms", Url.Action("ViewForms", new { area = "Major" }), "<i class='far fa-eye'></i>", "Kiểm tra", new { @class = "btn btn-light-blue btn-h-blue btn-a-blue py-2 text-600 text-90 pull-right mr-1 disabled", data_width = "fullscreen" })
+}

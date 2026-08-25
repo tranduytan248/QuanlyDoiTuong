@@ -1,0 +1,179 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Complete"), $"{AppProcessor.Messagor.GetMessage("Task_Title")} - {Model.InStepName}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-clipboard-check"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Complete", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "CompleteDossier", @class = "" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_CompleteBody")
+        </div>
+    }
+
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+    <script type="text/javascript">
+        //debugger;
+        $('form#CompleteDossier').ajaxForm({
+            //beforeSubmit: function (arr, $form, options) {
+            //    //myDropzone.processQueue();
+            //    for (let idx = 0; idx < myDropzone.files.length; idx++) {
+            //        arr.push({ name: "ResultFiles", value: myDropzone.files[idx].__proto__ });
+            //    }
+            //},
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_CompleteDossier").modal("hide");
+                    $("#ModalContent #modal_CompleteDossier").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_CompleteDossier" + " #bodyForm").html(response);
+                }
+            }
+        });
+
+        $("#modal_CompleteDossier .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_CompleteDossier .modal-body").addClass("ace-scrollbar");
+
+        $(document).ready(function () {
+
+            $('button[id="btnRollbackPrev"]').click(function (e) {
+                //debugger;
+                bootbox.confirm({
+                    title: '<span class="text-danger text-500 text-120"><i class="fas fa-exclamation-triangle"></i>&nbsp;Xác nhận</span>',
+                    message: '<div class="alert bgc-warning-l4 brc-warning-m4 d-flex align-items-center text-dark-tp2" role="alert"><i class="fas fa-info-circle mr-3 fa-2x text-danger"></i><span class="text-500">@Html.Raw(ViewBag.ConfirmRollbackPrev)</span></div>',
+                    onEscape: true,
+                    closeButton: false,
+                    buttons: {
+                        confirm: {
+                            label: '<i class="fas fa-check text-geen"></i> Có',
+                            className: 'btn-outline-success'
+                        },
+                        cancel: {
+                            label: '<i class="fas fa-ban text-danger"></i>  Không',
+                            className: 'btn-outline-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $("input[type='hidden'][id='IsRollbackPrev']").val("True");
+                            $('button[type="submit"][id="btnComplete"]').click();
+                        }
+                    }
+                })
+            });
+        });
+
+        var myDropzone = null;
+        Dropzone.autoDiscover = false;
+
+        function initDropzoneUpload(ele) {
+            myDropzone = new Dropzone(ele, {
+                previewTemplate: $('#preview-template').html(),
+                autoProcessQueue: false,
+                url: "@Url.Action("Complete")",
+                method: "POST",
+                paramName: "ResultFiles",
+                thumbnailHeight: 120,
+                thumbnailWidth: 120,
+                maxFilesize: 15,
+                filesizeBase: 1000,
+                addRemoveLinks: false,
+                acceptedFiles: "image/*,application/pdf,.doc,.docx,.xslx",
+                //init: function () {
+                //    this.on('sending', function (file, xhr, formData) {
+                //        // Append all form inputs to the formData Dropzone will POST
+                //        var formDatas = $("form#CompleteDossier").serializeArray();
+                //        $.each(formDatas, function (key, el) {
+                //            formData.append(el.name, el.value);
+                //        });
+                //    });
+                //},
+                thumbnail: function (file, dataUrl) {
+                    if (file.previewElement) {
+                        $(file.previewElement).removeClass("dz-file-preview");
+                        $(file.previewElement).find("[data-dz-thumbnail]").each(function () {
+                            var thumbnailElement = this;
+                            thumbnailElement.alt = file.name;
+                            thumbnailElement.src = dataUrl;
+                        })
+
+                        setTimeout(function () { $(file.previewElement).addClass("dz-image-preview") }, 1)
+                    }
+                }
+            });
+            myDropzone.options.dictDefaultMessage = "Thả tệp vào đây để tải lên";
+            myDropzone.options.dictFallbackMessage = "Trình duyệt của bạn không hỗ trợ kéo và thả tệp để tải lên.";
+            myDropzone.options.dictFallbackText = "Vui lòng sử dụng biểu mẫu dự phòng bên dưới để tải tệp của bạn lên.";
+            myDropzone.options.dictFileTooBig = "Tệp quá lớn ({{filesize}}MiB). Kích thước tệp tối đa: {{maxFilesize}}MiB.";
+            myDropzone.options.dictInvalidFileType = "Bạn không thể tải lên các tệp thuộc loại này.";
+            myDropzone.options.dictResponseError = "Máy chủ phản hồi mã {{statusCode}}.";
+            myDropzone.options.dictCancelUpload = "Hủy tải lên";
+            myDropzone.options.dictCancelUploadConfirmation = "Bạn có chắc chắn muốn hủy việc tải lên này không?";
+            //myDropzone.options.dictRemoveFile = "Xóa tập tin";
+            myDropzone.options.dictRemoveFile = "<span class='fa fa-trash text-danger text-150'></span>";
+
+            myDropzone.options.dictMaxFilesExceeded = "Bạn không thể tải lên bất kỳ tập tin nào nữa.";
+
+            myDropzone.on('addedfile', function (file) {
+
+                var divEle = document.createElement('div');
+                divEle.className = 'text-center w-100 mt-1 tools';
+
+                var _this = this;
+                var delButton = document.createElement('a');
+                delButton.className = 'btn btn-outline-danger btn-xs mr-1 delUploadFile';
+                delButton.href = "javascript:void(0);";
+                delButton.innerHTML = '<i class="fas fa-trash-alt"></i>&nbsp;Xoá';
+                delButton.onclick = function () {
+                    _this.removeFile(file);
+                }
+                divEle.appendChild(delButton);
+                file.previewTemplate.appendChild(divEle);
+
+                $(file.previewElement).attr('data-rel', "tooltip");
+                $(file.previewElement).attr('title', file.name);
+                var ext = file.name.split('.').pop();
+
+                if (ext == "pdf") {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/pdf.png");
+                } else if (ext.indexOf("doc") != -1 || ext.indexOf("docx") != -1) {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/word.png");
+                } else if (ext.indexOf("xls") != -1 || ext.indexOf("xlsx") != -1) {
+                    $(file.previewElement).find(".dz-image img").attr("src", "/Contents/Modules/Major/imgs/excel.png");
+                }
+                $('[data-rel="tooltip"]').tooltip({ trigger: 'hover' });
+            });
+            myDropzone.on('removedfile', function (file) {
+                $("[role='tooltip']").remove();
+            });
+        }
+
+    </script>
+}
+@section SubmitControl{
+    <button type="button" id="btnRollbackPrev" class="btn px-4 btn-outline-warning btn-text-slide-x mb-1"><i class="btn-text-2 move-left fa fa-arrow-left text-120 align-text-bottom mr-2"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_RollbackPrev")</button>
+
+    @Html.Button(true, "PauseTask", Url.Action("PauseTask", new { area = "Major", id = Model.TaskId }), "<i class='btn-text-2 move-left fas fa-pause text-120 align-text-bottom '></i>", AppProcessor.Messagor.GetMessage("Button_Pause"), new { @class = "btn px-4 btn-outline-secondary btn-text-slide-x mb-1", data_width = "860px", data_modal_id_parent = "CompleteDossier", data_close_modal_parent = true })
+
+    <button type="submit" id="btnComplete" class="btn px-4 btn-outline-success btn-text-slide-x mb-1"><i class="btn-text-2 move-right fas fa-clipboard-check text-120 align-text-bottom "></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Complete")</button>
+}

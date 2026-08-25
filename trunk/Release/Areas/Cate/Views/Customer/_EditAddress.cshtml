@@ -1,0 +1,33 @@
+@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateCustomerModel
+
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Address_Modal_Title");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditAddress", "Customer", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "CustomerAddress_OnProcessSuccess(data, 'EditAddress')"
+    }, new { @class = "form-horizontal", id = "EditAddress" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Address")
+        </div>
+    }
+}
+
+@section ContinueForm{
+
+}

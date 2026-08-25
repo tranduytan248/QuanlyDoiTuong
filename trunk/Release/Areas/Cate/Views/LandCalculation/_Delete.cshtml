@@ -1,0 +1,29 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateLandCalculationModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), AppProcessor.Messagor.GetMessage("LandCalculation_Label_Title"));
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Delete", "LandCalculation", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "LandCalculation_OnProcessSuccess(data, 'DeleteLandCalculation')"
+    }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.LandCalculationId)
+        @Html.HiddenFor(model => model.ContentLandId)
+        @Html.HiddenFor(model => model.Condition)
+        @Html.HiddenFor(model => model.Recipe)
+        @Html.HiddenFor(model => model.Percentage)
+        @Html.HiddenFor(model => model.ContentLandName)
+        <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+    }
+}

@@ -1,0 +1,32 @@
+﻿@model Cores.Cate.Models.CateUnionMemberModel
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("Union_Manager_Title")} - {Model.UnionName}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddManager", "Union", new { area = "Cate", unionId = Model.UnionId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "UnionManager_OnProcessSuccess(data, 'AddManager')"
+    }, new { @class = "form-horizontal", id = "AddManager" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Manager")
+        </div>
+    }
+}
+
+@section ContinueForm{
+
+}

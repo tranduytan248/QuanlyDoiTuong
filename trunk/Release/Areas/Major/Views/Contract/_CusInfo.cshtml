@@ -1,0 +1,89 @@
+﻿@using Cores.eContract.Consts
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@Html.HiddenFor(model => model.CusInfo.IsPrimary)
+@Html.HiddenFor(model => model.CusInfo.CusId)
+@Html.HiddenFor(model => model.TypeCus)
+@Html.HiddenFor(model => model.ExtendInfos)
+
+<div id="CusInfo">
+    <div id="TypeCus">
+        <div class="form-group row">
+            @Html.TitleFor(model => model.CusInfo.TypeCus, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-9">
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.TypeCus, ConstsCusType.CONSUMER, new { onchange = "_onChangeTypeCus(this, '#CusInfo #CusInfo_TypeCusName', '" + AppProcessor.Messagor.GetMessage("CusType_Consumer") + "')" })
+                    <span class="badge bgc-info brc-info text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Consumer")</span>
+                    </span>
+                </label>
+
+                <label class="px-0 pt-2">
+                    @Html.RadioButtonFor(model => model.CusInfo.TypeCus, ConstsCusType.BUSINESS, new { onchange = "_onChangeTypeCus(this, '#CusInfo #CusInfo_TypeCusName', '" + AppProcessor.Messagor.GetMessage("CusType_Business") + "')" })
+                    <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1">
+                        <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Business")</span>
+                    </span>
+                </label>
+                @Html.HiddenFor(model => model.CusInfo.TypeCusName)
+            </div>
+        </div>
+
+        <hr />
+    </div>
+    <div id="CusInfoViaType">
+        @if (Model.TypeCus == ConstsCusType.CONSUMER)
+        {
+            @Html.Partial("_Consumer", Model)
+        }
+        else
+        {
+            @Html.Partial("_Business", Model)
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function _onChangeTypeCus(rdb, eleName, name) {
+        $(eleName).val(name);
+        var selectedVal = $(rdb).val();
+        var cusTypeConsumer = '@ConstsCusType.CONSUMER'; //Cá nhân
+        if (cusTypeConsumer == selectedVal) {
+            $("#CusInfoViaType").load("@Url.Action("Consumer")");
+            $('#consumer-tab-btn').removeClass('d-none').click();
+            $('#business-tab-btn').addClass('d-none');
+        } else {
+            $("#CusInfoViaType").load("@Url.Action("Business")");
+            $('#business-tab-btn').removeClass('d-none').click();
+            $('#consumer-tab-btn').addClass('d-none');
+        }
+    }
+
+    function _onTypeAddress(parentId, provinceId, districtId, wardId, streetName, addressNo) {
+        var eleViews = 8;
+
+        var hrefAddessModal = "@Url.Action("Address", new { area = "Major" })?parentId=" + encodeURIComponent(parentId) + "&provinceId=" + provinceId + "&districtId=" + districtId + "&wardId=" + wardId;
+
+        if (streetName != undefined) {
+            hrefAddessModal += "&streetName=" + streetName;
+            eleViews *= 2;
+        }
+
+        if (streetName != undefined) {
+            hrefAddessModal += "&addressNo=" + addressNo;
+            eleViews *= 2;
+        }
+
+        hrefAddessModal += "&eleViews=" + eleViews;
+
+        htmlButton = '<a class="" data-modal="true" data-modal-id="addressModal" data_none_template="1" href="@Url.Action("Address", new { area = "Major" })"><i class="fas fa-check-double"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Add")</a>';
+
+        var eleTypeAddress = $.parseHTML(htmlButton);
+        $(eleTypeAddress[0]).attr('href', hrefAddessModal);
+        document.body.appendChild(eleTypeAddress[0]);
+        $(eleTypeAddress).click();
+        $(eleTypeAddress).remove();
+    }
+
+</script>

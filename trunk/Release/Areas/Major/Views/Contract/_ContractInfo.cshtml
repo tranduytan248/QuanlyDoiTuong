@@ -1,0 +1,471 @@
+﻿@using Newtonsoft.Json
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+<div id="ContractInfo">
+    @Html.HiddenFor(model => model.Total)
+    @Html.HiddenFor(model => model.TotalInWords)
+    @Html.HiddenFor(model => model.ReceivedOn)
+    @Html.HiddenFor(model => model.ContractNo)
+    @Html.HiddenFor(model => model.ContractSignal)
+
+    @{
+        if (!Model.IsNew)
+        {
+            @Html.HiddenFor(model => model.HandlingTime)
+            @Html.HiddenFor(model => model.JsonExtendContracts)
+
+            @Html.Hidden("DayContract", $"{(Model.ReceivedOn ?? DateTime.Now).Day}")
+            @Html.Hidden("MonthContract", $"{(Model.ReceivedOn ?? DateTime.Now).Month}")
+            @Html.Hidden("YearContract", $"{(Model.ReceivedOn ?? DateTime.Now).Year}")
+        }
+    }
+
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-info-circle text-info"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Infor")
+            </h5>
+        </div>
+
+        <div class="card-body">
+            @*<div class="form-group row">
+                    @Html.TitleFor(model => model.ContractNo, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="form-row col-md-4">
+                        <div class="col">
+                            @Html.TextBoxFor(model => model.ContractNo, new { @class = "form-control mr-1", placeholder = AppProcessor.Messagor.GetMessage("Contract_ContractNo") })
+                            @Html.ValidationMessageFor(model => model.ContractNo, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="text-grey-l2 my-auto">/</div>
+                        <div class="col">
+                            @Html.TextBoxFor(model => model.ContractSignal, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("Contract_ContractSignal") })
+                            @Html.ValidationMessageFor(model => model.ContractSignal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>*@
+            <div class="form-group row">
+                @Html.TitleFor(model => model.PurposeId, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.PurposeId, new SelectList(Model.ListPurposes, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#ContractInfo #PurposeName',false)" })
+                    @Html.ValidationMessageFor(model => model.PurposeId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.PurposeName)
+                </div>
+            </div>
+        </div><!-- /.card-body -->
+    </div>
+
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-location-arrow text-primary"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Land_Address")
+            </h5>
+        </div>
+
+        <div class="card-body">
+            @Html.HiddenFor(model => model.ProvinceId)
+            @Html.HiddenFor(model => model.ProvinceName)
+            @Html.HiddenFor(model => model.DistrictId)
+            @Html.HiddenFor(model => model.DistrictName)
+            @Html.HiddenFor(model => model.WardId)
+            @Html.HiddenFor(model => model.WardName)
+
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Address, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Address, new { @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Contract_Land_Address"), onclick = "_onTypeAddress('#ContractInfo #',$('#ContractInfo #ProvinceId').val(),$('#ContractInfo #DistrictId').val(),$('#ContractInfo #WardId').val(),'','');", onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #DistrictId','#ContractInfo #DistrictName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <div class="form-row col-12">
+                    @Html.TitleFor(model => model.LandParcelNo, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.LandParcelNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_LandParcelNo"), onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #DistrictId','#ContractInfo #DistrictName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                        @Html.ValidationMessageFor(model => model.LandParcelNo, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.TitleFor(model => model.MapNo, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.MapNo, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_MapNo"), onchange = "_checkInfoLandAddess('#ContractInfo #MapNo','#ContractInfo #LandParcelNo','#ContractInfo #ProvinceId','#ContractInfo #ProvinceName','#ContractInfo #DistrictId','#ContractInfo #DistrictName','#ContractInfo #WardId','#ContractInfo #WardName')" })
+                        @Html.ValidationMessageFor(model => model.LandParcelNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.card-body -->
+    </div>
+
+    @{
+        if (Model.IsNew)
+        {
+            <div class="acard card h-100">
+                <div class="card-header pb-15">
+                    <h5 class="card-title">
+                        <i class="fas fa-file-invoice-dollar text-warning"></i>&nbsp;@AppProcessor.Messagor.GetMessage("ContractPayment_Title")
+                    </h5>
+                </div>
+
+                <div class="card-body" id="Payment">
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.PaymentMethod, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-7">
+                            @Html.DropDownListFor(model => model.PaymentMethod, new SelectList(Model.ListPaymentMethods, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "_onChangeCombo(this, '#Payment #PaymentMethodName',false)" })
+                            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.PaymentMethodName)
+                        </div>
+                    </div>
+                    <div class="form-group row col-12">
+                        <div class="form-row col-12">
+                            @Html.TitleFor(model => model.PercentAdvance, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.PercentAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance"), onchange = "_onChangePercentAdvance(this, '#ContractInfo [name=\"Total\"]', '#Payment #FormattedAdvanceAmount');" })
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @Html.TitleFor(model => model.PeriodAdvance, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.PeriodAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PeriodAdvance") })
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">ngày</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+                    <div class="form-group row">
+                        @Html.TitleFor(model => model.AdvanceAmount, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.FormattedAdvanceAmount, new { @readonly = true, @class = "form-control col-md-12 text-500 text-danger-d1 text-110", placeholder = AppProcessor.Messagor.GetMessage("Contract_AdvanceAmount") })
+                                <div class="input-group-append">
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.AdvanceAmount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div><!-- /.card-body -->
+            </div>
+        }
+    }
+
+    <hr class="border-none border-t-3 brc-grey-l2 border-double">
+    <div class="acard card h-100">
+        <div class="card-header pb-15">
+            <h5 class="card-title">
+                <i class="fas fa-tasks text-danger"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Contract_Tasks")
+            </h5>
+            <div class="card-toolbar">
+
+                @Html.Button(true, "AddTask", Url.Action("AddTask", new { area = "Major", contractId = Model.ContractId, typeContract = Model.ContractTypeId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "card-toolbar-btn btn px-4 btn-outline-purple mb-1", data_width = "1024px", title = "Thêm công việc", data_rel = "tooltip" })
+
+                @*<a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-light-default btn-brc-tp mx-2px">
+                        <i class="fa fa-angle-up w-2 mx-1px"></i>
+                    </a>*@
+
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="p-2 table-responsive-md px-1">
+                <table id="ListContractTasks" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                            <th class="w-25">@AppProcessor.Messagor.GetMessage("ContractTask_Contents")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Area")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Price")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("ContractTask_Amount")</th>
+                            <th class="w-5" id="total">@AppProcessor.Messagor.GetMessage("ContractTask_Total")</th>
+                            <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="bgc-yellow-m3 d-none">
+                        <tr class="text-500 text-danger text-105">
+                            <th class="w-25" colspan="5">@AppProcessor.Messagor.GetMessage("ContractTask_Totals")</th>
+                            <th class="w-25" colspan="2"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+<script src="~/Contents/Modules/Major/plugins/jquery.masknumber/jquery.masknumber.min.js"></script>
+<script src="~/Contents/Modules/Major/plugins/money2string/money2string.js"></script>
+
+<script type="text/javascript">
+
+    //debugger;
+    var typeContract = @(Model.ContractTypeId ?? 1);
+
+    var _tableContractTasks;
+
+    $(document).ready(function () {
+        _initTableContractTasks();
+
+        $('#Payment [name="FormattedAdvanceAmount"]').maskNumber({ integer: true });
+        $('#Payment [name="FormattedAdvanceAmount"]').trigger('keyup');
+        $('#Payment #PercentAdvance').trigger("change");
+
+        $("input[name='PercentAdvance'],input[name='PeriodAdvance']").inputFilter(function (value) {
+            return /^\d*$/.test(value);
+        }, "Phải nhập số nguyên không dấu");
+
+    });
+
+    function _initTableContractTasks() {
+        _tableContractTasks = $("#ListContractTasks").DataTable({
+            fixedHeader: {
+                header: true,
+                footer: true
+            },
+            "Responsive": true,
+            "language": {
+                "processing":
+                    "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+            },
+            "lengthChange": true,
+            "processing": true,
+            "serverSide": false,
+            "searching": false,
+            "paging": false, "info": false,
+            //"order": [[1, 'asc']],
+            "columns": [
+                {
+                    "data": "",
+                    "defaultContent": "1",
+                    "render": function (data, type, row, meta) {
+                        return meta.settings._iDisplayStart + meta.row + 1;
+                    }
+                },
+                {
+                    "data": "Contents",
+                    "defaultContent": "1",
+                    "render": function (data, type, row, meta) {
+                        if (type == "display") {
+                            if (typeContract == 1 || typeContract == 3) {
+                                if (row["RateFormula"] == null) return data;
+                                return "{0} (KL*ĐG*{1})".format(data, row["RateFormula"]);
+                            } else if (typeContract == 2) {
+                                if (row["RateFormula"] == null) return "{0} - <b>{1}</b>)".format(data, row.SubSectionName);
+                                return "{0} - <b>{2}</b> (KL*ĐG*{1})".format(data, row["RateFormula"], row.SubSectionName);
+                            }
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "Area",
+                    "sortable": false,
+                    "defaultContent": ""
+                },
+                {
+                    "data": "Price",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type === "display") {
+                            return VND.format(data);
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "Amount",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type == "display") {
+                            return "{0} ({1})".format(data, row["Unit"]);
+                        }
+                        return data;
+                    }
+                },
+                //{
+                //    "data": "Rate",
+                //    "visible": false,
+                //    "defaultContent": "",
+                //    "render": function (data, type, row, meta) {
+                //        if (type === "display") {
+                //            return data.toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 });
+                //        }
+                //        return data;
+                //    }
+                //},
+                {
+                    "data": "Total",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if (type === "display") {
+                            return "({0}) {1}".format(row["Rate"].toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 }), VND.format(data));
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "data": "TaskId",
+                    "style": "width:100px;",
+                    "orderable": false,
+                    "render": function (data, type, row, meta) {
+                        var html = '<span class="d-none d-lg-inline">';
+
+                        if (type === "display") {
+                            if (row["CanEdit"]) {
+                                html += _renderButton(true,
+                                    "EditTask",
+                                    "btn px-4 btn-outline-primary mr-1 v-hover",
+                                    "/Major/Contract/EditTask?taskId=" + data + "&contractId=@Model.ContractId",
+                                    '<i class="far fa-edit text-120"></i>',
+                                    "Cập nhật", "1024px");
+                            }
+
+                            html += _renderButton(true,
+                                "DeleteTask",
+                                "btn px-4 btn-outline-danger mr-1 v-hover",
+                                "/Major/Contract/DeleteTask?taskId=" + data + "&contractId=@Model.ContractId",
+                                '<i class="far fa-trash-alt text-120"></i>',
+                                "Xoá");
+                        }
+                        html += "</span>";
+
+                        return html;
+                    }
+                }
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api();
+
+                api.columns('#total', {
+                    page: 'current'
+                }).every(function () {
+                    var sum = this
+                        .data()
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+                    var totalAmount = Math.round(sum / 1000) * 1000;
+                    //var totalAmount = Math.round(sum);
+
+                    $("#ContractInfo [name='Total']").val(totalAmount);
+                    var money2String = new DocTienBangChu();
+                    $("#ContractInfo [name='TotalInWords']").val(money2String.doc(totalAmount, true).replaceAll('  ', ' ').replaceAll('   ', ' '));
+                    $(this.footer()).html(VND.format(totalAmount));
+
+                    $('#Payment [name="PercentAdvance"]').trigger("change");
+                });
+            }
+        });
+
+        _tableContractTasks.on('draw', function () {
+            var btnSubmit = $('#ContractInfo').parents('.modal-content').find('button[type="submit"]')[0];
+            var tblFooter = _tableContractTasks.footer();
+
+            if (_tableContractTasks.data().count() > 0) {
+                $(btnSubmit).removeClass('disabled');
+                $(tblFooter).removeClass('d-none');
+            } else {
+                if (!$(btnSubmit).hasClass('disabled')) {
+                    $(btnSubmit).addClass('disabled');
+                }
+
+                if (!$(tblFooter).hasClass('d-none')) {
+                    $(tblFooter).addClass('d-none');
+                }
+            }
+        });
+
+        var dataTasks = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.ListTasks))');
+        if (typeof dataTasks != null) {
+            _tableContractTasks.clear().rows.add(dataTasks).draw();
+            _tableContractTasks.column(0).data().sort();
+        }
+    }
+
+    function Task_OnProcessSuccess(response, formId) {
+        if (response.status != undefined) {
+            if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                if (response.status != undefined) {
+                    eval(response.message);
+                    var jsonDataTasks = JSON.parse(response.data);
+                    _tableContractTasks.clear().rows.add(jsonDataTasks).draw();
+
+                    response.status = undefined;
+                    var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                    $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                        _initElement();
+                    });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId).modal("hide");
+                $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                    function () {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            var jsonDataTasks = JSON.parse(response.data);
+                            _tableContractTasks.clear().rows.add(jsonDataTasks).draw();
+                            response.status = undefined;
+                        }
+                    });
+            }
+        } else {
+            $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+        }
+    }
+
+    function _onChangePercentAdvance(elePercent, eleRemainingAmount, eleAmountViaPercent) {
+        var percentAdvance = $(elePercent).val();
+        var rate = parseInt(percentAdvance) / 100;
+        var remainingAmount = $(eleRemainingAmount).val();
+        var amountViaPercent = Math.round(remainingAmount * rate / 1000) * 1000;
+        $(eleAmountViaPercent).val(amountViaPercent).trigger('keyup');
+    }
+
+    function _checkInfoLandAddess(eleMapNo, eleLandParcelNo, eleProvince, eleProvinceName, eleDistrict, eleDistrictName, eleWard, eleWardName) {
+        var mapNo = $(eleMapNo).val();
+        var landParcelNo = $(eleLandParcelNo).val();
+        var province = $(eleProvince).val();
+        var district = $(eleDistrict).val();
+        var ward = $(eleWard).val();
+
+        var provinceName = $(eleProvinceName).val();
+        var districtName = $(eleDistrictName).val();
+        var wardName = $(eleWardName).val();
+
+        var urlCheckLandMap = "@Url.Action("CheckLandMap", "Contract", new { area = "Major" })?mapNo=" + mapNo + "&landParcelNo=" + landParcelNo + "&provinceId=" + province + "&districtId=" + district + "&wardId=" + ward;
+        $.ajax({
+            type: "GET",
+            url: urlCheckLandMap,
+            dataType: "JSON",
+            success: function (response) {
+                if (response.status) {
+                    var htmlContracts = '';
+
+                    $.each(response.data, function (idx, contract) {
+                        htmlContracts += '<a href="@Url.Action("ViewContract")?contractId={0}" data-modal="" data-modal-id="ViewContract" class="text-primary-d2 bgc-h-primary-l3 radius-1 px-1" title="{1}" data-rel="tooltip">{1}</a>'.format(contract.ContractId, "{0} {1}/{2}".format(contract.ContractTypeName, contract.ContractNo, contract.ContractSignal));
+                    });
+
+                    bootbox.alert({
+                        title: '<span class="text-danger text-500 text-120"><i class="fas fa-exclamation-triangle"></i>&nbsp;Cảnh báo</span>',
+                        message: '<p class="alert bgc-secondary-l4 brc-danger-m1 border-0 border-l-4 radius-0 text-danger-d2 text-500 text-110"><i class="far fa-hand-point-right mr-1"></i><span>Dữ liệu thửa đất <b class="text-danger-d2">' + landParcelNo + '</b> tờ bản đồ <b class="text-danger-d2">' + mapNo + '</b> tại <b class="text-danger-d2">' + wardName + ',' + districtName + ',' + provinceName + '</b> đã được sử dụng tại @AppProcessor.Messagor.GetMessage("Contract_Title")' + htmlContracts +' </span></p><hr/><div class="alert bgc-primary-l4 brc-primary-m4 d-flex align-items-center text-dark-tp2" role="alert"><i class="fas fa-info-circle mr-3 fa-2x text-blue"></i><span class="text-500">Vui lòng kiểm tra để tránh trùng dữ liệu!</span></div>',
+                        onEscape: true,
+                        closeButton: false,
+                        //callback: function (result) {
+
+                        //}
+                    });
+                }
+            }
+        });
+    }
+
+</script>

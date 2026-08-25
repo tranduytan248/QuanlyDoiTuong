@@ -1,0 +1,82 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateUnionMemberModel
+
+@Html.AntiForgeryToken()
+<div id="UnionMember">
+    @Html.HiddenFor(model => model.Permit)
+
+    @if (!string.IsNullOrEmpty(Model.UserName))
+    {
+        <div class="form-group row">
+            @Html.TitleFor(model => model.UnionId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-9">
+                @Html.SelectFor(model => model.UnionId, Model.ListUnions, "", new { @class = "form-control col-md-10" })
+                @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.UnionName)
+            </div>
+        </div>
+    }
+    else
+    {
+        @Html.HiddenFor(model => model.UnionId)
+    }
+
+    @{
+        if (string.IsNullOrEmpty(Model.UserName))
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.UserName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.UserName, new SelectList(Model.ListUsers, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "_onChangeCombo(this, '#UnionMember #FullName')" })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.FullName)
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label text-sm-right pr-0 font-bold">@AppProcessor.Messagor.GetMessage("Union_Member_Title")</label>
+                <div class="col-md-9">
+                    <div class="mx-2 my-auto">
+                        <div class="text-600 text-primary-d1">
+                            <span class="text-110">@Model.FullName</span>
+                        </div>
+                        <span class="text-100 text-danger-d1"><i class="fas fa-at"></i>&nbsp;@Model.Email</span>
+                    </div>
+                    @Html.HiddenFor(model => model.UserName)
+                    @Html.HiddenFor(model => model.FullName)
+                    @Html.HiddenFor(model => model.Email)
+                </div>
+            </div>
+        }
+    }
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.PositionId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model.PositionId, new SelectList(Model.ListPositions, "Value", "Text"), "", new { @class = "form-control col-md-10", onchange = "_onChangeCombo(this, '#UnionMember #PositionName')" })
+            @Html.ValidationMessageFor(model => model.PositionId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PositionName)
+        </div>
+    </div>
+
+    @*<div class="form-group row">
+            @Html.TitleFor(model => model.Permit, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <label class="col-form-label col-3">
+                @Html.RadioButtonFor(model => model.Permit, (int)EnumUnionMemberPermit.View, new { tabindex = 0, id = "MemberPermit_View" }) @Html.Label(AppProcessor.Messagor.GetMessage("MemberPermit_View"), new { @for = "MemberPermit_View" })
+            </label>
+            <label class="col-form-label col-3">
+                @Html.RadioButtonFor(model => model.Permit, (int)EnumUnionMemberPermit.Handler, new { tabindex = 0, id = "MemberPermit_Handler" }) @Html.Label(AppProcessor.Messagor.GetMessage("MemberPermit_Handler"), new { @for = "MemberPermit_Handler" })
+            </label>
+        </div>*@
+
+</div>
+
+<script>
+    $('#UnionId').change(function () {
+        var selectedUnionName = $(this).find(':selected').text();
+        console.log(selectedUnionName);
+        $('#UnionName').val(selectedUnionName);
+    });
+</script>

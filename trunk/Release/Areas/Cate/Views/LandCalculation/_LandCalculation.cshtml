@@ -1,0 +1,42 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateLandCalculationModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.LandCalculationId)
+
+<div class="form-group row">
+    @Html.TitleFor(model => model.ContentLandId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.DropDownListFor(model => model.ContentLandId, new SelectList(Model.ListContentLands.OrderBy(x => x.ContentLandId), "ContentLandId", "ContractTypeAndContentLand"), "", new { id = "ContentLandDropdown", @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ContentLandId, "", new { @class = "text-danger" })
+    </div>
+</div>
+@*<div class="form-group row">
+    @Html.TitleFor(model => model.Condition, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Condition, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Condition_Label_Name"), @rows = 1 })
+        @Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+    </div>
+</div>*@
+<div class="form-group row">
+    @Html.TitleFor(model => model.Condition, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Condition, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Condition_Label_Name"), @rows = 3 })
+        @Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.Recipe, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.Recipe, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Recipe_Label_Name") })
+        @Html.ValidationMessageFor(model => model.Recipe, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group row">
+    @Html.TitleFor(model => model.Percentage, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+    <div class="col-md-8">
+        @Html.TextBoxFor(model => model.Percentage, new { @type="number", @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Percentage_Label_Name") })
+        @Html.ValidationMessageFor(model => model.Percentage, "", new { @class = "text-danger" })
+    </div>
+</div>

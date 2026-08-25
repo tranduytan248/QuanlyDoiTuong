@@ -1,0 +1,19 @@
+﻿@using HtmlAgilityPack
+@model Modules.Major.Areas.Major.Models.PublishInvModel
+
+
+<div id="Invoice">
+    @Html.HiddenFor(model => model.ContractId)
+
+    <div class="card-body p-0">
+        <div class="row">
+            @{
+                var htmlDoc = new HtmlDocument();
+                var html = Html.RenderXml(Model.DataInvHtmlView, Model.TemplateInvViewPath);
+
+                htmlDoc.LoadHtml(html.ToHtmlString());
+                @Html.Raw(htmlDoc.DocumentNode.OuterHtml);
+            }
+        </div>
+    </div>
+</div>

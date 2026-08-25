@@ -1,0 +1,17 @@
+﻿@model Cores.Major.Models.MajorContractModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.UnionId)
+@Html.HiddenFor(model => model.ContractId)
+@Html.HiddenFor(model => model.ContractNo)
+@Html.HiddenFor(model => model.ContractSignal)
+@Html.HiddenFor(model => model.CusName)
+@Html.HiddenFor(model => model.PurposeId)
+@Html.HiddenFor(model => model.LandParcelNo)
+@Html.HiddenFor(model => model.MapNo)
+@Html.HiddenFor(model => model.Address)
+@Html.HiddenFor(model => model.ContractTypeId)
+@Html.HiddenFor(model => model.ContractTypeName)
+@Html.HiddenFor(model => model.IsNew)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+<hr />

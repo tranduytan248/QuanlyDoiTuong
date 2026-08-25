@@ -1,0 +1,61 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("ContractForm_Label_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @*@using (Ajax.BeginForm("Edit", "ContractForm", new { area = "Cate" }, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnSuccess = "ContractForm_OnProcessSuccess(data, 'EditContractForm')"
+        }, new { @class = "form-horizontal" }))*@
+    @using (Html.BeginForm("Edit", "ContractForm", new { area = "Cate" }, FormMethod.Post, new { encType = "multipart/form-data", id = "EditContractForm", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_ContractForm")
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $('form#EditContractForm').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_EditContractForm #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableContractForm.ajax.reload(null, false);
+                            response.status = undefined;
+                            var urlAction = $("#ModalContent #modal_EditContractForm form").attr("action");
+                            $("#ModalContent #modal_EditContractForm #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                                _initElement();
+                            });
+                        }
+                    } else {
+                        $("#ModalContent #modal_EditContractForm").modal("hide");
+                        $("#ModalContent #modal_EditContractForm").on("hidden.bs.modal",
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableContractForm.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_EditContractForm #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

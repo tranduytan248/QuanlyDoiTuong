@@ -1,0 +1,35 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateContentLandSearchModel
+
+<div class="card dcard" id="SearchContentLand">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="row col-md-12 form-horizontal mt-3" id="Search">
+            @*<div class="form-group row col-md-6" ">
+                <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("LandArea_Label_LandSize")</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.TuKhoa, new { @class = "form-control", placeholder = AppProcessor.Messagor.GetMessage("LandArea_Label_TuKhoa") })
+                </div>
+            </div>*@
+            <div class="form-group row col-md-12">
+                <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("ContractType_Label_Name")</label>
+                <div class="col-md-6 dropdownlist_search">
+                    @*@Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.lst_ContractType.OrderBy(x => x.ContractTypeId), "ContractTypeId", "ContractTypeName"), "", new { id = "ContractTypeDropdown", @class = "form-control" })*@
+                    @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { id = "ContractTypeDropdown", @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="Search()"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+            </div>
+        </div>
+    </div>
+</div>

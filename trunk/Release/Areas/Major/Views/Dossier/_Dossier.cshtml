@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.DossierId)
+@Html.HiddenFor(model => model.ProcedureId)
+@Html.HiddenFor(model => model.ProcedureName)
+@Html.HiddenFor(model => model.InStep)
+@Html.HiddenFor(model => model.InStepName)
+@Html.HiddenFor(model => model.UnionHandled)
+@Html.HiddenFor(model => model.PositionId)
+@Html.HiddenFor(model => model.TotalHandlingTime)
+
+<div id="Dossier">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.DossierName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.DossierName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Dossier_Name") })
+            @Html.ValidationMessageFor(model => model.DossierName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ProcedureName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.ProcedureName, new { disabled = true, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Procedure_Title") })
+            @Html.ValidationMessageFor(model => model.ProcedureName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

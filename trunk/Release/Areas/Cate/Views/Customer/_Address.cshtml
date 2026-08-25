@@ -1,0 +1,58 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateCustomerModel
+@Html.HiddenFor(model => model.ProvinceName)
+@Html.HiddenFor(model => model.DistrictName)
+@Html.HiddenFor(model => model.WardName)
+@Html.HiddenFor(model => model.StreetName)
+<div class="form-group row">
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.ProvinceId, new { @class = "col-sm-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-lg-8">
+            @Html.DropDownListFor(model => model.ProvinceId, new SelectList(Model.Provinces, "ProvinceId", "ProvinceName"), "",
+           new { id = "ProvinceId", @class = "form-control col-12", onchange = "OnChangeProvince(this, $('select#DistrictId'))" })
+            @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.DistrictId, new { @class = "col-sm-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-lg-8">
+            @Html.DropDownListFor(model => model.DistrictId, new SelectList(Model.Districts, "DistrictId", "DistrictName"), "",
+           new { id = "DistrictId", @class = "form-control col-12", onchange = "OnChangeDistrict(this, $('select#WardId'))" })
+            @Html.ValidationMessageFor(model => model.DistrictId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.WardId, new { @class = "col-sm-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.WardId, new SelectList(Model.Wards, "WardId", "WardName"), "", new
+                { id = "WardId", @class = "form-control col-12 w-100", onchange = "OnChangeWard(this, $('select#StreetId'))" })
+            @Html.ValidationMessageFor(model => model.WardId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.StreetId, new { @class = "col-sm-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-sm-8">
+            @Html.DropDownListFor(model => model.StreetId, new SelectList(Model.Streets, "StreetId", "StreetName"), "", new
+       { id = "StreetId", @class = "form-control col-12", onchange = "OnChangeStreet(this)" })
+            @Html.ValidationMessageFor(model => model.StreetId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.ApartmentNumber, new { @class = "col-sm-4 col-form-label  text-sm-right pr-0 font-bold" })
+        <div class="col-lg-8">
+            @Html.TextBoxFor(model => model.ApartmentNumber, new { id = "ApartmentNumber", @class = "form-control col-lg-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Label_ApartmentNumber") })
+            @Html.ValidationMessageFor(model => model.ApartmentNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row col-lg-6">
+        @Html.TitleFor(model => model.Alley, new { @class = "col-sm-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-lg-8">
+            @Html.TextBoxFor(model => model.Alley, new { id = "Alley", @class = "form-control col-lg-12", placeholder = AppProcessor.Messagor.GetMessage("Customer_Label_Alley") })
+            @Html.ValidationMessageFor(model => model.Alley, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

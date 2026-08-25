@@ -1,0 +1,91 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Team_Title");
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @Html.Button(true, "AddTeam", Url.Action("Add", new { area = "Cate" }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1024px" })
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md">
+            <table id="DSTeam" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                <tr>
+                    <th>@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("District_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Ward_Title")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Team_Label_Code")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Team_Label_Name")</th>
+                    <th>@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Cate/Views/Team/Team.js")"></script>
+    <script type="text/javascript">
+
+        $("#Search select#ListProvinceId").on("change",
+            function() {
+                var selectedProvince = $(this).val();
+                var urlDistrictsBelongProvince = "@Url.Action("GetDistrictsBelongProvince", "Ajax", new { area = "Cate" })?provinceIds=" + selectedProvince;
+                $.ajax({
+                    type: "GET",
+                    url: urlDistrictsBelongProvince,
+                    dataType: "JSON",
+                    success: function(response) {
+                        $("#Search select#ListDistrictId").empty();
+                        $("#Search select#ListDistrictId").append('<option value=""></option>');
+                        $.each(response.Districts,
+                            function(index, item) {
+                                $("#Search select#ListDistrictId").append('<optgroup label="' + index + '">');
+                                $.each(item,
+                                    function(idx, district) {
+                                        $("#Search select#ListDistrictId").append('<option value="' + district.DistrictId + '">' + district.DistrictName + "</option>");
+                                    });
+                                $("#Search select#ListDistrictId").append('</optgroup>');
+                            });
+                    }
+                });
+            });
+
+        $("#Search select#ListDistrictId").on("change",
+            function() {
+                var selectedDistrict = $(this).val();
+                var urlWardsBelongDistrict = "@Url.Action("GetWardsBelongDistrict", "Ajax", new { area = "Cate" })?districtIds=" + selectedDistrict;
+                $.ajax({
+                    type: "GET",
+                    url: urlWardsBelongDistrict,
+                    dataType: "JSON",
+                    success: function(response) {
+                        $("#Search select#ListWardId").empty();
+                        $("#Search select#ListWardId").append('<option value=""></option>');
+                        $.each(response.Wards,
+                            function(index, item) {
+                                $("#Search select#ListWardId").append('<optgroup label="' + index + '">');
+                                $.each(item,
+                                    function(idx, ward) {
+                                        $("#Search select#ListWardId").append('<option value="' + ward.WardId + '">' + ward.WardName + "</option>");
+                                    });
+                                $("#Search select#ListWardId").append('</optgroup>');
+                            });
+                    }
+                });
+            });
+
+    </script>
+}

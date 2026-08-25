@@ -1,0 +1,88 @@
+﻿@model Cores.Major.Models.MajorDossierTaskModel
+
+<div class="card ccard bgc-black-tp10 mt-4 mt-md-0 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="accordion" id="accordionSituations">
+            <div class="card border-0 bgc-purple-l5">
+                <div class="card-header border-0 bgc-transparent mb-0" id="headingSituation">
+                    <h2 class="card-title bgc-transparent text-purple-d2 brc-purple">
+                        <a class="d-style btn btn-white bgc-white btn-brc-tp btn-h-outline-purple btn-a-outline-purple accordion-toggle border-l-3 radius-0 collapsed" href="#Situations" data-toggle="collapse" aria-expanded="false" aria-controls="Situations">
+                            <i class="fas fa-tasks"></i>&nbsp;@Html.DisplayNameFor(model => model.SelectedSituation)
+
+                            <!-- the toggle icon -->
+                            <span class="v-collapsed px-3px radius-round d-inline-block brc-grey-l1 border-1 mr-3 text-center position-rc">
+                                <i class="fa fa-angle-down toggle-icon w-2 mx-1px text-90"></i>
+                            </span>
+                            <span class="v-n-collapsed px-3px radius-round d-inline-block bgc-purple mr-3 text-center position-rc">
+                                <i class="fa fa-angle-down toggle-icon w-2 mx-1px text-white text-90 pt-1px"></i>
+                            </span>
+                        </a>
+                    </h2>
+                </div>
+
+                <div id="Situations" class="collapse" aria-labelledby="headingSituation" data-parent="#accordionSituations">
+                    <div class="card-body pt-1 text-dark-m1 border-l-3 brc-purple bgc-purple-l5">
+                        <div class="col-md-12">
+                            @{
+                                foreach (var situation in Model.InStepView.Situations)
+                                {
+                                    <div id="@situation.SituationId" class="task-item d-flex align-items-center border-t-1 bgc-h-purple-l3 brc-secondary-l3 px-2">
+                                        <label>
+                                            <input type="checkbox" name="SelectedSituation" value="@situation.SituationId" class="align-middle input-sm ml-2 mr-25" id="situation-@situation.SituationId" onchange="_onSelecteSituation(this, '@situation.SituationId', '@situation.SituationDesc');" />
+                                        </label>
+
+                                        <label class="flex-grow-1 py-2" for="situation-@situation.SituationId">
+                                            <span class="align-middle py-1 text-danger text-500">
+                                                @situation.SituationDesc
+                                            </span>
+                                            <div class="my-1"><i class="fas fa-arrow-right text-danger"></i>&nbsp;<span class="badge bgc-primary brc-primary text-white badge-lg arrowed arrowed-in-right mb-1">@situation.NextStepName</span></div>
+                                        </label>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- /.card -->
+
+<script type="text/javascript">
+    //debugger;
+    $(document).ready(function () {
+        var situationId = "@Model.SelectedSituation";
+        if (situationId.length > 0) {
+            $('#Situations div.task-item input[type="checkbox"][id="situation-' + situationId + '"]').prop("checked", true).trigger('change');
+        }
+        //setTimeout(function () {
+        //    _onCollapseCard("eleSituations;");
+        //}, 700);
+    });
+
+    function _onSelecteSituation(chk, situationId, situationName) {
+        if (chk.checked) {
+            $('#Situations div.task-item').addClass("d-flex");
+            $('#Situations div.task-item:not([id="' + situationId + '"])').removeClass("d-flex").addClass("d-none");
+            $('input[type="hidden"][id="SelectedSituationName"]').val(situationName);
+            _reloadStepHandler(situationId);
+
+        }
+        else {
+            $('#Situations div.task-item:not([id="' + situationId + '"])').removeClass("d-none");
+            $('#Situations div.task-item').addClass("d-flex");
+            $('input[type="hidden"][id="SelectedSituationName"]').val("");
+            _reloadStepHandler(null);
+        }
+    }
+
+    //function _onCollapseCard(cardIds) {
+    //    var arrCardIds = cardIds.split(';');
+    //    $.each(arrCardIds, function (idx, cardId) {
+    //        if (cardId.length > 0) {
+    //            $("#" + cardId + " a[data-action='toggle']")[0].click();
+    //        }
+    //    });
+    //}
+</script>

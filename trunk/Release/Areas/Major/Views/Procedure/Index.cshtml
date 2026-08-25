@@ -1,0 +1,49 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = AppProcessor.Messagor.GetMessage("Procedure_Title");
+}
+
+@section PluginCss
+{
+    <link rel="stylesheet" type="text/css" href="~/Contents/Base/plugins/ace_v4/node_modules/jqtree/jqtree.css">
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    @Html.Button(true, "AddProcedure", Url.Action("Add", new { area = "Major" }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "860px" })
+}
+
+@Html.Partial("_Search")
+
+<div class="mt-3">
+    <div class="card dcard">
+        <div class="p-2 table-responsive-md">
+            <table id="DSProcedure" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                    <tr>
+                        <th class="w-5">@AppProcessor.Messagor.GetMessage("Column_No")</th>
+                        <th class="">@AppProcessor.Messagor.GetMessage("Procedure_Name")</th>
+                        @*<th>@AppProcessor.Messagor.GetMessage("Procedure_ApplyFrom")</th>*@
+                        @*<th>@AppProcessor.Messagor.GetMessage("Procedure_ExpiredOn")</th>*@
+                        <th class="w-25">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section PluginJs
+{
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/jqtree/tree.jquery.js")"></script>
+}
+
+@section BottomScript
+{
+    <script src="@Url.Content("~/Areas/Major/Views/Procedure/Procedure.js")"></script>
+}

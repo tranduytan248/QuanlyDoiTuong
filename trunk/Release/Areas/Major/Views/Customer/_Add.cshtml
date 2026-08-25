@@ -1,0 +1,83 @@
+﻿@using TSFramework.App.Processors
+@using Cores.eContract.Consts
+@model Cores.Major.Models.MajorCustomerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Customer_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@Html.HiddenFor(model => model.CusId)
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "Customer", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Customer_OnProcessSuccess(data, 'AddCustomer')"
+    }, new { @class = "form-horizontal", id = "AddCustomer" }))
+    {
+        <div id="CusInfo">
+            <div id="TypeCus">
+                <div class="form-group row">
+                    @Html.TitleFor(model => model.TypeCus, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-9">
+                        <label class="px-0 pt-2">
+                            @Html.RadioButtonFor(model => model.TypeCus, ConstsCusType.CONSUMER, new { onchange = "_onChangeTypeCus(this, '#CusInfo #TypeCusName', '" + AppProcessor.Messagor.GetMessage("CusType_Consumer") + "')" })
+                            <span class="badge bgc-info brc-info text-white badge-lg arrowed arrowed-in-right mb-1">
+                                <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Consumer")</span>
+                            </span>
+                        </label>
+
+                        <label class="px-0 pt-2">
+                            @Html.RadioButtonFor(model => model.TypeCus, ConstsCusType.BUSINESS, new { onchange = "_onChangeTypeCus(this, '#CusInfo #TypeCusName', '" + AppProcessor.Messagor.GetMessage("CusType_Business") + "')" })
+                            <span class="badge bgc-success brc-success text-white badge-lg arrowed arrowed-in-right mb-1">
+                                <span class="px-3">@AppProcessor.Messagor.GetMessage("CusType_Business")</span>
+                            </span>
+                        </label>
+                        @Html.HiddenFor(model => model.TypeCusName)
+                    </div>
+                </div>
+                <hr />
+            </div>
+            <div id="CusInfoViaType">
+                @Html.Partial("_Consumer")
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+    //debugger;
+
+    function _onChangeTypeCus(rdb, eleName, name) {
+        $(eleName).val(name);
+        var selectedVal = $(rdb).val();
+        var cusTypeConsumer = '@ConstsCusType.CONSUMER'; //Cá nhân
+        if (cusTypeConsumer == selectedVal) {
+            $("#CusInfoViaType").load("@Url.Action("Consumer")");
+        } else {
+            $("#CusInfoViaType").load("@Url.Action("Business")");
+        }
+    }
+
+    function _onTypeAddress(parentId, provinceId, districtId, wardId, streetName, addressNo) {
+        var hrefAddessModal = "@Url.Action("Address", new { area = "Major" })?parentId=" + encodeURIComponent(parentId) + "&provinceId=" + provinceId + "&districtId=" + districtId + "&wardId=" + wardId + "&streetName=" + streetName + "&addressNo=" + addressNo;
+        var htmlButton = '@Html.Button(true, "addressModal", Url.Action("Address", new { area = "Major" }), "<i class=\"fas fa-check-double\"></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "", data_none_template = 1 })'.format(hrefAddessModal);
+
+        var eleTypeAddress = $.parseHTML(htmlButton);
+        $(eleTypeAddress[0]).attr('href', hrefAddessModal);
+        document.body.appendChild(eleTypeAddress[0]);
+        $(eleTypeAddress).click();
+    }
+
+    </script>
+}
+

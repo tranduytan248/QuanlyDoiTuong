@@ -1,0 +1,116 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.SAVFormModel
+@{
+    ViewBag.Title = $"{AppProcessor.Messagor.GetMessage("Form_Title")} - {Model.FormName}";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    success
+}
+
+@section FormIcon{
+    <i class="fas fa-cloud-download-alt"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Export", "Form", new { area = "Major", id = Model.FormId }, FormMethod.Post, new { encType = "multipart/form-data", id = "ExportForm", @class = "form-horizontal" }))
+    {
+        @Html.HiddenFor(model => model.FormId)
+        <div id="bodyForm" class="mx-2">
+            <div class="col-12">
+                @Html.Button(false, "DesignForm", $"/Major/Design/Index/{Model.FormId}", "<i class='fas fa-tools'></i>", "Chỉnh sửa", new { target = "_blank", @class = "btn px-4 btn-outline-purple mb-1" })
+                <hr />
+            </div>
+            <div class="col-12">
+                <div class="form-group row">
+                    @Html.TitleFor(model => model.SampleFormData, new { @class = "col-sm-2 col-form-label text-sm-right pr-0 font-bold" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.SampleFormData, new { rows = 4, @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("Form_SampleFormData"), onchange = "_onChangeSampleValue(this);" })
+                    </div>
+                </div>
+                <hr />
+            </div>
+            @Html.Raw(Model.ViewName)
+        </div>
+    }
+    <script type="text/javascript">
+        //debugger;
+
+        $(document).ready(function () {
+            $("#modal_ExportForm .modal-dialog").addClass("modal-dialog-scrollable");
+            $("#modal_ExportForm .modal-body").addClass("ace-scrollbar");
+        });
+
+        var mappingFormKeys = @(string.IsNullOrEmpty(Model.MappingFormKeys) ? Html.Raw("{}") : Html.Raw(Model.MappingFormKeys));
+
+        function _onChangeSampleValue(ele) {
+            var formData = $(ele).val();
+            if(formData.length > 0)
+            {
+                var jsonFormDatas = JSON.parse(formData);
+                for (var key in jsonFormDatas) {
+                    var lstKeysMapping = mappingFormKeys[key];
+
+                    if(typeof lstKeysMapping != "undefined" && lstKeysMapping.length > 0){
+                        $.each(lstKeysMapping, function(index, value){
+                            if(toString.call(value) == '[object Object]'){
+                                if(jsonFormDatas[key] != ''){
+                                    $("#ExportForm [name='"+value.Key+"']").val(eval(value.Function.format(jsonFormDatas[key]))).trigger("change");
+                                    $("#ExportForm [name='"+value.Key+"']:not(input)").html(eval(value.Function.format(jsonFormDatas[key])));
+                                }
+                            }else{
+                                if(jsonFormDatas[key] != ''){
+                                    var $formEle = $("#ExportForm [name='"+value+"']");
+                                    if($formEle.length <= 0) return;
+                                    if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                                        $formEle.filter('[value='+jsonFormDatas[key]+']').prop('checked', true);
+                                    }
+                                    else {
+                                        $formEle.val(jsonFormDatas[key]).trigger("change");
+                                        $("#ExportForm [name='"+value+"']:not(input)").html(jsonFormDatas[key]);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    if(jsonFormDatas[key] != ''){
+                        var $formEle = $("#ExportForm [name='"+key+"']");
+                        if($formEle.length <= 0) continue;
+                        if($formEle[0].attributes.hasOwnProperty("type") && $formEle[0].attributes["type"].value == "radio"){
+                            $formEle.filter('[value='+jsonFormDatas[key]+']').prop('checked', true);
+                        }
+                        else {
+                            $formEle.val(jsonFormDatas[key]).trigger("change");
+                            $("#ExportForm [name='"+key+"']:not(input)").html(jsonFormDatas[key]);
+                        }
+                    }
+                }
+            }
+        }
+
+        function _previewForm(){
+            var formData = $("form#ExportForm").serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Preview",new{id = Model.FormId})",
+                data: formData,
+                success: function(response, textStatus, jqXHR) {
+                    if (response.status != undefined && !response.status) {
+                        eval(response.message);
+                    }else if (response != undefined){
+                        _showModal(response,"TmpExport", "fullscreen", "#ExportForm");
+                        _onFullscreen();
+                    }
+                }
+            });
+        }
+    </script>
+}
+@section SubmitControl{
+	<button type="button" id="btnReview" class="btn px-4 btn-outline-info mb-1" onclick="_previewForm();"><i class="fas fa-eye"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Preview")</button>
+
+    <button type="submit" id="btnExport" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-cloud-download-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Export")</button>
+}

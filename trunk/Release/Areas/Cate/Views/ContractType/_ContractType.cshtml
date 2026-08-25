@@ -1,0 +1,68 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateContractTypeModel
+
+@Html.AntiForgeryToken()
+
+
+<div id="ContractType">
+    @{
+        if (Model.IsEdit)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.ContractTypeId, new { @class = "col-md-4 col-form-label pr-0 font-bold text-sm-right" })
+                <div class="col-md-6">
+                    @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { disabled = true, @class = "form-control", onchange = "_onChangeCombo(this, '#ContractType #ContractTypeName', false)" })
+                    @Html.ValidationMessageFor(model => model.ContractTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            
+            @Html.HiddenFor(model => model.ContractTypeId)
+            @Html.HiddenFor(model => model.ContractTypeCode)
+            @Html.HiddenFor(model => model.ContractTypeName)
+        }
+        else
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.ContractTypeId, new { @class = "col-md-4 col-form-label pr-0 font-bold text-sm-right" })
+                <div class="col-md-6">
+                    @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "form-control", onchange = "_onChangeCombo(this, '#ContractType #ContractTypeName', false)" })
+                    @Html.ValidationMessageFor(model => model.ContractTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @Html.HiddenFor(model => model.ContractTypeCode)
+            @Html.HiddenFor(model => model.ContractTypeName)
+        }
+    }
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.FileId, new { @class = "col-md-4 col-form-label pr-0 font-bold text-sm-right" })
+        <div class="col-md-6">
+            @Html.DropDownListFor(model => model.FileId, new SelectList(Model.ListTemplate.ResData.TemplateContracts, "Id", "TemplateName"), "", new { @class = "form-control", onchange = "_onChangeCombo(this, '#ContractType #FileName',false)" })
+            @Html.HiddenFor(model => model.FileName)
+            @Html.ValidationMessageFor(model => model.FileId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.PercentAdvance, new { @class = "col-md-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-3">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.PercentAdvance, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Contract_PercentAdvance") })
+                <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.PercentAdvance, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ContractSignal, new { @class = "col-md-4 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-4">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.ContractSignal, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("ContractType_ContractSignal") })
+            </div>
+            @Html.ValidationMessageFor(model => model.ContractSignal, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

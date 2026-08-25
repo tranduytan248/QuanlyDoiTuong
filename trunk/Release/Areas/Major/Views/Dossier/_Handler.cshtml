@@ -1,0 +1,74 @@
+﻿@model Cores.Major.Models.MajorDossierTaskSwitchHandlerModel
+
+<div id="SwitchHandler">
+    @Html.HiddenFor(model => model.HandlerId)
+    @Html.HiddenFor(model => model.TaskId)
+    @Html.HiddenFor(model => model.TaskName)
+    @Html.HiddenFor(model => model.IsEdit)
+
+    <div class="form-group row">
+        <div class="col-md-10">
+            @Html.TitleFor(model => model.UnionId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.UnionName, new { disabled = true, @class = "form-control col-md-11" })
+            @Html.HiddenFor(model => model.UnionName)
+            @Html.HiddenFor(model => model.UnionId)
+        </div>
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.DeptId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.TextBoxFor(model => model.DeptName, new { disabled = true, @class = "form-control col-md-11" })
+            @Html.HiddenFor(model => model.DeptName)
+            @Html.HiddenFor(model => model.DeptId)
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="card ccard radius-t-0 h-100 col-12">
+            <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div><!-- the blue line on top -->
+
+            <div class="card-header brc-secondary-l3 pb-3">
+                <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                    <i class="fas fa-users"></i>&nbsp;Người xử lý
+                </h5>
+
+                <div class="card-toolbar no-border pl-0 pl-md-2">
+                </div>
+            </div>
+            <div class="card-body bgc-white p-0 pb-15 col-md-12">
+                @{
+                    foreach (var staff in Model.StaffsViaDept)
+                    {
+                        <div class="task-item d-flex align-items-center border-t-1 bgc-h-green-l3 brc-secondary-l3 px-2">
+                            <label class="">
+                                <input name="TaskHandlers" type="checkbox" class="align-middle ml-2 mr-25" id="@(staff.UserName)" value="@staff.UserName" onchange="_onSelectHandler(this);" />
+                            </label>
+                            <label class="flex-grow-1 mr-3 py-3 text-105 text-500" for="@(staff.UserName)">
+                                <span class="align-middle">
+                                    @staff.FullName
+                                </span>
+                            </label>
+                            <span class="badge bgc-danger-l3 border-r-2 radius-r-0 brc-danger-m2 text-danger-d1 ml-1 mr-2 text-90">
+                                @staff.PositionName
+                            </span>
+                            <label class="my-auto pt-2 d-none" id="lblPrimary">
+                                <input name="PrimaryHandler" type="radio" class="align-middle ml-2 mr-25" id="IsPrimary-@staff.UserName" value="@staff.UserName" />
+                                <label class="font-bold text-primary" for="IsPrimary-@staff.UserName">Xử lý chính</label>
+                            </label>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var hasPrimary = @(Model.HasPrimary ? 1 : 0) == 1;
+    function _onSelectHandler(rdb) {
+        if (!hasPrimary) {
+            if ($(rdb).is(":checked")) {
+                $(rdb).parents('div.task-item').find('label[id="lblPrimary"]').removeClass('d-none');
+            } else {
+                $(rdb).parents('div.task-item').find('label[id="lblPrimary"]').addClass('d-none');
+            }
+        }
+    }
+</script>

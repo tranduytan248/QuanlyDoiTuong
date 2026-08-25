@@ -1,0 +1,11 @@
+﻿@model Cores.Major.Models.MajorProcedureStepHandlingTimeModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary()
+@Html.HiddenFor(model => model.HandlingTimeId)
+@Html.HiddenFor(model => model.HandlingTime)
+@Html.HiddenFor(model => model.PurposeIds)
+@Html.HiddenFor(model => model.PurposeNames)
+@Html.HiddenFor(model => model.StepId)
+@Html.HiddenFor(model => model.ProcedureId)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>

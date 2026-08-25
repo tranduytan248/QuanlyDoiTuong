@@ -1,0 +1,16 @@
+﻿@model Cores.Major.Models.MajorProcedureStepHandlerModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary()
+@Html.HiddenFor(model => model.StepId)
+@Html.HiddenFor(model => model.ProcedureId)
+@Html.HiddenFor(model => model.UnionId)
+@Html.HiddenFor(model => model.UnionName)
+@Html.HiddenFor(model => model.DeptId)
+@Html.HiddenFor(model => model.DeptName)
+@Html.HiddenFor(model => model.StaffId)
+@Html.HiddenFor(model => model.StaffName)
+
+@Html.HiddenFor(model => model.PositionID)
+@Html.HiddenFor(model => model.PositionName)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>

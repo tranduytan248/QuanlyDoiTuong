@@ -1,0 +1,32 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepHandlerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), $"{AppProcessor.Messagor.GetMessage("Step_Handler")}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("AddHandler", "Procedure", new { area = "Major", stepId = Model.StepId, procedureId = Model.ProcedureId }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "HandlerStep_OnProcessSuccess(data, 'AddHandler')"
+    }, new { @class = "form-horizontal", id = "AddHandler" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Handler")
+        </div>
+    }
+}
+@section ContinueForm{
+
+}

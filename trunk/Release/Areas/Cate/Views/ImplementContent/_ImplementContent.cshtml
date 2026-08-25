@@ -1,0 +1,36 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateImplementContentModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.ImplementContentId)
+@Html.HiddenFor(model => model.ContractForm)
+
+<div id="GiayPhepChungNhan_ID">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.WorkContent, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.WorkContent, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("WorkContent") })
+            @Html.ValidationMessageFor(model => model.WorkContent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.WorkPurpose, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.WorkPurpose, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("WorkPurpose") })
+            @Html.ValidationMessageFor(model => model.WorkPurpose, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.FileId, new { @class = "col-md-3 col-form-label pr-0 font-bold text-sm-right" })
+        <div class="col-md-7">
+            @Html.DropDownListFor(model => model.FileId, new SelectList(Model.ListFileSavDoc, "Value", "Text"), "", new { @class = "form-control" })
+        </div>
+    </div>
+
+</div>
+
+
+@Html.RenderScripts(ScriptPosition.BodyInside)

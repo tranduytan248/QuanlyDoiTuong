@@ -1,0 +1,52 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvConfigModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), AppProcessor.Messagor.GetMessage("InvConfig_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Edit", "InvConfig", new { area = "Invoice" }, FormMethod.Post, new { encType = "multipart/form-data", id = "EditConfig", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_InvConfig", Model)
+        </div>
+    }
+    <script type="text/javascript">
+        $('form#EditConfig').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    if ($("#ModalContent #modal_EditConfig #chkNotDismissModal").is(":checked")) {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            _tableAppConfig.ajax.reload(null, false);
+                            response.status = undefined;
+                            $("#ModalContent #modal_EditConfig form")[0].reset();
+                        }
+                    } else {
+                        $("#ModalContent #modal_EditConfig").modal("hide");
+                        $("#ModalContent #modal_EditConfig").on('hidden.bs.modal',
+                            function () {
+                                if (response.status != undefined) {
+                                    eval(response.message);
+                                    _tableAppConfig.ajax.reload(null, false);
+                                    response.status = undefined;
+                                }
+                            });
+                    }
+                } else {
+                    $("#ModalContent #modal_EditConfig" + " #bodyForm").html(response);
+                }
+            }
+        });
+    </script>
+}

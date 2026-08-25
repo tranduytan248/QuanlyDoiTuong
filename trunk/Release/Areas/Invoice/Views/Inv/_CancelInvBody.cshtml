@@ -1,0 +1,18 @@
+﻿@using TSFramework.App.Processors
+@model Core.Inv.Models.MajorInvModel
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.InvId)
+@Html.HiddenFor(model => model.InvKey)
+@Html.HiddenFor(model => model.InvNo)
+@Html.HiddenFor(model => model.Pattern)
+@Html.HiddenFor(model => model.Serial)
+<h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+<hr />
+<div class="form-group row">
+    @Html.TitleFor(model => model.Reason, new { @class = "col-md-3 col-form-label text-sm-right pr-0 font-bold text-danger" }) <spam class="col-form-label pr-0 font-bold text-danger"> (*)</spam>
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-11", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+        @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+    </div>
+</div>

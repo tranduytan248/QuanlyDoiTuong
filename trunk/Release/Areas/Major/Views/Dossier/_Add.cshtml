@@ -1,0 +1,30 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Add"), AppProcessor.Messagor.GetMessage("Dossier_Title"));
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("Add", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Dossier_OnProcessSuccess(data, 'AddDossier')"
+    }, new { @class = "form-horizontal", id = "AddDossier" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_Dossier")
+        </div>
+    }
+}
+@section ContinueForm{
+
+}

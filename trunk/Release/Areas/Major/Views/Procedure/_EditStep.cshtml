@@ -1,0 +1,97 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepModel
+
+@using (Ajax.BeginForm("EditStep", "Procedure", new { area = "Major" }, new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "TreeItem_OnProcessSuccess(data, 'EditStep')"
+}, new { @class = "form-horizontal", id = "EditStep" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.StepId)
+    @Html.HiddenFor(model => model.StepType)
+    @Html.HiddenFor(model => model.ProcedureId)
+    @Html.HiddenFor(model => model.ProcedureName)
+    @Html.HiddenFor(model => model.WarningSave)
+
+    <div id="EditStep" class="mt-3 mx-2">
+        <div class="form-group row">
+            @Html.TitleFor(model => model.StepName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.StepName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_Name") })
+                @Html.ValidationMessageFor(model => model.StepName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.TitleFor(model => model.StepDesc, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.StepDesc, new { rows = 3, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Step_Desc") })
+                @Html.ValidationMessageFor(model => model.StepDesc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.TitleFor(model => model.ContractStatus, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-6">
+                @Html.DropDownListFor(model => model.ContractStatus, new SelectList(Model.ListContractStatus, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#EditStep #ContractStatusName')" })
+                @Html.ValidationMessageFor(model => model.ContractStatus, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ContractStatusName)
+            </div>
+        </div>
+        <hr />
+
+        @*Cấu hình bước quy trình*@
+        @Html.Partial("_StepConfigs")
+
+        @*Thời gian xử lý*@
+        @Html.Partial("_HandlingTimes")
+
+        @*Thẩm quyền xử lý*@
+        @Html.Partial("_Handlers")
+
+        @*Cấu hình thông báo*@
+        @Html.Partial("_NotificationConfigs")
+
+        @*Các cấu hình khác*@
+        @*@Html.Partial("_StepOtherConfigs")*@
+
+        <hr />
+
+        <div class="form-group row">
+            @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Reason, new { rows = 4, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <hr />
+
+        <div class="form-group row d-none">
+            <div class="col-md-3 text-right p-0">
+                <button type="submit" id="btnSave" class="btn px-4 btn-outline-primary mb-1"><i class="fa fa-save"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Save")</button>
+            </div>
+            <div class="col-md-9">
+
+            </div>
+        </div>
+
+    </div>
+    <script src="@Url.Content("~/Contents/Base/plugins/ace_v4/node_modules/bootbox/bootbox.all.js")"></script>
+
+    <script type="text/javascript">
+        //debugger;
+        var sortableForms = null;
+
+        $(document).ready(function () {
+
+            @*var nextStep = '@(Model.NextStep == null ? "" : Model.NextStep.ToString())';
+            _onChangeProcedure($("#EditStep #NextProcId"), '#EditStep #NextProcName', "#EditStep #NextStep", nextStep, '#EditStep #NextStepName', _onChangeCombo);*@
+
+            _onCollapseCard("eleNotificationConfigs;");
+            //_onCollapseCard("eleNotificationConfigs;eleStepConfig;");
+
+        });
+
+    </script>
+}

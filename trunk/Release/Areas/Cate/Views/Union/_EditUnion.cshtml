@@ -1,0 +1,28 @@
+﻿@model Cores.Cate.Models.CateUnionManagerModel
+@using TSFramework.App.Processors
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Edit"), $"{AppProcessor.Messagor.GetMessage("Union_Title")} - {AppProcessor.Messagor.GetMessage("User_Title")} [{Model.UnionName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="far fa-edit"></i>
+}
+
+@section FormBody{
+
+    @using (Ajax.BeginForm("EditUnion", "Union", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Union_OnProcessSuccess(data, 'EditUnion')"
+    }, new { @class = "form-horizontal", id = "EditUnion" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_UnionMember")
+        </div>
+    }
+}

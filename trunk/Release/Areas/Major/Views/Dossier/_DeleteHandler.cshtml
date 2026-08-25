@@ -1,0 +1,38 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskSwitchHandlerModel
+
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Delete"), $"{AppProcessor.Messagor.GetMessage("Task_HandledBy")}");
+    Layout = "~/Views/Shared/_FormConfirm.cshtml";
+}
+
+@section FormType{
+    danger
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("DeleteHandler", "Dossier", new { area = "Major" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "StepHandler_OnProcessSuccess(data, 'DeleteHandler')"
+    }, new { @class = "form-horizontal", id = "DeleteHandler" }))
+    {
+        <div id="bodyForm">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            @Html.HiddenFor(model => model.HandlerId)
+            @Html.HiddenFor(model => model.TaskId)
+            @Html.HiddenFor(model => model.TaskName)
+            @Html.HiddenFor(model => model.UnionId)
+            @Html.HiddenFor(model => model.UnionName)
+            @Html.HiddenFor(model => model.DeptId)
+            @Html.HiddenFor(model => model.DeptName)
+            @Html.HiddenFor(model => model.StaffId)
+            @Html.HiddenFor(model => model.StaffName)
+
+            @Html.HiddenFor(model => model.PositionId)
+            @Html.HiddenFor(model => model.PositionName)
+            <h5> @Html.Raw(ViewBag.ConfirmMessage)</h5>
+        </div>
+    }
+}

@@ -1,0 +1,119 @@
+﻿@using TSFramework.App.Processors
+@model Modules.Major.Areas.Major.Models.SearchInvoiceModel
+
+<div class="card dcard" id="SearchInvAdjust">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary-d2">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="row">
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Inv_Pattern")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.DropDownListFor(model => model.Pattern, new SelectList(Model.ListTPattern, "Value", "Text"), "", new { @class = "form-control", onchange = "OnChangePattern(this, $('#SearchInvAdjust select#Serial'))" })
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Pattern_Serial")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.DropDownListFor(model => model.Serial, new SelectList(Model.ListSerial, "Value", "Text"), "", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Inv_InvNo")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.InvNo, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Inv_Type")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.DropDownListFor(model => model.InvType, new SelectList(Model.ListTType, "Value", "Text"), "", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("CreateDate_On")</label>
+                    <div class="col-md-4 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.CreateOn, new { @class = "form-control datepicker" })
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("CreateDate_To")</label>
+                    <div class="col-md-4 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.CreateTo, new { @class = "form-control datepicker" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Inv_CreateBy")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.DropDownListFor(model => model.CreateBy, new SelectList(Model.ListUser, "Value", "Text"), "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Customer_Name")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.CusName, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Inv_TaxCode")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.CusTaxCode, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label class="col-form-label text-sm-right pr-0 font-bold col-md-4">@AppProcessor.Messagor.GetMessage("Customer_Label_Address")</label>
+                    <div class="col-md-8 dropdownlist_search">
+                        @Html.TextBoxFor(model => model.CusAddress, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="Search()"><i class="fa fa-search-plus"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Search")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function OnChangePattern(cbbPattern, cbbDistrict) {
+        var selectedPattern = cbbPattern.value;
+        console.log(selectedPattern);
+    var urlSerial =
+         "@Url.Action("GetSerialByPattern", "Inv", new { area = "Invoice" })?pattern=" + selectedPattern;
+         $.ajax({
+             type: "GET",
+             url: urlSerial,
+             dataType: "JSON",
+             success: function (response) {
+                 $(cbbDistrict).empty();
+                 $(cbbDistrict).append('<option value=""></option>');
+
+                 $.each(response.Serials,
+                     function (index, item) {
+                         $.each(item,
+                             function (idx, serial) {
+                                 $(cbbDistrict).append('<option value="' + serial.Serial + '">' + serial.Serial + "</option>");
+                             });
+                     });
+             }
+         });
+    }
+</script>

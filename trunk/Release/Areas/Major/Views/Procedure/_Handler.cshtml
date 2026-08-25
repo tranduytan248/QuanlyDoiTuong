@@ -1,0 +1,177 @@
+﻿@model Cores.Major.Models.MajorProcedureStepHandlerModel
+
+<div id="Handler">
+    @Html.HiddenFor(model => model.StepId)
+    @Html.HiddenFor(model => model.ProcedureId)
+    @Html.HiddenFor(model => model.IsEdit)
+    @Html.HiddenFor(model => model.StepsChangeHandler)
+
+    <div class="form-group row">
+        @{
+            if (Model.IsEdit)
+            {
+                <div class="col-md-10">
+                    @Html.TitleFor(model => model.UnionId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.SelectFor(model => model.UnionId, Model.ListUnions, "", new { disabled = true, @class = "form-control col-md-12", onchange = "_onChangeUnion(this, '#Handler #UnionName','#Handler #DeptId')" })
+                    @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.UnionName)
+                    @Html.HiddenFor(model => model.UnionId)
+                </div>
+            }
+            else
+            {
+                <div class="col-md-10">
+                    @Html.TitleFor(model => model.UnionId, new { @class = "col-form-label pr-0 font-bold" })
+                    @Html.SelectFor(model => model.UnionId, Model.ListUnions, "", new { @class = "form-control col-md-12", onchange = "_onChangeUnion(this, '#Handler #UnionName','#Handler #DeptId')" })
+                    @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.UnionName)
+                </div>
+            }
+        }
+
+
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.DeptId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.SelectFor(model => model.DeptId, Model.ListDepts, "", new { @class = "form-control col-md-12", onchange = $"_onLoadStaffInDept(this, '#Handler #DeptName','#Handler #PositionID','#Handler #PositionName','#Handler #StaffId','{Model.StaffId}')" })
+            @Html.ValidationMessageFor(model => model.UnionId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.DeptName)
+        </div>
+
+        <div class="col-md-6">
+            @Html.TitleFor(model => model.PositionID, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.PositionID, new SelectList(Model.ListPositions, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = $"_onLoadStaffInDept('#Handler #DeptId', '#Handler #DeptName',this, '#Handler #PositionName','#Handler #StaffId', '{Model.StaffId}')" })
+            @Html.ValidationMessageFor(model => model.PositionID, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PositionName)
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-8">
+            @Html.TitleFor(model => model.StaffId, new { @class = "col-form-label pr-0 font-bold" })
+            @Html.DropDownListFor(model => model.StaffId, new SelectList(Model.ListStaffs, "Value", "Text"), "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Handler #StaffName')" })
+            @Html.ValidationMessageFor(model => model.StaffId, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.StaffName)
+        </div>
+    </div>
+    <hr />
+
+    <div class="form-group row">
+        <div class="col-md-8">
+            <label class="">
+                @Html.CheckBoxFor(model => model.AllowSwitchHandler, new { @class = "checkbox mr-2" })
+                @Html.LabelFor(model => model.AllowSwitchHandler, new { @class = "font-bold" })
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group row" id="eleAllowChangeHandler">
+        <div class="col-12">
+            <div class="card dcard mb-3" id="card-5">
+                <div class="card-header">
+                    <div class="form-group row col-12 my-auto pt-2">
+                        <label class="checkbox-inline my-auto">
+                            @Html.CheckBoxFor(model => model.AllowChangeHandler, new { @class = "checkbox", data_action = "toggle" })
+                            @Html.LabelFor(model => model.AllowChangeHandler, new { @class = "font-bold" })
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card-body p-0 collapse @(Model.AllowChangeHandler ? "show" : "")">
+                    <div class="p-3">
+                        <div class="form-group row col-12">
+                            @Html.TitleFor(model => model.StepsChangeHandler, new { @class = "col-form-label pr-0 font-bold" })
+                            <div class="row col-12">
+                                @Html.SelectFor(model => model.ListStepsChangeHandler, Model.ListStepsChangeHandlers, "", new { multiple = true, @class = "form-control col-md-12" })
+                                @Html.ValidationMessageFor(model => model.StepsChangeHandler, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+        var unionId = '@Model.UnionId.ToString().ToUpper()';
+        $('#Handler #UnionId').val(unionId).trigger('change');
+
+        $('#eleAllowChangeHandler .card').on('shown.bs.collapse', function () {
+            _initSelect("select#ListStepsChangeHandler");
+        });
+
+        var lstSteps = "@Model.StepsChangeHandler";
+        if (lstSteps != null && lstSteps != undefined && lstSteps.length > 0) {
+            $('#eleAllowChangeHandler #ListStepsChangeHandler').val(lstSteps.split(';')).trigger('change');
+        }
+    });
+
+    function _onChangeUnion(cbbUnions, eleUnionName, cbbDepts) {
+        if ($(cbbUnions).length > 0) {
+            $(eleUnionName).val($(cbbUnions).children("optgroup").children("option:selected").text());
+        }
+
+        var unionId = $(cbbUnions).val();
+
+        var urlDeptsBelongUnion =   "@Url.Action("GetDeptsBelong", "Union", new { area = "Cate" })?unionId=" + unionId;
+
+        $.ajax({
+            type: "GET",
+            url: urlDeptsBelongUnion,
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbDepts).empty();
+                $(cbbDepts).append('<option value=""></option>');
+
+                $.each(response,
+                    function (index, depts) {
+                        $(cbbDepts).append('<optgroup label="' + index + '">');
+                        $.each(depts,                        function (idx, dept) {
+                            $(cbbDepts).append('<option value="' + dept.UnionId + '">' + dept.UnionName + "</option>");
+                        });
+                    $(cbbDepts).append('</optgroup>');
+                });
+                var deptId = '@Model.DeptId.ToString()';
+            if (deptId != undefined && deptId.length > 0) {
+                $(cbbDepts).val(deptId);
+                $(cbbDepts).trigger("change");
+            }
+        }
+    });
+    }
+
+    function _onLoadStaffInDept(cbbDepts, eleDeptName, cbbPositions, elePositionName, cbbStaffs, staffId) {
+        if ($(cbbDepts).length > 0) {
+            $(eleDeptName).val($(cbbDepts).children("option:selected").text());
+    }
+    if ($(cbbPositions).length > 0) {
+        $(elePositionName).val($(cbbPositions).children("option:selected").text());
+    }
+
+        var unionId = $(cbbDepts).val();
+    var positionId = $(cbbPositions).val();
+
+    var urlStaffsViaUnionAndPosition =
+        "@Url.Action("StaffsViaUnionAndPosition", "Procedure", new { area = "Major" })?unionId=" + unionId + '&positionId=' + positionId;
+
+    $.ajax({
+            type: "GET",
+            url: urlStaffsViaUnionAndPosition,
+            dataType: "JSON",
+            success: function (response) {
+                $(cbbStaffs).empty();
+                $(cbbStaffs).append('<option value=""></option>');
+                $.each(response, function (index, staff) {
+                    $(cbbStaffs).append('<option value="' + staff.UserName + '">' + staff.FullName + "</option>");
+                });
+                if (staffId != undefined && staffId.length > 0) {
+                    $(cbbStaffs).val(staffId).trigger("change");
+                }
+            }
+        });
+}
+</script>

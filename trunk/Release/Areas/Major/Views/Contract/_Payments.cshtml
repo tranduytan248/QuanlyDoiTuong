@@ -1,0 +1,311 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorContractModel
+
+@{
+    ViewBag.Title = Html.Raw($"{AppProcessor.Messagor.GetMessage("ContractPayment_Title")} {AppProcessor.Messagor.GetMessage("Contract_Title")} - [{Model.ContractNo}/{Model.ContractSignal} - {Model.CusName}]");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    purple
+}
+
+@section FormIcon{
+    <i class="fas fa-file-invoice-dollar"></i>
+}
+
+@section FormBody{
+
+    <div class="row modal-body" id="bodyForm">
+        <div class="col-md-12">
+            <div class="page-header pb-2" id="PageTitle">
+                <h1 class="page-title text-primary-d2 text-150"></h1>
+                <div class="page-tools d-inline-flex" id="PageAction">
+                    @*@Html.Button(true, "ShowAcceptantRecord", Url.Action("ShowAcceptantRecord", "ContractPayment", new { area = "Major", contractId = Model.ContractId }), "<i class='fa fa-eye'></i>", AppProcessor.Messagor.GetMessage("ShowAcceptanRecord"), new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_rel = "tooltip", title = AppProcessor.Messagor.GetMessage("ShowAcceptanRecord") })*@
+                    <div class="dropdown d-inline-block mb-1" id="ButtonAddReceipt">
+                        <button class="btn px-3 h-6 waves-effect btn-primary btn-h-outline-primary btn-a-outline-primary py-1 pull-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class='fa fa-plus'></i>
+                            @AppProcessor.Messagor.GetMessage("Button_Add_Receipt")
+                        </button>
+                        <div class="dropdown-menu dropdown-caret dropdown-menu-right">
+                            @{
+                                var mappingIconTypePayments = new Dictionary<string, string> {
+                                    { "1", "fas fa-file-invoice-dollar" }, //Tạm ứng
+                                    { "2", "fas fa-file-invoice" }, //Thanh lý
+                                    { "3", "fas fa-hand-holding" }, //Hoàn trả
+                                };
+
+                                var mappingColorTypePayments = new Dictionary<string, string> {
+                                    { "1", "primary" }, //Tạm ứng
+                                    { "2", "success" }, //Thanh lý
+                                    { "3", "danger" }, //Hoàn trả
+                                };
+
+                                foreach (var typePayment in Model.ListTypePayments.OrderBy(p => p.Value))
+                                {
+                                    @Html.Button(true, "AddPayment", Url.Action("AddPayment", "Contract", new { area = "Major", contractId = Model.ContractId, typePayment = typePayment.Value }), $"<i class=\"{mappingIconTypePayments[typePayment.Value]}\"></i> ", typePayment.Text, new { typePayment = typePayment.Value, @class = $"dropdown-hover dropdown-item btn btn-outline-{mappingColorTypePayments[typePayment.Value]} btn-h-{mappingColorTypePayments[typePayment.Value]} btn-a-{mappingColorTypePayments[typePayment.Value]} text-105" })
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="mt-3">
+                <div class="p-2 table-responsive-md px-1">
+                    <table id="ListContractPayments" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                        <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                            <tr>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaymentTimes")</th>
+                                <th id="Amount" class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidAmount")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_PaidOn")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_RefDocNo")</th>
+                                <th class="w-25">@AppProcessor.Messagor.GetMessage("ContractPayment_PaymentInfo")</th>
+                                <th class="">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                            </tr>
+                        </thead>
+                        @*<tfoot class="bgc-yellow-m3 d-none">
+                                <tr class="text-500 text-danger text-105">
+                                    <th class="">@AppProcessor.Messagor.GetMessage("ContractPayment_Totals")</th>
+                                    <th class="text-105"></th>
+                                    <th class="" colspan="4"></th>
+                                </tr>
+                            </tfoot>*@
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        //debugger;
+
+        var _tableContractPayments;
+
+        $(document).ready(function () {
+            _initTableContractPayments();
+
+            $("#ModalContent #modal_Payments").on("hidden.bs.modal", function () {
+                _tableContracts.ajax.reload(null, false);
+            });
+        });
+
+        function _initTableContractPayments() {
+            _tableContractPayments = $("#ListContractPayments").DataTable({
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                "Responsive": true,
+                "language": {
+                    "processing":
+                        "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+                },
+                "lengthChange": false,
+                "processing": true,
+                "serverSide": true,
+                "searching": false,
+                "paging": false, "info": false,
+                "pageLength": 50,
+                "ajax":{
+                    "url": "@Url.Action("GetPayments","Contract")?contractId=@Model.ContractId",
+                        "type": "POST",
+                        "dataType": "JSON",
+                        "data": {}
+                },
+                "columns": [
+                    {
+                        "data": "Ordinal",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display") {
+                                var arrTypePaymentColors = { "1": "primary", "2": "success", "3": "danger" };
+                                return 'Lần {0} <div><span class="badge bgc-{1} brc-{1} text-white badge-lg arrowed arrowed-in-right mb-1">                                <span class="px-3"> {2} </span></span </div>'.format(data, arrTypePaymentColors[row["TypePayment"]], row["TypePayment"] == 1 ? row["TypePaymentName"] + " ({0}%)".format(row["PercentAdvance"]) : row["TypePaymentName"]);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "PaidAmount",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type === "display") {
+                                if (data < 0) {
+                                    return '<span class="text-danger text-500"> Hoàn trả khách hàng {0}</span> ({1})'.format(VND.format(data * -1), VND.format(data))
+                                }
+                                return VND.format(data);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "PaidOn",
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            if (type == "display") {
+                                if (data == null) return "";
+                                //return moment(data).format("DD/MM/YYYY");
+                                var arrPaymentMethodColors = { "1": "info", "2": "purple" };
+                                return '<span class="d-inline-block radius-round bgc-default-l2 text-danger-d3 text-500 px-25 py-3px mx-2px my-2px">{0}</span><div><span class="badge bgc-{1} brc-{1} text-white badge-lg arrowed arrowed-in-right mb-1">                                <span class="px-3"> {2} </span></span> </div>'.format(moment(data).format("DD/MM/YYYY"), arrPaymentMethodColors[row["PaymentMethod"]], row["PaymentMethodName"]);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "RefDocNo",
+                        "sortable": false,
+                        "defaultContent": "",
+                        "render": function (data, type, row, meta) {
+                            //if (type == "display") {
+                            //    var arrStatusColors = { "1": "success", "2": "danger" };
+                            //    return '<div><span class="badge bgc-{1} brc-{1} text-white badge-lg arrowed arrowed-in-right mb-1"> <span class="px-3"> {2} </span></span></div><span class="d-inline-block radius-round bgc-default-l2 text-dark-tp3 text-500 px-25 py-3px mx-2px my-2px">{0}</span>'.format(data, arrStatusColors[row["Status"]], row["StatusName"]);
+                            //}
+                            if (type == "display") {
+                                return '<span class="d-inline-block radius-round bgc-default-l2 text-dark-tp3 text-500 px-25 py-3px mx-2px my-2px">{0}</span>'.format(data);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "PaymentInfo",
+                        "sortable": false,
+                        "defaultContent": ""
+                    },
+                    {
+                        "data": "PaymentId",
+                        "style": "width:100px;",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+                            var html = '<span class="d-none d-lg-inline">';
+                            html += '<div class="dropdown d-inline-block"><button class="btn px-4 btn-lighter-primary mr-1 v-hover dropdown-toggle" type="button" data-toggle="dropdown" title="Thao tác" data-rel="tooltip" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h text-120"></i></button><div class="dropdown-menu dropdown-menu-right dropdown-caret px-1px py-2px border-1 brc-default-l1 shadow radius-1 dropdown-animated animated-2">';
+
+                            var hasInv = @(Model.HasInv? 1 : 0) == 1;
+
+                            if (type === "display") {
+                                 html += _renderButton(true,
+                                    "RenderBill",
+                                    "btn px-4 btn-outline-info mr-1 dropdown-item",
+                                    "/Major/ContractPayment/ShowRender/" + data,
+                                    '<i class="fas fa-eye text-120"></i> Xem biên nhận',
+                                    "Xem biên nhận", "fullscreen");
+                                if (!hasInv) {
+                                    html += _renderButton(true,
+                                        "EditPayment",
+                                        "btn px-4 btn-outline-primary mr-1 dropdown-item",
+                                        "/Major/Contract/EditPayment?paymentId=" + data + "&contractId=@Model.ContractId",
+                                        '<i class="far fa-edit text-120"></i> Cập nhật',
+                                        "Cập nhật");
+
+                                    html += _renderButton(true,
+                                        "DeletePayment",
+                                        "btn px-4 btn-outline-danger mr-1 dropdown-item",
+                                        "/Major/Contract/DeletePayment?paymentId=" + data + "&contractId=@Model.ContractId",
+                                        '<i class="far fa-trash-alt text-120"></i> Xoá',
+                                        "Xoá");
+                                }
+                            }
+                            html += "</div></span>";
+
+                            return html;
+                        }
+                    }
+                ],
+                "footerCallback": function (row, data, start, end, display) {
+                    //debugger;
+                    var cancelContract = @Model.Status == 99;
+                    if (cancelContract) {
+                        var api = this.api();
+                        var totalRows = api.data().length;
+
+                        $('a[data-modal-id="AddPayment"]').addClass("d-none");
+
+                        if (totalRows >= 1) {
+                            $('a[data-modal-id="AddPayment"][typePayment="3"]').removeClass("d-none");
+                        }
+                        else if (totalRows <= 0) {
+                            $('#ButtonAddReceipt').removeClass('d-inline-block').addClass('d-none');
+                        }
+
+                    } else {
+                        var arrVisiblePayments = { 0: '1', 1: "2" };
+                        var invisible = 2;
+
+                        $('a[data-modal-id="AddPayment"]').addClass("d-none");
+
+                        var api = this.api();
+                        var totalRows = api.data().length;
+                        if (totalRows < invisible) {
+                            var arrTypePaymentVisibles = arrVisiblePayments[totalRows].split(';');
+                            $.each(arrTypePaymentVisibles, function (idx, typePayment) {
+                                invisible -= 1;
+                                $('a[data-modal-id="AddPayment"][typePayment="{0}"]'.format(typePayment)).removeClass("d-none");
+                            });
+                            $('#ButtonAddReceipt').removeClass('d-none').addClass('d-inline-block');
+                        }
+                        else {
+                            $('#ButtonAddReceipt').removeClass('d-inline-block').addClass('d-none');
+                        }
+
+                        //$.each(api.data(), function (idx, row) {
+                        //    $('a[data-modal-id="AddPayment"][typePayment="{0}"]'.format(row.TypePayment)).addClass("d-none");
+                        //});
+
+                        //if (invisible == 0) {
+                        //    $('#ButtonAddReceipt').removeClass('d-inline-block').addClass('d-none');
+                        //} else {
+                        //    $('#ButtonAddReceipt').removeClass('d-none').addClass('d-inline-block');
+                        //}
+                    }
+                }
+            });
+
+            _tableContractPayments.on('draw', function () {
+                var tblFooter = _tableContractPayments.footer();
+                if (_tableContractPayments.data().count() > 0) {
+                    $(tblFooter).removeClass('d-none');
+                } else {
+                    if (!$(tblFooter).hasClass('d-none')) {
+                        $(tblFooter).addClass('d-none');
+                    }
+                }
+            });
+        }
+
+        function Payment_OnProcessSuccess(response, formId) {
+            if (response.status != undefined) {
+                if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                    if (response.status != undefined) {
+                        eval(response.message);
+                        _tableContractPayments.ajax.reload(null, false);
+                        response.status = undefined;
+                        var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                        $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                            _initElement();
+                        });
+                    }
+                } else {
+                    $("#ModalContent #modal_" + formId).modal("hide");
+                    $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableContractPayments.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+            }
+        }
+
+
+    </script>
+
+}
+@section SubmitControl{
+
+}

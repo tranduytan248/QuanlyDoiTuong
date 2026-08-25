@@ -1,0 +1,56 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorDossierTaskModel
+@{
+    ViewBag.Title = string.Format(AppProcessor.Messagor.GetMessage("Modal_Title_Handle"), $"{AppProcessor.Messagor.GetMessage("Task_Title")} - {Model.InStepName}");
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fas fa-user-check"></i>
+}
+
+@section FormBody{
+
+    @using (Html.BeginForm("Handle", "Dossier", new { area = "Major" }, FormMethod.Post, new { encType = "multipart/form-data", id = "HandleDossier", @class = "form-horizontal" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_HandleBody")
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('form#HandleDossier').ajaxForm({
+            success: function (response) {
+                if (response.status != undefined) {
+                    $("#ModalContent #modal_HandleDossier").modal("hide");
+                    $("#ModalContent #modal_HandleDossier").on('hidden.bs.modal',
+                        function () {
+                            if (response.status != undefined) {
+                                eval(response.message);
+                                _tableDossier.ajax.reload(null, false);
+                                response.status = undefined;
+                            }
+                        });
+                } else {
+                    $("#ModalContent #modal_HandleDossier" + " #bodyForm").html(response);
+                }
+            }
+        });
+
+        $("#modal_HandleDossier .modal-dialog").addClass("modal-dialog-scrollable");
+        $("#modal_HandleDossier .modal-body").addClass("ace-scrollbar");
+    </script>
+}
+
+@section SubmitControl{
+
+    <button type="button" id="btnReturnPrev" class="btn px-4 btn-outline-warning mb-1" onclick="toastr.info('Chức năng đang xây dựng');"><i class="fas fa-undo-alt"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_ReturnPrev")</button>
+
+    <button type="button" id="btnReturnFirst" class="btn px-4 btn-outline-danger mb-1" onclick="toastr.info('Chức năng đang xây dựng');"><i class="fas fa-share-square"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_ReturnFirst")</button>
+
+    <button type="submit" id="btnConfirm" class="btn px-4 btn-outline-primary mb-1"><i class="fas fa-user-check"></i>&nbsp;@AppProcessor.Messagor.GetMessage("Button_Handle")</button>
+}

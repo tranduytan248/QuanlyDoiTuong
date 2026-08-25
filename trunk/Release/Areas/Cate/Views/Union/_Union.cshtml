@@ -1,0 +1,93 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateUnionModel
+
+@Html.AntiForgeryToken()
+<div id="Union">
+    @Html.HiddenFor(model => model.UnionId)
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.UnionCode, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.UnionCode, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Union_Code") })
+            @Html.ValidationMessageFor(model => model.UnionCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.UnionName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.UnionName, new { @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Union_Name") })
+            @Html.ValidationMessageFor(model => model.UnionName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.TypeUnion, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.TypeUnion, new SelectList(Model.ListTypeUnions, "Value", "Text"), "", new { @class = "form-control col-md-8", onchange = "_onChangeCombo(this, '#Union #TypeUnionName')" })
+            @Html.ValidationMessageFor(model => model.TypeUnion, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.TypeUnionName)
+        </div>
+        @*onchange = "OnChangeTypeUnion(this, '#Union #TypeUnionName', '#Union #BelongUnion')"*@
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.BelongUnion, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.SelectFor(model => model.BelongUnion, Model.ListUnions, "", new { @class = "form-control col-md-12", onchange = "_onChangeCombo(this, '#Union #BelongUnionName')" })
+            @Html.ValidationMessageFor(model => model.BelongUnion, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.BelongUnionName)
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.Note, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(model => model.Note, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Union_Note") })
+            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @{
+        if (Model.UnionId != null)
+        {
+            <div class="form-group row">
+                @Html.TitleFor(model => model.Reason, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Reason, new { rows = 2, @class = "form-control col-md-12", placeholder = AppProcessor.Messagor.GetMessage("Reason_Title") })
+                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    
+    function OnChangeTypeUnion(cbbTypeUnions, eleTypeUnionName, cbbUnions) {
+        if ($(cbbTypeUnions).length > 0) {
+            $(eleTypeUnionName).val($(cbbTypeUnions).children("option:selected").text());
+        }
+
+        var typeUnionId = $(cbbTypeUnions).val();
+        var urlUnionsViaType =
+            "@Url.Action("GetUnionsViaType", "Union", new { area = "Cate" })?typeUnion=" + typeUnionId;
+        $.ajax({
+            type: "GET",
+            url: urlUnionsViaType,
+            dataType: "JSON",
+            success: function(response) {
+                $(cbbUnions).empty();
+                $(cbbUnions).append('<option value=""></option>');
+
+                $.each(response, function (index, unions) {
+                    $(cbbUnions).append('<optgroup label="' + index + '">');
+                    $.each(unions, function (idx, union) {
+                        $(cbbUnions).append('<option value="' + union.UnionId + '">' + union.UnionCode + ' - ' + union.UnionName + "</option>");
+                    });
+                    $(cbbUnions).append('</optgroup>');
+                });
+            }
+        });
+    }
+</script>

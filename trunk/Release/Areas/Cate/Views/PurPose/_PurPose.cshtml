@@ -1,0 +1,27 @@
+﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CatePurPoseModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.PurPoseId)
+
+<div id="GiayPhepChungNhan_ID">
+    <div class="form-group row">
+        @Html.TitleFor(model => model.PurPoseName, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.PurPoseName, new { @class = "form-control col-md-10", placeholder = AppProcessor.Messagor.GetMessage("WorkPurpose") })
+            @Html.ValidationMessageFor(model => model.PurPoseName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.TitleFor(model => model.ContractTypeId, new { @class = "col-sm-3 col-form-label text-sm-right pr-0 font-bold" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.ListTypeContracts, "Value", "Text"), "", new { @class = "form-control col-md-10" })
+            @Html.ValidationMessageFor(model => model.ContractTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+
+@Html.RenderScripts(ScriptPosition.BodyInside)

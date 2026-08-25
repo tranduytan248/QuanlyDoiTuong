@@ -1,0 +1,151 @@
+﻿@using Newtonsoft.Json
+@using TSFramework.App.Processors
+@model Cores.Major.Models.MajorProcedureStepModel
+
+<div class="card dcard mb-3 col-12">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-500 text-primary-d2 my-auto">
+            <i class="fas fa-user-clock"></i>&nbsp;@Html.LabelFor(model => model.HandlingTime)
+        </h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div><!-- /.card-header -->
+    <div class="card-body p-0 collapse show">
+        <div class="row py-3">
+            <div class="col-12 mb-3">
+                @Html.Button(true, "AddHandlingTime", Url.Action("AddHandlingTime", new { area = "Major", stepId = Model.StepId, procedureId = Model.ProcedureId }), "<i class='fa fa-plus'></i>", AppProcessor.Messagor.GetMessage("Button_Add"), new { @class = "card-toolbar-btn btn px-4 btn-outline-purple mb-1", title = "Thêm thời gian xử lý", data_rel = "tooltip" })
+            </div>
+            <div class="col-sm-12">
+                <table id="ListHandlingTime" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11 collapsed dtr-table" width="100%">
+                    <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                        <tr>
+                            <th class="w-75">@AppProcessor.Messagor.GetMessage("Purpose_Title")</th>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Step_HandlingTime")</th>
+                            <th class="">@AppProcessor.Messagor.GetMessage("Column_Action")</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //debugger;
+
+    $(document).ready(function () {
+        _initTableHandlingTime();
+    });
+
+    var _tableHandlingTime;
+
+    function _initTableHandlingTime() {
+    _tableHandlingTime = $("#ListHandlingTime").DataTable({
+        fixedHeader: {
+            header: true,
+            footer: true
+        },
+        "Responsive": true,
+        "language": {
+            "processing":
+                "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>"
+        },
+        "lengthChange": false,
+        "processing": true,
+        "serverSide": false,
+        "searching": false,
+        "paging": false, "info": false,
+        "columns": [
+            {
+                "data": "ViewPurposeNames",
+                "defaultContent": "",
+                "render": function (data, type, row, meta) {
+                    if (type === "display") {
+                        return data;
+                    }
+                    return data;
+                }
+            },
+            {
+                "data": "HandlingTime",
+                "defaultContent": "",
+            },
+            {
+                "data": "HandlingTimeId",
+                //"style": "width:100px;",
+                "orderable": false,
+                "render": function (data, type, row, meta) {
+                    var html = '<span class="d-none d-lg-inline">';
+
+                    if (type === "display") {
+                        html += _renderButton(true,
+                            "EditHandlingTime",
+                            "btn px-4 btn-outline-primary mr-1 v-hover",
+                            "/Major/Procedure/EditHandlingTime?stepId=" + row.StepId + "&handlingTimeId=" + data,
+                            '<i class="far fa-edit text-120"></i>',
+                            "Cập nhật");
+
+                        html += _renderButton(true,
+                            "DeleteHandlingTime",
+                            "btn px-4 btn-outline-danger mr-1 v-hover",
+                            "/Major/Procedure/DeleteHandlingTime?stepId=" + row.StepId + "&handlingTimeId=" + data,
+                            '<i class="far fa-trash-alt text-120"></i>',
+                            "Xoá");
+                    }
+                    html += "</span>";
+
+                    return html;
+                }
+            }
+        ]
+    });
+
+    var dataHandlingTime = @Html.Raw(JsonConvert.SerializeObject(Model.DataHandlingTimes));
+    if (typeof dataHandlingTime != null) {
+        _tableHandlingTime.clear().rows.add(dataHandlingTime).draw();
+        _tableHandlingTime.column(0).data().sort();
+    }
+}
+
+    function HandlingTimeStep_OnProcessSuccess(response, formId) {
+        if (response.status != undefined) {
+            if ($("#ModalContent #modal_" + formId + " #chkNotDismissModal").is(":checked")) {
+                if (response.status != undefined) {
+                    eval(response.message);
+
+                    if (response.status) {
+                        var jsonDataHandlingTime = JSON.parse(response.data);
+                        _tableHandlingTime.clear().rows.add(jsonDataHandlingTime).draw();
+                        $("#EditStep input[type='hidden'][id='WarningSave']").val("True");
+                    }
+
+                    response.status = undefined;
+                    var urlAction = $("#ModalContent #modal_" + formId + " form").attr("action");
+                    $("#ModalContent #modal_" + formId + " #modal-content").load(urlAction, function (data, textStatus, xhr) {
+                        _initElement();
+                    });
+                }
+            } else {
+                $("#ModalContent #modal_" + formId).modal("hide");
+                $("#ModalContent #modal_" + formId).on("hidden.bs.modal",
+                    function () {
+                        if (response.status != undefined) {
+                            eval(response.message);
+                            if (response.status) {
+                                var jsonDataHandlingTime = JSON.parse(response.data);
+                                _tableHandlingTime.clear().rows.add(jsonDataHandlingTime).draw();
+                                $("#EditStep input[type='hidden'][id='WarningSave']").val("True");
+                            }
+                            response.status = undefined;
+                        }
+                    });
+            }
+        } else {
+            $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+        }
+    }
+
+</script>

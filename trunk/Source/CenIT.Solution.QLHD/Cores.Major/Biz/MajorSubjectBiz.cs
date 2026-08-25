@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cores.Major.Models;
@@ -16,7 +16,12 @@ namespace Cores.Major.Biz
         private readonly string _majorSubjectGetAll = "Major_Subject_GetAll";
         private readonly string _majorSubjectSave = "Major_Subject_Save";
 
-        public List<MajorSubjectModel> Get(out int total, string key, string gender, BaseSearchModel search)
+        /// <summary>
+        /// Lấy danh sách đối tượng theo các tiêu chí tra cứu, đã áp dụng phân quyền dữ liệu.
+        /// Tham số <paramref name="userName"/> được proc dùng để giới hạn phạm vi đơn vị và lĩnh vực.
+        /// </summary>
+        public List<MajorSubjectModel> Get(out int total, string identityCardNumber, string fullName,
+            string behaviorIds, string gender, string userName, BaseSearchModel search)
         {
             search = search ?? new BaseSearchModel
             {
@@ -29,8 +34,11 @@ namespace Cores.Major.Biz
 
             var listSubjects = AppProcessor.ProcedureProvider.ExecuteTypedList<MajorSubjectModel>(_majorSubjectGet,
                 DATA_PROVIDER_NAME,
-                key,
+                identityCardNumber,
+                fullName,
+                behaviorIds,
                 gender,
+                userName,
                 search.Search,
                 search.Order,
                 search.OrderDir,
@@ -46,6 +54,34 @@ namespace Cores.Major.Biz
         public List<MajorSubjectModel> GetAll()
         {
             return AppProcessor.ProcedureProvider.ExecuteTypedList<MajorSubjectModel>(_majorSubjectGetAll, DATA_PROVIDER_NAME);
+        }
+
+        /// <summary>
+        /// Tra cứu đối tượng theo số CCCD/CMND (khớp chính xác).
+        /// Dùng lại stored procedure Major_Subject_Get với tham số key để không phải bổ sung proc mới.
+        /// </summary>
+        public MajorSubjectModel GetByIdentityCardNumber(string identityCardNumber)
+        {
+            if (string.IsNullOrWhiteSpace(identityCardNumber)) return null;
+
+            var cardNumber = identityCardNumber.Trim();
+            var search = new BaseSearchModel
+            {
+                Search = null,
+                Order = "0",
+                OrderDir = "ASC",
+                StartIndex = 0,
+                PageSize = -1
+            };
+
+            // userName = null => proc bỏ qua giới hạn phạm vi, vì đây là tra cứu nội bộ
+            // phục vụ việc chống trùng số CCCD khi thêm mới.
+            var listSubjects = Get(out int _, cardNumber, null, null, null, null, search);
+            if (listSubjects == null || listSubjects.Count == 0) return null;
+
+            return listSubjects.FirstOrDefault(item =>
+                !string.IsNullOrEmpty(item.IdentityCardNumber) &&
+                item.IdentityCardNumber.Trim().Equals(cardNumber, StringComparison.OrdinalIgnoreCase));
         }
 
         public MajorSubjectModel GetById(Guid? subjectId)
@@ -78,6 +114,7 @@ namespace Cores.Major.Biz
                 model.ReporterUnit != null ? model.ReporterUnit.Trim() : string.Empty,
                 model.ReporterPhone != null ? model.ReporterPhone.Trim() : string.Empty,
                 model.ReporterPosition != null ? model.ReporterPosition.Trim() : string.Empty,
+                model.ReporterUnionId,
                 username
             );
 

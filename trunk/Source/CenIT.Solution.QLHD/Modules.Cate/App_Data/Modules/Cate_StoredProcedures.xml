@@ -16,6 +16,11 @@
           <Procedure Name="Cate_Field_GetAll" Value="p_Cate_Field_GetAll" />
           <Procedure Name="Cate_Field_Save" Value="p_Cate_Field_Save" />
 
+          <!-- Phan quyen linh vuc cho nguoi dung -->
+          <Procedure Name="Sys_UserField_Get" Value="p_Sys_UserField_Get" />
+          <Procedure Name="Sys_UserField_GetByUser" Value="p_Sys_UserField_GetByUser" />
+          <Procedure Name="Sys_UserField_Save" Value="p_Sys_UserField_Save" />
+
           <Procedure Name="Cate_ViolationBehavior_Delete" Value="p_Cate_ViolationBehavior_Delete" />
           <Procedure Name="Cate_ViolationBehavior_Get" Value="p_Cate_ViolationBehavior_Get" />
           <Procedure Name="Cate_ViolationBehavior_GetById" Value="p_Cate_ViolationBehavior_GetById" />

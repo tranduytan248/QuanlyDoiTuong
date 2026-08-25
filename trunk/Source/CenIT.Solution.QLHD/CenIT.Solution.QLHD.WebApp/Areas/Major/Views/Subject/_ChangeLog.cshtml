@@ -1,0 +1,39 @@
+﻿@model Cores.Major.Models.MajorSubjectModel
+@{
+    ViewBag.Title = "Log cập nhật";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section FormType{ info }
+@section FormIcon{ <i class="fa fa-history"></i> }
+@section SubmitControl{ }
+@section FormBody{
+    <input type="hidden" id="LogSubjectId" value="@Model?.SubjectId" />
+
+    <div class="card border-1 brc-info-m3 shadow-sm mb-3">
+        <div class="card-body p-2">
+            <div class="d-flex align-items-center flex-wrap">
+                <img src="@(!string.IsNullOrEmpty(Model?.AvatarUrl) ? Model.AvatarUrl : "/Contents/Base/imgs/avatar-default.png")"
+                     onerror="this.src='/Contents/Base/imgs/avatar-default.png';"
+                     class="radius-round border-2 brc-info-m2 mr-3 shadow-sm"
+                     style="width:48px;height:48px;object-fit:cover;" />
+                <div style="min-width:180px;">
+                    <div class="font-bolder text-dark-m1 text-105">@Model?.FullName</div>
+                    <div class="text-secondary text-85"><i class="far fa-id-card mr-1"></i>@Model?.IdentityCardNumber</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="DSSubjectChangeLog" class="table table-sm text-dark-m1 text-90 w-100" width="100%">
+            <thead class="text-secondary-m1 text-uppercase text-80 bgc-secondary-l2">
+                <tr>
+                    <th style="width:130px;">Thời điểm</th>
+                    <th class="text-center" style="width:110px;">Hành động</th>
+                    <th>Nội dung thay đổi</th>
+                    <th style="width:210px;">Người thực hiện</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+}

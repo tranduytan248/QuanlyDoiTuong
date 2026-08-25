@@ -1,4 +1,4 @@
-@using TSFramework.App.Processors
+﻿@using TSFramework.App.Processors
 @using Cores.Cate.Models
 @using Cores.Major.Models
 @model Cores.Major.Models.MajorSubjectModel
@@ -47,6 +47,26 @@
         background-color: #eff6ff !important;
         border-color: #3b82f6 !important;
     }
+
+    /* Khoá phần nhập vi phạm cho tới khi đối tượng được lưu */
+    #violationPanel {
+        position: relative;
+    }
+    .violation-locked-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 5;
+        background: rgba(248, 250, 252, 0.86);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: not-allowed;
+    }
+    #violationFieldset[disabled] {
+        opacity: .55;
+        filter: grayscale(.45);
+    }
 </style>
 
 <div class="row">
@@ -62,8 +82,16 @@
                 <div class="form-group row mb-2">
                     <div class="col-md-4 mb-2 mb-md-0">
                         <label class="col-form-label pr-0 font-bold text-85 mb-1">Số CCCD / Căn cước <span class="text-danger">(*)</span></label>
-                        @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control font-bold text-primary", placeholder = "Số CCCD/CMND..." })
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control font-bold text-primary", placeholder = "Nhập CCCD rồi bấm Enter để tra cứu...", autocomplete = "off" })
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary btn-sm px-2" id="btnLookupSubject" title="Tra cứu đối tượng đã có trong CSDL (Enter)">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
                         @Html.ValidationMessageFor(model => model.IdentityCardNumber, "", new { @class = "text-danger" })
+                        <div id="lookupSubjectResult" class="mt-1 text-85 d-none"></div>
                     </div>
                     <div class="col-md-5 mb-2 mb-md-0">
                         <label class="col-form-label pr-0 font-bold text-85 mb-1">Họ và tên khai sinh <span class="text-danger">(*)</span></label>
@@ -198,7 +226,19 @@
     </div>
 
     <!-- CỘT 2: LỊCH SỬ & THÔNG TIN VI PHẠM -->
-    <div class="col-12 col-lg-6 pl-lg-2">
+    <div class="col-12 col-lg-6 pl-lg-2" id="violationPanel" data-locked="@(isEditMode ? "0" : "1")">
+        <!-- Lớp phủ khoá: chỉ xuất hiện ở chế độ thêm mới, trước khi lưu đối tượng -->
+        <div id="violationPanelOverlay" class="violation-locked-overlay @(isEditMode ? "d-none" : "")">
+            <div class="text-center px-3">
+                <i class="fas fa-lock fa-2x text-secondary mb-2"></i>
+                <div class="font-bold text-secondary text-90">
+                    Vui lòng nhập thông tin đối tượng và bấm
+                    <span class="text-primary">"Lưu đối tượng"</span>
+                    trước khi ghi nhận vi phạm.
+                </div>
+            </div>
+        </div>
+        <fieldset id="violationFieldset" class="border-0 p-0 m-0" @(isEditMode ? "" : "disabled")>
         <div class="card border-1 brc-danger-m3 shadow-sm mb-3">
             <div class="card-header bgc-danger-l4 py-2 d-flex justify-content-between align-items-center">
                 <h6 class="card-title text-danger font-bold mb-0 text-95">
@@ -421,6 +461,7 @@
                 </div>
             </div>
         </div>
+        </fieldset>
     </div>
 </div>
 

@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -113,6 +113,7 @@
     <Content Include="Areas\Cate\Views\ViolatedConstruction\Construction.js" />
     <Content Include="Areas\Cate\Views\ViolationArea\ViolationArea.js" />
     <Content Include="Areas\Cate\Views\Field\Field.js" />
+    <Content Include="Areas\Cate\Views\UserField\UserField.js" />
     <Content Include="Areas\Cate\Views\ViolationBehavior\ViolationBehavior.js" />
     <Content Include="Areas\Cate\Views\ViolationTypes\ViolationTypes.js" />
     <Content Include="Global.asax" />
@@ -142,6 +143,7 @@
     <Compile Include="Areas\Cate\Controllers\PurPoseController.cs" />
     <Compile Include="Areas\Cate\Controllers\SubSectionController.cs" />
     <Compile Include="Areas\Cate\Controllers\UnionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\UserFieldController.cs" />
     <Compile Include="Areas\Cate\Controllers\ViolationBehaviorController.cs" />
     <Compile Include="Areas\Cate\Models\SearchCategoryModel.cs" />
     <Compile Include="Areas\Cate\Models\SearchContentLandModel.cs" />
@@ -155,6 +157,7 @@
     <Compile Include="Areas\Cate\Models\SearchPositionModel.cs" />
     <Compile Include="Areas\Cate\Models\SearchPurPoseModel.cs" />
     <Compile Include="Areas\Cate\Models\SearchUnionModel.cs" />
+    <Compile Include="Areas\Cate\Models\SearchUserFieldModel.cs" />
     <Compile Include="Areas\Cate\Models\SearchViolationBehaviorModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -227,6 +230,10 @@
     <Content Include="Areas\Cate\Views\ViolationArea\_Delete.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationArea\_Edit.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationArea\_ViolationArea.cshtml" />
+    <Content Include="Areas\Cate\Views\UserField\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\UserField\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\UserField\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\UserField\_UserField.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationBehavior\Index.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationBehavior\_Add.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationBehavior\_Delete.cshtml" />

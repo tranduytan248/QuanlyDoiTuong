@@ -1,0 +1,17 @@
+﻿@model Cores.Cate.Models.CateUserFieldModel
+@{
+    ViewBag.Title = "Phân quyền lĩnh vực";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section FormType{ primary }
+@section FormIcon{ <i class="fa fa-layer-group"></i> }
+@section FormBody{
+    @using (Ajax.BeginForm("Edit", "UserField", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "UserField_OnProcessSuccess(data, 'EditUserField')"
+    }, new { @class = "form-horizontal", id = "EditUserField" }))
+    {
+        <div id="bodyForm">@Html.Partial("_UserField", Model)</div>
+    }
+}

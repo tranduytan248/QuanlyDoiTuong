@@ -1,27 +1,20 @@
-@using TSFramework.App.Processors
-@model Cores.Major.Models.MajorSubjectModel
+﻿@model Cores.Major.Models.MajorSubjectModel
 @{
     ViewBag.Title = "Thêm mới Đối tượng";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
-
-@section FormType{
-    primary
-}
-
-@section FormIcon{
-    <i class="fa fa-user-plus"></i>
-}
-
+@section FormType{ primary }
+@section FormIcon{ <i class="fa fa-user-plus"></i> }
 @section FormBody{
-    @using (Ajax.BeginForm("Add", "Subject", new { area = "Major" }, new AjaxOptions
-    {
-        HttpMethod = "POST",
-        OnSuccess = "Subject_OnProcessSuccess(data, 'AddSubject')"
-    }, new { @class = "form-horizontal", id = "AddSubject" }))
-    {
-        <div id="bodyForm">
-            @Html.Partial("_Subject", Model)
-        </div>
-    }
+    <form id="AddSubject" class="form-horizontal" onsubmit="return false;">
+        <div id="bodyForm">@Html.Partial("_Subject", Model)</div>
+    </form>
+}
+@section SubmitControl{
+    <button type="button" id="btnSaveSubject" class="btn px-3 btn-primary mb-1">
+        <i class="fa fa-user-check"></i>&nbsp;Lưu đối tượng
+    </button>
+    <button type="button" id="btnSaveViolation" class="btn px-3 btn-danger mb-1" disabled="disabled">
+        <i class="fa fa-exclamation-triangle"></i>&nbsp;Lưu thông tin vi phạm
+    </button>
 }

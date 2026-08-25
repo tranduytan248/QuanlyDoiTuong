@@ -23,3 +23,7 @@ packages/
 
 ## User Uploads
 [Uu]ploads/
+
+## Ban sao luu truoc khi deploy
+trunk/Release_backup_*/
+trunk/PublishStage/

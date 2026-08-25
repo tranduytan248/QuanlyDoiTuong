@@ -43,6 +43,30 @@ namespace Cores.Major.Models
 
         public List<int> ListBehaviorIds { get; set; } = new List<int>();
 
+        /* --- Thông tin người khai báo: không hiển thị trên form, chỉ lưu xuống CSDL --- */
+        public string ReporterName { get; set; }
+
+        public string ReporterUnit { get; set; }
+
+        public string ReporterPosition { get; set; }
+
+        public string ReporterPhone { get; set; }
+
+        /// <summary>
+        /// Khoá đơn vị khai báo, dùng để phân quyền xem dữ liệu theo tổ / phòng ban.
+        /// </summary>
+        public Guid? ReporterUnionId { get; set; }
+
+        /// <summary>
+        /// True khi người đang đăng nhập chính là người đã khai báo lần vi phạm này
+        /// (hoặc là super admin). Chỉ dùng để hiển thị nút Sửa / Xoá;
+        /// quyền thật vẫn được kiểm tra lại ở tầng controller.
+        /// </summary>
+        public bool IsOwner { get; set; }
+
+        /// <summary>Danh sách lĩnh vực của các hành vi trong lần vi phạm này.</summary>
+        public string FieldNames { get; set; }
+
         public bool IsDeleted { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }

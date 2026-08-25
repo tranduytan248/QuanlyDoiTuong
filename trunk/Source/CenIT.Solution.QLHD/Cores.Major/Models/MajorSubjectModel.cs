@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TSFramework.App.Attributes;
@@ -70,6 +70,11 @@ namespace Cores.Major.Models
 
         [CustomDisplayName("Subject_Label_ReporterPosition")]
         public string ReporterPosition { get; set; }
+
+        /// <summary>
+        /// Khoá đơn vị khai báo, dùng để phân quyền xem dữ liệu theo tổ / phòng ban.
+        /// </summary>
+        public Guid? ReporterUnionId { get; set; }
 
         public int ViolationCount { get; set; } = 0;
         public bool IsDeleted { get; set; }

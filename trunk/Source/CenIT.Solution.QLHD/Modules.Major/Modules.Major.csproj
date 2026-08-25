@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -167,6 +167,15 @@
     <Content Include="Areas\Major\Views\RegulationViolations\RegulationViolations.js" />
     <Content Include="Areas\Major\Views\Report\Report.js" />
     <Content Include="Areas\Major\Views\Subject\Subject.js" />
+    <Content Include="Areas\Major\Views\Subject\Index.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\Detail.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_Add.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_Edit.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_Delete.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_Search.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_Subject.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_ViolationHistory.cshtml" />
+    <Content Include="Areas\Major\Views\Subject\_ChangeLog.cshtml" />
     <Content Include="Areas\Major\Views\SubjectViolation\SubjectViolation.js" />
     <Content Include="Areas\Major\Views\StepPermit\StepPermit.js" />
     <Content Include="Areas\Major\Views\StepSituation\StepSituation.js" />

@@ -19,7 +19,12 @@ namespace Cores.Major.Biz
         private readonly string _majorSubjectViolationSave = "Major_SubjectViolation_Save";
         private readonly string _majorSubjectViolationSaveBehaviors = "Major_SubjectViolation_SaveBehaviors";
 
-        public List<MajorSubjectViolationModel> Get(out int total, string key, Guid? subjectId, int? fieldId, BaseSearchModel search)
+        /// <summary>
+        /// Lấy danh sách lịch sử vi phạm, đã áp dụng phân quyền dữ liệu theo
+        /// đơn vị khai báo và lĩnh vực được phân công của <paramref name="userName"/>.
+        /// </summary>
+        public List<MajorSubjectViolationModel> Get(out int total, string key, Guid? subjectId, int? fieldId,
+            string userName, BaseSearchModel search)
         {
             search = search ?? new BaseSearchModel
             {
@@ -35,6 +40,7 @@ namespace Cores.Major.Biz
                 key,
                 subjectId,
                 fieldId,
+                userName,
                 search.Search,
                 search.Order,
                 search.OrderDir,
@@ -54,11 +60,15 @@ namespace Cores.Major.Biz
                 DATA_PROVIDER_NAME, violationId.Value);
         }
 
-        public List<MajorSubjectViolationModel> GetBySubjectId(Guid? subjectId)
+        /// <summary>
+        /// Lịch sử vi phạm của một đối tượng.
+        /// <paramref name="userName"/> = null nghĩa là không giới hạn phạm vi (tác vụ nội bộ).
+        /// </summary>
+        public List<MajorSubjectViolationModel> GetBySubjectId(Guid? subjectId, string userName = null)
         {
             if (!subjectId.HasValue || subjectId.Value == Guid.Empty) return new List<MajorSubjectViolationModel>();
             return AppProcessor.ProcedureProvider.ExecuteTypedList<MajorSubjectViolationModel>(_majorSubjectViolationGetBySubjectId,
-                DATA_PROVIDER_NAME, subjectId.Value);
+                DATA_PROVIDER_NAME, subjectId.Value, userName);
         }
 
         public List<CateViolationBehaviorModel> GetBehaviors(Guid? violationId)
@@ -78,6 +88,11 @@ namespace Cores.Major.Biz
                 model.RelatedDocuments,
                 model.Images,
                 model.Notes,
+                model.ReporterName,
+                model.ReporterUnit,
+                model.ReporterPosition,
+                model.ReporterPhone,
+                model.ReporterUnionId,
                 username
             );
 

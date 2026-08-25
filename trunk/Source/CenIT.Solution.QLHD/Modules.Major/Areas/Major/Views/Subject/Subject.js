@@ -1,6 +1,10 @@
 ﻿var _SubjectActionURLs = {
     Subject_GetData: "/Major/Subject/Get",
-    Subject_UploadFile: "/Major/Subject/UploadFile"
+    Subject_UploadFile: "/Major/Subject/UploadFile",
+    Subject_LookupByCard: "/Major/Subject/LookupByIdentityCard",
+    Subject_SaveSubject: "/Major/Subject/SaveSubject",
+    Subject_SaveViolation: "/Major/Subject/SaveViolation",
+    Subject_GetChangeLog: "/Major/Subject/GetChangeLog"
 };
 var _tableSubject;
 $(document).ready(function () {
@@ -31,8 +35,12 @@ function initTableSubject() {
             "type": "POST",
             "dataType": "JSON",
             "data": function (d) {
-                d.Key = $("#Search #Key").val();
+                d.IdentityCardNumber = $("#Search #IdentityCardNumber").val();
+                d.FullName = $("#Search #FullName").val();
                 d.Gender = $("#Search #Gender").val();
+                // Danh sách hành vi vi phạm được chọn, ghép thành chuỗi phân tách bởi dấu phẩy
+                var behaviors = $("#Search #BehaviorIds").val();
+                d.BehaviorIds = (behaviors && behaviors.length > 0) ? behaviors.join(",") : "";
             }
         },
         "columns": [
@@ -46,39 +54,18 @@ function initTableSubject() {
                 }
             },
             {
-                "data": "AvatarUrl",
-                "defaultContent": "",
-                "className": "text-center align-middle",
-                "orderable": false,
-                "render": function (data) {
-                    var src = data ? data : "/Contents/Base/imgs/avatar-default.png";
-                    return '<img src="' + src + '" class="radius-round border-1 brc-primary-m3" style="width:42px;height:42px;object-fit:cover;" />';
-                }
-            },
-            {
                 "data": "IdentityCardNumber",
-                "defaultContent": "",
-                "className": "font-bold text-primary align-middle",
-                "render": function (data, type, row) {
-                    return '<a href="/Major/Subject/Detail/' + row.SubjectId + '" class="text-primary font-bold"><i class="far fa-id-card mr-1"></i>' + data + '</a>';
-                }
-            },
-            {
-                "data": "FullName",
                 "defaultContent": "",
                 "className": "align-middle",
                 "render": function (data, type, row) {
-                    var html = '<a href="/Major/Subject/Detail/' + row.SubjectId + '" class="font-bold text-dark-m1">' + data + '</a>';
+                    var html = '<a href="/Major/Subject/Detail/' + row.SubjectId + '" class="text-primary font-bolder d-block">' +
+                        '<i class="far fa-id-card mr-1"></i>' + (data || "") + "</a>";
+                    html += '<span class="font-bold text-dark-m1">' + (row.FullName || "") + "</span>";
                     if (row.OtherName) {
-                        html += '<br><small class="text-secondary">(Tên gọi khác: ' + row.OtherName + ')</small>';
+                        html += '<br><small class="text-secondary">(Tên gọi khác: ' + row.OtherName + ")</small>";
                     }
                     return html;
                 }
-            },
-            {
-                "data": "DateOfBirthStr",
-                "defaultContent": "",
-                "className": "text-center align-middle"
             },
             {
                 "data": "Gender",
@@ -86,24 +73,24 @@ function initTableSubject() {
                 "className": "text-center align-middle"
             },
             {
-                "data": "PhoneNumber",
-                "className": "align-middle",
-                "defaultContent": ""
+                "data": "DateOfBirthStr",
+                "defaultContent": "",
+                "className": "text-center align-middle"
             },
             {
-                "data": "CurrentResidence",
-                "className": "align-middle",
-                "defaultContent": ""
+                "data": "PlaceOfOrigin",
+                "defaultContent": "",
+                "className": "align-middle"
             },
             {
-                "data": "ViolationCount",
-                "defaultContent": 0,
+                "data": "AvatarUrl",
+                "defaultContent": "",
                 "className": "text-center align-middle",
+                "orderable": false,
                 "render": function (data) {
-                    if (data > 0) {
-                        return '<span class="badge badge-danger text-110 px-2 py-1"><i class="fas fa-exclamation-triangle mr-1"></i>' + data + ' lần</span>';
-                    }
-                    return '<span class="badge badge-secondary px-2 py-1">Chưa có</span>';
+                    var src = data ? data : "/Contents/Base/imgs/avatar-default.png";
+                    return '<img src="' + src + '" onerror="this.src=\'/Contents/Base/imgs/avatar-default.png\';" ' +
+                        'class="radius-round border-1 brc-primary-m3" style="width:42px;height:42px;object-fit:cover;" />';
                 }
             },
             {
@@ -111,23 +98,33 @@ function initTableSubject() {
                 "className": "text-center align-middle",
                 "orderable": false,
                 "render": function (data, type, row) {
-                    var html = '<span class="d-none d-lg-inline">';
-                    if (type === "display") {
-                        html += '<a href="/Major/Subject/Detail/' + data + '" class="btn px-2 btn-lighter-info mr-1 v-hover" title="Xem hồ sơ chi tiết"><i class="far fa-eye text-info text-120"></i></a>';
-                        html += _renderButton(true,
-                            "EditSubject",
-                            "btn px-2 btn-lighter-primary mr-1 v-hover",
-                            "/Major/Subject/Edit/" + data,
-                            '<i class="far fa-edit text-primary text-120"></i>',
-                            "Cập nhật", { "data-width": "1350px" });
-                        html += _renderButton(true,
-                            "DeleteSubject",
-                            "btn px-2 btn-lighter-danger mr-1 v-hover",
-                            "/Major/Subject/Delete/" + data,
-                            '<i class="far fa-trash-alt text-danger text-120"></i>',
-                            "Xoá");
-                    }
-                    html += "</span>";
+                    if (type !== "display") return "";
+                    var html = '<div class="btn-group btn-group-sm" role="group">';
+                    html += _renderButton(true,
+                        "EditSubject",
+                        "btn btn-light-primary v-hover",
+                        "/Major/Subject/Edit/" + data,
+                        '<i class="far fa-edit text-primary"></i>',
+                        "Cập nhật thông tin", { "data-width": "1350px" });
+                    html += _renderButton(true,
+                        "ViolationHistory",
+                        "btn btn-light-warning v-hover",
+                        "/Major/Subject/ViolationHistory/" + data,
+                        '<i class="fas fa-exclamation-triangle text-warning-d2"></i>',
+                        "Lịch sử vi phạm", { "data-width": "1100px" });
+                    html += _renderButton(true,
+                        "SubjectChangeLog",
+                        "btn btn-light-info v-hover",
+                        "/Major/Subject/ChangeLog/" + data,
+                        '<i class="fas fa-history text-info"></i>',
+                        "Log cập nhật", { "data-width": "1000px" });
+                    html += _renderButton(true,
+                        "DeleteSubject",
+                        "btn btn-light-danger v-hover",
+                        "/Major/Subject/Delete/" + data,
+                        '<i class="far fa-trash-alt text-danger"></i>',
+                        "Xoá");
+                    html += "</div>";
                     return html;
                 }
             }
@@ -229,3 +226,466 @@ function removeSubjectViolationImage(btn, url) {
         $("#InitialImages").val(arr.join(";"));
     }
 }
+
+/* =========================================================================
+ *  TRA CỨU ĐỐI TƯỢNG THEO SỐ CCCD
+ *  - Nhấn Enter tại ô CCCD hoặc bấm nút tra cứu bên cạnh.
+ *  - Nếu tìm thấy: đổ toàn bộ thông tin định danh + lịch sử vi phạm lên form.
+ * ========================================================================= */
+
+function lookupSubjectByIdentityCard() {
+    var $card = $("#ModalContent #IdentityCardNumber");
+    if ($card.length === 0) $card = $("#IdentityCardNumber");
+
+    var cardNumber = $.trim($card.val() || "");
+    var $result = $("#lookupSubjectResult");
+    var $button = $("#btnLookupSubject");
+
+    if (cardNumber === "") {
+        showLookupSubjectMessage("warning", "fa-exclamation-circle", "Vui lòng nhập số CCCD/CMND cần tra cứu.");
+        $card.focus();
+        return;
+    }
+
+    $button.prop("disabled", true).html('<i class="fas fa-spinner fa-spin"></i>');
+    $result.removeClass("d-none").html('<span class="text-secondary"><i class="fas fa-spinner fa-spin mr-1"></i>Đang tra cứu...</span>');
+
+    $.ajax({
+        url: _SubjectActionURLs.Subject_LookupByCard,
+        type: "GET",
+        dataType: "json",
+        data: { identityCardNumber: cardNumber },
+        success: function (res) {
+            $button.prop("disabled", false).html('<i class="fas fa-search"></i>');
+
+            if (res && res.status && res.data) {
+                fillSubjectFormFromLookup(res.data);
+            } else {
+                clearLookupSubjectState();
+                var icon = (res && res.isNotFound) ? "fa-info-circle" : "fa-times-circle";
+                var type = (res && res.isNotFound) ? "info" : "danger";
+                showLookupSubjectMessage(type, icon, (res && res.message) || "Không tìm thấy dữ liệu.");
+            }
+        },
+        error: function () {
+            $button.prop("disabled", false).html('<i class="fas fa-search"></i>');
+            showLookupSubjectMessage("danger", "fa-times-circle", "Lỗi kết nối máy chủ khi tra cứu CCCD.");
+        }
+    });
+}
+
+function showLookupSubjectMessage(type, icon, message) {
+    $("#lookupSubjectResult")
+        .removeClass("d-none")
+        .html('<span class="text-' + type + ' font-bold"><i class="fas ' + icon + ' mr-1"></i>' + message + '</span>');
+}
+
+/* Đổ dữ liệu tra cứu được lên các control của form */
+function fillSubjectFormFromLookup(data) {
+    setLookupFieldValue("SubjectId", data.subjectId);
+    setLookupFieldValue("FullName", data.fullName);
+    setLookupFieldValue("OtherName", data.otherName);
+    setLookupFieldValue("DateOfBirth", data.dateOfBirth);
+    setLookupFieldValue("Gender", data.gender);
+    setLookupFieldValue("Ethnicity", data.ethnicity);
+    setLookupFieldValue("Religion", data.religion);
+    setLookupFieldValue("Nationality", data.nationality);
+    setLookupFieldValue("PhoneNumber", data.phoneNumber);
+    setLookupFieldValue("PlaceOfOrigin", data.placeOfOrigin);
+    setLookupFieldValue("CurrentResidence", data.currentResidence);
+
+    setLookupImage("AvatarUrl", "previewAvatar", data.avatarUrl, "/Contents/Base/imgs/avatar-default.png");
+    setLookupImage("IdentityCardFrontUrl", "previewFront", data.identityCardFrontUrl, "/Contents/Base/imgs/no-image.png");
+    setLookupImage("IdentityCardBackUrl", "previewBack", data.identityCardBackUrl, "/Contents/Base/imgs/no-image.png");
+
+    // KHÔNG nạp lại lịch sử vi phạm cũ: màn hình này để ghi nhận vi phạm MỚI.
+    // Phần nhập vi phạm vẫn giữ nguyên trạng thái khoá cho tới khi bấm "Lưu đối tượng".
+    showLookupSubjectMessage(
+        "success",
+        "fa-check-circle",
+        "Đã tìm thấy: <u>" + escapeLookupHtml(data.fullName) + "</u>. Bấm \"Lưu đối tượng\" để tiếp tục ghi nhận vi phạm."
+    );
+}
+
+function setLookupFieldValue(fieldId, value) {
+    var $el = $("#ModalContent #" + fieldId);
+    if ($el.length === 0) $el = $("#" + fieldId);
+    if ($el.length === 0) return;
+    $el.val(value == null ? "" : value);
+}
+
+function setLookupImage(hiddenId, previewId, url, defaultUrl) {
+    setLookupFieldValue(hiddenId, url);
+    var $img = $("#ModalContent #" + previewId);
+    if ($img.length === 0) $img = $("#" + previewId);
+    if ($img.length === 0) return;
+    $img.attr("src", url ? url : defaultUrl).removeClass("d-none");
+}
+
+/* Xoá trạng thái tra cứu trước đó (khi không tìm thấy hoặc đổi CCCD) */
+function clearLookupSubjectState() {
+    // Chỉ reset ở chế độ thêm mới (form AddSubject), tránh phá dữ liệu form sửa.
+    if ($("#ModalContent #AddSubject").length > 0 || $("#AddSubject").length > 0) {
+        var $subjectId = $("#ModalContent #SubjectId");
+        if ($subjectId.length === 0) $subjectId = $("#SubjectId");
+        $subjectId.val("");
+    }
+    // Đối tượng không còn được xác định -> khoá lại phần nhập vi phạm
+    lockViolationPanel();
+}
+
+function escapeLookupHtml(text) {
+    if (text == null) return "";
+    return $("<div/>").text(text).html();
+}
+
+/* Gắn sự kiện bằng delegated event để hoạt động với nội dung modal nạp bằng AJAX */
+$(document).on("keydown", "#IdentityCardNumber", function (e) {
+    if (e.which === 13 || e.keyCode === 13) {
+        e.preventDefault();
+        lookupSubjectByIdentityCard();
+    }
+});
+
+$(document).on("click", "#btnLookupSubject", function (e) {
+    e.preventDefault();
+    lookupSubjectByIdentityCard();
+});
+
+/* =========================================================================
+ *  BỘ LỌC TRA CỨU NGOÀI DANH SÁCH ĐỐI TƯỢNG
+ *  Tra cứu theo: số CCCD, họ tên, hành vi vi phạm.
+ * ========================================================================= */
+
+/* Thu gọn danh sách hành vi theo lĩnh vực đang chọn */
+function filterSearchBehaviorsByField() {
+    var fieldId = $("#Search #SearchFieldId").val();
+    var $behaviors = $("#Search #BehaviorIds");
+
+    $behaviors.find("option").each(function () {
+        var $opt = $(this);
+        var match = !fieldId || $opt.attr("data-fieldid") === fieldId;
+        $opt.toggle(match);
+        // Bỏ chọn những hành vi không còn thuộc lĩnh vực đang lọc
+        if (!match) $opt.prop("selected", false);
+    });
+}
+
+/* Xoá toàn bộ điều kiện tra cứu và tải lại danh sách */
+function resetSubjectSearch() {
+    $("#Search #IdentityCardNumber").val("");
+    $("#Search #FullName").val("");
+    $("#Search #Gender").val("");
+    $("#Search #SearchFieldId").val("");
+    $("#Search #BehaviorIds").val([]);
+    filterSearchBehaviorsByField();
+
+    if (typeof _tableSubject !== "undefined") {
+        _tableSubject.ajax.reload(null, false);
+    }
+}
+
+$(document).on("change", "#Search #SearchFieldId", function () {
+    filterSearchBehaviorsByField();
+});
+
+/* Cho phép nhấn Enter tại ô CCCD / họ tên để tra cứu ngay */
+$(document).on("keydown", "#Search #IdentityCardNumber, #Search #FullName", function (e) {
+    if (e.which === 13 || e.keyCode === 13) {
+        e.preventDefault();
+        if (typeof _tableSubject !== "undefined") {
+            _tableSubject.ajax.reload(null, false);
+        }
+    }
+});
+
+/* =========================================================================
+ *  LUỒNG THÊM MỚI 2 BƯỚC
+ *  Bước 1: Lưu thông tin đối tượng  -> mở khoá phần nhập vi phạm.
+ *  Bước 2: Lưu thông tin vi phạm    -> đóng modal, tải lại danh sách.
+ *
+ *  Dùng type="button" + $.ajax thủ công thay vì Ajax.BeginForm, vì hàm
+ *  _initButtonSubmit của khung TSFramework sẽ submit MỌI form trong modal
+ *  khi bấm một nút submit bất kỳ - không phù hợp với luồng nhiều bước.
+ * ========================================================================= */
+
+function $inModal(selector) {
+    var $el = $("#ModalContent " + selector);
+    return $el.length > 0 ? $el : $(selector);
+}
+
+/* Khoá phần nhập vi phạm: vô hiệu hoá toàn bộ input và hiện lớp phủ xám */
+function lockViolationPanel() {
+    var $panel = $inModal("#violationPanel");
+    if ($panel.length === 0) return;
+
+    $panel.attr("data-locked", "1");
+    $inModal("#violationFieldset").prop("disabled", true);
+    $inModal("#violationPanelOverlay").removeClass("d-none");
+    $inModal("#btnSaveViolation").prop("disabled", true);
+}
+
+/* Mở khoá phần nhập vi phạm sau khi đối tượng đã được lưu */
+function unlockViolationPanel() {
+    var $panel = $inModal("#violationPanel");
+    if ($panel.length === 0) return;
+
+    $panel.attr("data-locked", "0");
+    $inModal("#violationFieldset").prop("disabled", false);
+    $inModal("#violationPanelOverlay").addClass("d-none");
+    $inModal("#btnSaveViolation").prop("disabled", false);
+}
+
+/* BƯỚC 1 - Lưu thông tin đối tượng */
+function saveSubjectStep1() {
+    var $form = $inModal("#AddSubject");
+    if ($form.length === 0) return;
+
+    var cardNumber = $.trim($inModal("#IdentityCardNumber").val() || "");
+    var fullName = $.trim($inModal("#FullName").val() || "");
+
+    if (cardNumber === "") {
+        showLookupSubjectMessage("warning", "fa-exclamation-circle", "Vui lòng nhập số CCCD/CMND.");
+        $inModal("#IdentityCardNumber").focus();
+        return;
+    }
+    if (fullName === "") {
+        showLookupSubjectMessage("warning", "fa-exclamation-circle", "Vui lòng nhập họ và tên.");
+        $inModal("#FullName").focus();
+        return;
+    }
+
+    var $btn = $inModal("#btnSaveSubject");
+    var originalHtml = $btn.html();
+    $btn.prop("disabled", true).html('<i class="fas fa-spinner fa-spin"></i>&nbsp;Đang lưu...');
+
+    $.ajax({
+        url: _SubjectActionURLs.Subject_SaveSubject,
+        type: "POST",
+        dataType: "json",
+        data: $form.serialize(),
+        success: function (res) {
+            if (res && res.status) {
+                $inModal("#SubjectId").val(res.subjectId);
+                unlockViolationPanel();
+
+                if (res.unchanged) {
+                    showLookupSubjectMessage("info", "fa-info-circle",
+                        "Thông tin đối tượng không có thay đổi. Mời nhập thông tin vi phạm.");
+                } else {
+                    if (res.message) { eval(res.message); }
+                    showLookupSubjectMessage("success", "fa-check-circle",
+                        res.isUpdate ? "Đã cập nhật thông tin đối tượng. Mời nhập thông tin vi phạm."
+                                     : "Đã lưu đối tượng mới. Mời nhập thông tin vi phạm.");
+                }
+
+                if (typeof _tableSubject !== "undefined") {
+                    _tableSubject.ajax.reload(null, false);
+                }
+                $inModal("#InitialViolationDate").focus();
+            } else {
+                if (res && res.message) { eval(res.message); }
+            }
+        },
+        error: function () {
+            alert("Lỗi kết nối máy chủ khi lưu thông tin đối tượng.");
+        },
+        complete: function () {
+            $btn.prop("disabled", false).html(originalHtml);
+        }
+    });
+}
+
+/* BƯỚC 2 - Lưu thông tin vi phạm */
+function saveViolationStep2() {
+    var $form = $inModal("#AddSubject");
+    if ($form.length === 0) return;
+
+    var subjectId = $.trim($inModal("#SubjectId").val() || "");
+    if (subjectId === "" || subjectId === "00000000-0000-0000-0000-000000000000") {
+        alert("Vui lòng lưu thông tin đối tượng trước khi ghi nhận vi phạm.");
+        return;
+    }
+
+    var behaviorIds = $.trim($inModal("#InitialBehaviorIds").val() || "");
+    if (behaviorIds === "") {
+        alert("Vui lòng chọn ít nhất một hành vi vi phạm.");
+        return;
+    }
+
+    var $btn = $inModal("#btnSaveViolation");
+    var originalHtml = $btn.html();
+    $btn.prop("disabled", true).html('<i class="fas fa-spinner fa-spin"></i>&nbsp;Đang lưu...');
+
+    $.ajax({
+        url: _SubjectActionURLs.Subject_SaveViolation,
+        type: "POST",
+        dataType: "json",
+        data: $form.serialize(),
+        success: function (res) {
+            if (res && res.message) { eval(res.message); }
+            if (res && res.status) {
+                if (typeof _tableSubject !== "undefined") {
+                    _tableSubject.ajax.reload(null, false);
+                }
+                $("#ModalContent #modal_AddSubject").modal("hide");
+            }
+        },
+        error: function () {
+            alert("Lỗi kết nối máy chủ khi lưu thông tin vi phạm.");
+        },
+        complete: function () {
+            $btn.prop("disabled", false).html(originalHtml);
+        }
+    });
+}
+
+$(document).on("click", "#btnSaveSubject", function (e) {
+    e.preventDefault();
+    saveSubjectStep1();
+});
+
+$(document).on("click", "#btnSaveViolation", function (e) {
+    e.preventDefault();
+    saveViolationStep2();
+});
+
+/* Nếu người dùng sửa lại số CCCD sau khi đã lưu, phải khoá lại phần vi phạm.
+   Nếu không, lần vi phạm sẽ bị gán nhầm sang đối tượng vừa lưu trước đó. */
+$(document).on("input", "#IdentityCardNumber", function () {
+    var $panel = $inModal("#violationPanel");
+    if ($panel.length === 0 || $panel.attr("data-locked") === "1") return;
+    // Chỉ áp dụng cho form thêm mới
+    if ($inModal("#AddSubject").length === 0) return;
+
+    $inModal("#SubjectId").val("");
+    lockViolationPanel();
+    showLookupSubjectMessage("warning", "fa-exclamation-circle",
+        "Số CCCD đã thay đổi. Vui lòng bấm \"Lưu đối tượng\" lại.");
+});
+
+
+/* =========================================================================
+ *  LỊCH SỬ VI PHẠM
+ * ========================================================================= */
+
+/* Người không phải người báo cáo: thu gọn / mở rộng phần chi tiết */
+function toggleViolationDetail(button) {
+    var $body = $(button).closest(".violation-history-card").find(".violation-detail-body");
+    $body.slideToggle(150);
+}
+
+/* Mở modal Sửa / Xoá của một lần vi phạm */
+function openViolationAction(violationId, action) {
+    var url = "/Major/SubjectViolation/" + action + "/" + violationId;
+    var modalId = action + "Violation";
+
+    var $link = $("<a>").attr({
+        "href": url,
+        "data-modal": "true",
+        "data-modal-id": modalId,
+        "data-width": "1100px"
+    }).css("display", "none").appendTo("body");
+
+    $link.trigger("click");
+    setTimeout(function () { $link.remove(); }, 1000);
+}
+
+
+/* =========================================================================
+ *  LOG CẬP NHẬT
+ * ========================================================================= */
+
+var _tableSubjectChangeLog;
+
+function initTableSubjectChangeLog(subjectId) {
+    if ($.fn.DataTable.isDataTable("#DSSubjectChangeLog")) {
+        $("#DSSubjectChangeLog").DataTable().destroy();
+    }
+
+    _tableSubjectChangeLog = $("#DSSubjectChangeLog").DataTable({
+        "responsive": true,
+        "searching": false,
+        "lengthChange": false,
+        "pageLength": 10,
+        "processing": true,
+        "serverSide": true,
+        "ordering": false,
+        "language": {
+            "processing": "<div class='overlay'><i class='fas fa-cog fa-spin'></i></div>",
+            "emptyTable": "Chưa có lịch sử thay đổi nào",
+            "info": "Hiển thị _START_ đến _END_ của _TOTAL_ dòng",
+            "infoEmpty": "Hiển thị 0 đến 0 của 0 dòng",
+            "paginate": { "first": "Đầu", "last": "Cuối", "next": "Sau", "previous": "Trước" }
+        },
+        "ajax": {
+            "url": _SubjectActionURLs.Subject_GetChangeLog,
+            "type": "POST",
+            "dataType": "JSON",
+            "data": function (d) { d.subjectId = subjectId; }
+        },
+        "columns": [
+            {
+                "data": "CreatedDateStr",
+                "className": "align-middle text-85",
+                "render": function (data) {
+                    return '<i class="far fa-clock mr-1 text-secondary"></i>' + (data || "");
+                }
+            },
+            {
+                "data": "ActionType",
+                "className": "text-center align-middle",
+                "render": function (data, type, row) {
+                    var label = { "ADD": "Thêm mới", "UPDATE": "Cập nhật", "DELETE": "Xoá" }[data] || data;
+                    var css = { "ADD": "badge-success", "UPDATE": "badge-warning", "DELETE": "badge-danger" }[data] || "badge-secondary";
+                    var scope = (row.EntityType === "VIOLATION") ? "Vi phạm" : "Đối tượng";
+                    return '<span class="badge ' + css + '">' + label + "</span>" +
+                        '<br><small class="text-secondary">' + scope + "</small>";
+                }
+            },
+            {
+                "data": "ChangedFields",
+                "className": "align-middle text-85",
+                "render": function (data, type, row) {
+                    if (data) {
+                        var html = "";
+                        try {
+                            JSON.parse(data).forEach(function (change) {
+                                html += '<div class="mb-1">' +
+                                    '<span class="font-bold text-dark-m2">' + escapeLookupHtml(change.Label) + ":</span> " +
+                                    '<span class="text-danger text-decoration-line-through">' + (escapeLookupHtml(change.OldValue) || "(trống)") + "</span>" +
+                                    ' <i class="fas fa-long-arrow-alt-right mx-1 text-secondary"></i> ' +
+                                    '<span class="text-success font-bold">' + (escapeLookupHtml(change.NewValue) || "(trống)") + "</span>" +
+                                    "</div>";
+                            });
+                        } catch (e) {
+                            html = escapeLookupHtml(row.ChangedFieldNames || "");
+                        }
+                        return html;
+                    }
+                    return '<span class="text-secondary">' + escapeLookupHtml(row.Description || "") + "</span>";
+                }
+            },
+            {
+                "data": "ActorName",
+                "className": "align-middle text-85",
+                "render": function (data, type, row) {
+                    var html = '<span class="font-bold text-dark-m1">' + escapeLookupHtml(data || row.ActorUserName || "") + "</span>";
+                    if (row.ActorPosition) {
+                        html += '<br><small class="text-secondary">' + escapeLookupHtml(row.ActorPosition) + "</small>";
+                    }
+                    if (row.ActorUnit) {
+                        html += '<br><small class="text-secondary">' + escapeLookupHtml(row.ActorUnit) + "</small>";
+                    }
+                    return html;
+                }
+            }
+        ]
+    });
+}
+
+/* Khi modal Log cập nhật được mở xong thì khởi tạo bảng */
+$(document).on("shown.bs.modal", "#modal_SubjectChangeLog", function () {
+    var subjectId = $(this).find("#LogSubjectId").val();
+    if (subjectId) { initTableSubjectChangeLog(subjectId); }
+});

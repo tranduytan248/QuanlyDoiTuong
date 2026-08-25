@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -152,10 +152,16 @@
     <Compile Include="Providers\RenderContractProvider.cs" />
     <Compile Include="Providers\ServiceComplainProvider.cs" />
     <Compile Include="Biz\MajorSubjectBiz.cs" />
+    <Compile Include="Biz\MajorSubjectChangeLogBiz.cs" />
     <Compile Include="Biz\MajorSubjectViolationBiz.cs" />
     <Compile Include="Caches\MajorSubjectCache.cs" />
+    <Compile Include="Caches\MajorSubjectChangeLogCache.cs" />
     <Compile Include="Caches\MajorSubjectViolationCache.cs" />
     <Compile Include="Models\MajorSubjectModel.cs" />
+    <Compile Include="Models\MajorSubjectChangeLogModel.cs" />
+    <Compile Include="Models\SubjectFieldChangeModel.cs" />
+    <Compile Include="Models\ConstsChangeLog.cs" />
+    <Compile Include="Helpers\SubjectChangeDetector.cs" />
     <Compile Include="Models\MajorSubjectViolationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

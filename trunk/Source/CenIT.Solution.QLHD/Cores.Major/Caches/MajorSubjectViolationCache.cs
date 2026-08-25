@@ -19,18 +19,24 @@ namespace Cores.Major.Caches
             new[] { "SubjectViolationsCache", "CENIT.APP.Cache" };
 
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        public List<MajorSubjectViolationModel> Get(out int total, string key, Guid? subjectId, int? fieldId, BaseSearchModel search = null)
+        /// <summary>
+        /// Danh sách lịch sử vi phạm, đã áp dụng phân quyền dữ liệu.
+        /// Khoá cache phải chứa userName - xem ghi chú tại MajorSubjectCache.Get.
+        /// </summary>
+        public List<MajorSubjectViolationModel> Get(out int total, string key, Guid? subjectId, int? fieldId,
+            string userName, BaseSearchModel search = null)
         {
             var objectKey = EHashMD5.FromObject(search);
             var objectKey2 = EHashMD5.FromObject(key);
             var objectKey3 = EHashMD5.FromObject(subjectId);
             var objectKey4 = EHashMD5.FromObject(fieldId);
-            var rawKey = string.Concat("ListSubjectViolations-", objectKey, objectKey2, objectKey3, objectKey4);
+            var objectKey5 = EHashMD5.FromObject(userName);
+            var rawKey = string.Concat("ListSubjectViolations-", objectKey, objectKey2, objectKey3, objectKey4, objectKey5);
             var rawKeyTotal = string.Concat(rawKey, "-Total");
             var cacheTotal = (int?)GetCacheItem(rawKeyTotal);
             total = cacheTotal ?? 0;
             if (GetCacheItem(rawKey) is List<MajorSubjectViolationModel> violations) return violations;
-            violations = Api.Get(out total, key, subjectId, fieldId, search);
+            violations = Api.Get(out total, key, subjectId, fieldId, userName, search);
             AddCacheItem(rawKey, violations);
             AddCacheItem(rawKeyTotal, total);
             return violations;
@@ -47,11 +53,15 @@ namespace Cores.Major.Caches
         }
 
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        public List<MajorSubjectViolationModel> GetBySubjectId(Guid? subjectId)
+        /// <summary>
+        /// Lịch sử vi phạm của một đối tượng, đã áp dụng phân quyền dữ liệu.
+        /// <paramref name="userName"/> = null nghĩa là không giới hạn phạm vi.
+        /// </summary>
+        public List<MajorSubjectViolationModel> GetBySubjectId(Guid? subjectId, string userName = null)
         {
-            var rawKey = string.Concat("SubjectViolationsBySubject-", subjectId);
+            var rawKey = string.Concat("SubjectViolationsBySubject-", subjectId, "-", EHashMD5.FromObject(userName));
             if (GetCacheItem(rawKey) is List<MajorSubjectViolationModel> violations) return violations;
-            violations = Api.GetBySubjectId(subjectId);
+            violations = Api.GetBySubjectId(subjectId, userName);
             AddCacheItem(rawKey, violations);
             return violations;
         }

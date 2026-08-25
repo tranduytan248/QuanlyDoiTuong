@@ -38,5 +38,5 @@
 
 @section BottomScript
 {
-    <script src="~/Areas/Major/Views/SubjectViolation/SubjectViolation.js"></script>
+    <script src="~/Areas/Major/Views/SubjectViolation/SubjectViolation.js?v=@(System.IO.File.GetLastWriteTime(Server.MapPath("~/Areas/Major/Views/SubjectViolation/SubjectViolation.js")).Ticks)"></script>
 }

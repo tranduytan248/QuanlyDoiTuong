@@ -51,21 +51,35 @@ namespace Modules.Major.Areas.Major.Controllers
         /// </summary>
         private void LoadPermittedCatalogs()
         {
-            _fieldCache.InvalidateAll();
-            _behaviorCache.InvalidateAll();
-
+            // KHONG goi InvalidateAll o day. Danh muc linh vuc / hanh vi rat it
+            // thay doi, nen de tang cache tu phuc vu. Truoc day hai dong xoa cache
+            // khien MOI lan mo man hinh deu phai doc lai CSDL - dung nghia vo hieu
+            // hoa cache va lam giao dien cham han.
+            // Khi sua danh muc, chinh man hinh Danh muc da tu xoa cache tuong ung.
             var allFields = _fieldCache.GetAll() ?? new List<CateFieldModel>();
             var allBehaviors = _behaviorCache.GetAll() ?? new List<CateViolationBehaviorModel>();
 
+            // Doc phan cong linh vuc TRUOC khi xet super admin.
+            // Chua duoc phan linh vuc nao thi khong thay gi - ke ca quan tri.
+            // Phan quyen linh vuc la phan cong nghiep vu, khong phai quyen he thong:
+            // nguoi chua duoc giao linh vuc thi khong co gi de thao tac.
+            var permittedIds = _userFieldCache.GetPermittedFieldIds(User?.UserName)
+                               ?? new List<int>();
+
+            if (permittedIds.Count == 0)
+            {
+                ViewBag.ListFields = new List<CateFieldModel>();
+                ViewBag.ListBehaviors = new List<CateViolationBehaviorModel>();
+                return;
+            }
+
+            // Da co phan cong: super admin duoc mo rong ra toan bo danh muc.
             if (IsSuperAdminUser())
             {
                 ViewBag.ListFields = allFields;
                 ViewBag.ListBehaviors = allBehaviors;
                 return;
             }
-
-            var permittedIds = _userFieldCache.GetPermittedFieldIds(User?.UserName)
-                               ?? new List<int>();
 
             ViewBag.ListFields = allFields
                 .Where(item => permittedIds.Contains(item.FieldId)).ToList();

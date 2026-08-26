@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Cores.Base.Apps;
 using Cores.Cate.Caches;
+using Cores.Cate.Models;
 using Cores.Major.Caches;
 using Cores.Major.Helpers;
 using Cores.Major.Models;
@@ -27,6 +28,10 @@ namespace Modules.Major.Areas.Major.Controllers
         private readonly CateUnionCache _unionCache = new CateUnionCache();
         private readonly SysUserCache _userCache = new SysUserCache();
         private readonly MajorSubjectChangeLogCache _changeLogCache = new MajorSubjectChangeLogCache();
+        private readonly CateUserFieldCache _userFieldCache = new CateUserFieldCache();
+
+        /// <summary>Khoa cau hinh danh sach tai khoan super admin.</summary>
+        private const string CONFIG_SUPER_ADMIN_PERMIT = "CONFIG_SUPER_ADMIN_PERMIT";
         private readonly string _subjectTitle = AppProcessor.Messagor.GetMessage("Subject_Title") ?? "Đối tượng";
 
         /// <summary>Thư mục lưu ảnh định danh của đối tượng (ảnh chân dung, CCCD).</summary>
@@ -38,12 +43,74 @@ namespace Modules.Major.Areas.Major.Controllers
         private const string DEFAULT_REPORTER_UNIT = "Văn phòng Đăng ký Đất đai Khánh Hòa";
         private const string DEFAULT_REPORTER_POSITION = "Cán bộ tiếp nhận";
 
+
+        /// <summary>
+        /// Danh muc linh vuc va hanh vi ma nguoi dang dang nhap duoc phep thao tac.
+        /// Super admin thay tat ca; nguoi dung thuong chi thay linh vuc duoc phan cong.
+        /// Dat vao ViewBag de giao dien dung chung mot nguon du lieu.
+        /// </summary>
+        private void LoadPermittedCatalogs()
+        {
+            // KHONG goi InvalidateAll o day. Danh muc linh vuc / hanh vi rat it
+            // thay doi, nen de tang cache tu phuc vu. Truoc day hai dong xoa cache
+            // khien MOI lan mo man hinh deu phai doc lai CSDL - dung nghia vo hieu
+            // hoa cache va lam giao dien cham han.
+            // Khi sua danh muc, chinh man hinh Danh muc da tu xoa cache tuong ung.
+            var allFields = _fieldCache.GetAll() ?? new List<CateFieldModel>();
+            var allBehaviors = _behaviorCache.GetAll() ?? new List<CateViolationBehaviorModel>();
+
+            // Doc phan cong linh vuc TRUOC khi xet super admin.
+            // Chua duoc phan linh vuc nao thi khong thay gi - ke ca quan tri.
+            // Phan quyen linh vuc la phan cong nghiep vu, khong phai quyen he thong:
+            // nguoi chua duoc giao linh vuc thi khong co gi de thao tac.
+            var permittedIds = _userFieldCache.GetPermittedFieldIds(User?.UserName)
+                               ?? new List<int>();
+
+            if (permittedIds.Count == 0)
+            {
+                ViewBag.ListFields = new List<CateFieldModel>();
+                ViewBag.ListBehaviors = new List<CateViolationBehaviorModel>();
+                return;
+            }
+
+            // Da co phan cong: super admin duoc mo rong ra toan bo danh muc.
+            if (IsSuperAdminUser())
+            {
+                ViewBag.ListFields = allFields;
+                ViewBag.ListBehaviors = allBehaviors;
+                return;
+            }
+
+            ViewBag.ListFields = allFields
+                .Where(item => permittedIds.Contains(item.FieldId)).ToList();
+            ViewBag.ListBehaviors = allBehaviors
+                .Where(item => permittedIds.Contains(item.FieldId)).ToList();
+        }
+
+        /// <summary>
+        /// Kiem tra nguoi dang dang nhap co phai super admin hay khong.
+        /// Doc tu cung khoa cau hinh ma tang CSDL dang dung (CONFIG_SUPER_ADMIN_PERMIT).
+        /// </summary>
+        private bool IsSuperAdminUser()
+        {
+            var userName = User?.UserName;
+            if (string.IsNullOrWhiteSpace(userName)) return false;
+
+            var configValue = new Cores.Sys.Caches.Sys.SysConfigCache()
+                .GetViaKey(CONFIG_SUPER_ADMIN_PERMIT)?.ConfigValue;
+            if (string.IsNullOrWhiteSpace(configValue)) return false;
+
+            return configValue.Split(',')
+                .Select(item => item.Trim())
+                .Any(item => string.Equals(item, userName.Trim(),
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
         // GET: Major/Subject
         public ActionResult Index()
         {
             // Danh mục phục vụ bộ lọc tra cứu theo lĩnh vực / hành vi vi phạm
-            ViewBag.ListFields = _fieldCache.GetAll();
-            ViewBag.ListBehaviors = _behaviorCache.GetAll();
+            LoadPermittedCatalogs();
 
             var searchModel = new SearchSubjectModel();
             return View(searchModel);
@@ -172,10 +239,7 @@ namespace Modules.Major.Areas.Major.Controllers
         [HttpGet]
         public ActionResult Add()
         {
-            _fieldCache.InvalidateAll();
-            _behaviorCache.InvalidateAll();
-            ViewBag.ListFields = _fieldCache.GetAll();
-            ViewBag.ListBehaviors = _behaviorCache.GetAll();
+            LoadPermittedCatalogs();
             
             var reporter = ResolveReporterInfo();
 
@@ -202,8 +266,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 ModelState.Remove("SubjectId");
                 if (!ModelState.IsValid)
                 {
-                    ViewBag.ListFields = _fieldCache.GetAll();
-                    ViewBag.ListBehaviors = _behaviorCache.GetAll();
+                    LoadPermittedCatalogs();
                     return PartialView("_Subject", model);
                 }
 
@@ -471,10 +534,7 @@ namespace Modules.Major.Areas.Major.Controllers
             }
             model.ListViolations = _violationCache.GetBySubjectId(id, User?.UserName) ?? new System.Collections.Generic.List<MajorSubjectViolationModel>();
             model.InitialViolationDate = DateTime.Now;
-            _fieldCache.InvalidateAll();
-            _behaviorCache.InvalidateAll();
-            ViewBag.ListFields = _fieldCache.GetAll();
-            ViewBag.ListBehaviors = _behaviorCache.GetAll();
+            LoadPermittedCatalogs();
 
             // Man hinh Cap nhat chi cho sua thong tin dinh danh. Viec ghi nhan vi pham
             // da co man hinh Lich su vi pham rieng.
@@ -497,8 +557,7 @@ namespace Modules.Major.Areas.Major.Controllers
                     {
                         model.ListViolations = _violationCache.GetBySubjectId(model.SubjectId.Value, User?.UserName) ?? new System.Collections.Generic.List<MajorSubjectViolationModel>();
                     }
-                    ViewBag.ListFields = _fieldCache.GetAll();
-                    ViewBag.ListBehaviors = _behaviorCache.GetAll();
+                    LoadPermittedCatalogs();
                     ViewBag.ShowViolationPanel = false;
                     return PartialView("_Subject", model);
                 }

@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Cores.Base.Apps;
 using Cores.Cate.Caches;
+using Cores.Cate.Models;
 using Cores.Major.Caches;
 using Cores.Major.Helpers;
 using Cores.Major.Models;
@@ -27,6 +28,10 @@ namespace Modules.Major.Areas.Major.Controllers
         private readonly CateUnionCache _unionCache = new CateUnionCache();
         private readonly SysUserCache _userCache = new SysUserCache();
         private readonly MajorSubjectChangeLogCache _changeLogCache = new MajorSubjectChangeLogCache();
+        private readonly CateUserFieldCache _userFieldCache = new CateUserFieldCache();
+
+        /// <summary>Khoa cau hinh danh sach tai khoan super admin.</summary>
+        private const string CONFIG_SUPER_ADMIN_PERMIT = "CONFIG_SUPER_ADMIN_PERMIT";
         private readonly string _violationTitle = AppProcessor.Messagor.GetMessage("SubjectViolation_Title") ?? "Lịch sử vi phạm";
 
         /// <summary>Thư mục lưu hình ảnh, văn bản đính kèm của lần vi phạm.</summary>
@@ -127,11 +132,62 @@ namespace Modules.Major.Areas.Major.Controllers
             model.ReporterUnionId = userDept?.UnionId ?? userUnion?.UnionId;
         }
 
+
+        /// <summary>
+        /// Danh muc linh vuc va hanh vi ma nguoi dang dang nhap duoc phep thao tac.
+        /// Super admin thay tat ca; nguoi dung thuong chi thay linh vuc duoc phan cong.
+        /// </summary>
+        private void LoadPermittedCatalogs()
+        {
+            var allFields = _fieldCache.GetAll() ?? new List<CateFieldModel>();
+            var allBehaviors = _behaviorCache.GetAll() ?? new List<CateViolationBehaviorModel>();
+
+            // Doc phan cong linh vuc TRUOC khi xet super admin.
+            // Chua duoc phan linh vuc nao thi khong thay gi - ke ca quan tri.
+            // Phan quyen linh vuc la phan cong nghiep vu, khong phai quyen he thong:
+            // nguoi chua duoc giao linh vuc thi khong co gi de thao tac.
+            var permittedIds = _userFieldCache.GetPermittedFieldIds(User?.UserName)
+                               ?? new List<int>();
+
+            if (permittedIds.Count == 0)
+            {
+                ViewBag.ListFields = new List<CateFieldModel>();
+                ViewBag.ListBehaviors = new List<CateViolationBehaviorModel>();
+                return;
+            }
+
+            // Da co phan cong: super admin duoc mo rong ra toan bo danh muc.
+            if (IsSuperAdminUser())
+            {
+                ViewBag.ListFields = allFields;
+                ViewBag.ListBehaviors = allBehaviors;
+                return;
+            }
+
+            ViewBag.ListFields = allFields.Where(item => permittedIds.Contains(item.FieldId)).ToList();
+            ViewBag.ListBehaviors = allBehaviors.Where(item => permittedIds.Contains(item.FieldId)).ToList();
+        }
+
+        /// <summary>Kiem tra nguoi dang dang nhap co phai super admin hay khong.</summary>
+        private bool IsSuperAdminUser()
+        {
+            var userName = User?.UserName;
+            if (string.IsNullOrWhiteSpace(userName)) return false;
+
+            var configValue = new Cores.Sys.Caches.Sys.SysConfigCache()
+                .GetViaKey(CONFIG_SUPER_ADMIN_PERMIT)?.ConfigValue;
+            if (string.IsNullOrWhiteSpace(configValue)) return false;
+
+            return configValue.Split(',')
+                .Select(item => item.Trim())
+                .Any(item => string.Equals(item, userName.Trim(), StringComparison.OrdinalIgnoreCase));
+        }
+
         // GET: Major/SubjectViolation
         public ActionResult Index()
         {
             var searchModel = new SearchSubjectViolationModel();
-            ViewBag.ListFields = _fieldCache.GetAll();
+            LoadPermittedCatalogs();
             ViewBag.ListSubjects = _subjectCache.GetAll();
             return View(searchModel);
         }
@@ -180,7 +236,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 }
             }
             ViewBag.ListSubjects = _subjectCache.GetAll();
-            ViewBag.ListBehaviors = _behaviorCache.GetAll();
+            LoadPermittedCatalogs();
             return PartialView("_Add", model);
         }
 
@@ -205,7 +261,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 if (!ModelState.IsValid)
                 {
                     ViewBag.ListSubjects = _subjectCache.GetAll();
-                    ViewBag.ListBehaviors = _behaviorCache.GetAll();
+                    LoadPermittedCatalogs();
                     return PartialView("_Violation", model);
                 }
 
@@ -246,7 +302,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.ListSubjects = _subjectCache.GetAll();
-            ViewBag.ListBehaviors = _behaviorCache.GetAll();
+            LoadPermittedCatalogs();
             return PartialView("_Edit", model);
         }
 
@@ -266,7 +322,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 if (!ModelState.IsValid)
                 {
                     ViewBag.ListSubjects = _subjectCache.GetAll();
-                    ViewBag.ListBehaviors = _behaviorCache.GetAll();
+                    LoadPermittedCatalogs();
                     return PartialView("_Violation", model);
                 }
 

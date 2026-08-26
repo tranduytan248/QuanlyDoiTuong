@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using Cores.Cate.Biz;
 using Cores.Cate.Models;
@@ -43,6 +44,21 @@ namespace Cores.Cate.Caches
             fields = Api.GetByUser(userName);
             AddCacheItem(rawKey, fields);
             return fields;
+        }
+
+        /// <summary>
+        /// Danh sach id linh vuc ma nguoi dung duoc phep ghi nhan vi pham.
+        /// Tra ve null nghia la KHONG gioi han (super admin).
+        /// Tra ve danh sach rong nghia la chua duoc phan linh vuc nao.
+        /// </summary>
+        public List<int> GetPermittedFieldIds(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName)) return new List<int>();
+
+            var fields = GetByUser(userName);
+            return fields == null
+                ? new List<int>()
+                : fields.Select(item => item.FieldId).ToList();
         }
 
         public bool Save(string userName, string fieldIds, string createdBy)

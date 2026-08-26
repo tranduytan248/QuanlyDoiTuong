@@ -338,6 +338,16 @@
                             </div>
                         </div>
 
+                        @if (listFields.Count == 0)
+                        {
+                            <div class="alert alert-warning py-2 mb-2 text-85">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                Bạn chưa được phân quyền lĩnh vực nào nên không thể ghi nhận vi phạm.
+                                Vui lòng liên hệ quản trị viên để được phân quyền tại
+                                <b>Danh mục &rarr; Phân quyền lĩnh vực</b>.
+                            </div>
+                        }
+
                         <!-- Danh sách Tabs Lĩnh vực -->
                         <ul class="nav nav-pills d-flex flex-wrap mb-2" id="fieldTabs" role="tablist">
                             @for (int i = 0; i < listFields.Count; i++)

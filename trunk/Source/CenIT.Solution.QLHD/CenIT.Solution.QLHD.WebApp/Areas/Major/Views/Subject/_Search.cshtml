@@ -14,58 +14,77 @@
             </a>
         </div>
     </div>
-    <div class="card-body p-0 collapse show">
-        <div class="col-md-12 form-horizontal mt-3" id="Search">
-            <div class="form-row form-group align-items-center">
-                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Số CCCD:</div>
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control", placeholder = "Nhập số CCCD/CMND...", autocomplete = "off" })
-                </div>
-                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Họ và tên:</div>
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", placeholder = "Nhập họ tên hoặc tên gọi khác...", autocomplete = "off" })
-                </div>
-            </div>
+    <div class="card-body collapse show">
+        <div class="form-horizontal" id="Search">
+            <div class="row">
+                <!-- CỘT TRÁI -->
+                <div class="col-12 col-lg-6">
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Số CCCD</label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control", placeholder = "Nhập số CCCD/CMND...", autocomplete = "off" })
+                        </div>
+                    </div>
 
-            <div class="form-row form-group align-items-center">
-                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Hành vi vi phạm:</div>
-                <div class="col-md-4">
-                    <select class="form-control" id="SearchFieldId">
-                        <option value="">-- Tất cả lĩnh vực --</option>
-                        @foreach (var field in listFields)
-                        {
-                            <option value="@field.FieldId">@field.FieldName</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-control" id="BehaviorIds" name="BehaviorIds" multiple size="1" style="height: 38px;">
-                        @foreach (var behavior in listBehaviors)
-                        {
-                            <option value="@behavior.BehaviorId" data-fieldid="@behavior.FieldId">@behavior.BehaviorName</option>
-                        }
-                    </select>
-                    <small class="text-secondary text-85">Giữ Ctrl để chọn nhiều hành vi. Chọn lĩnh vực để thu gọn danh sách.</small>
-                </div>
-            </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Lĩnh vực</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="SearchFieldId">
+                                <option value="">-- Tất cả lĩnh vực --</option>
+                                @foreach (var field in listFields)
+                                {
+                                    <option value="@field.FieldId">@field.FieldName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
 
-            <div class="form-row form-group align-items-center">
-                <div class="col-md-2 col-form-label text-sm-right pr-0 font-bold">Giới tính:</div>
-                <div class="col-md-4">
-                    <select class="form-control" id="Gender" name="Gender">
-                        <option value="">-- Tất cả giới tính --</option>
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                        <option value="Khác">Khác</option>
-                    </select>
+                    <div class="form-group row mb-0">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Giới tính</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="Gender" name="Gender">
+                                <option value="">-- Tất cả giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI -->
+                <div class="col-12 col-lg-6">
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Họ và tên</label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", placeholder = "Nhập họ tên hoặc tên gọi khác...", autocomplete = "off" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-0">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Hành vi vi phạm</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="BehaviorIds" name="BehaviorIds" multiple size="4">
+                                @foreach (var behavior in listBehaviors)
+                                {
+                                    <option value="@behavior.BehaviorId" data-fieldid="@behavior.FieldId">@behavior.BehaviorName</option>
+                                }
+                            </select>
+                            <small class="form-text text-secondary text-85">
+                                <i class="fas fa-info-circle mr-1"></i>Giữ Ctrl để chọn nhiều hành vi. Chọn lĩnh vực để thu gọn danh sách.
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer">
-            <div class="col-md-12 text-center">
-                <button type="button" class="btn btn-primary" onclick="_tableSubject.ajax.reload(null, false);"><i class="fa fa-search"></i>&nbsp;Tìm kiếm đối tượng</button>
-                <button type="button" class="btn btn-secondary" onclick="resetSubjectSearch();"><i class="fa fa-eraser"></i>&nbsp;Xoá điều kiện</button>
-            </div>
-        </div>
+    </div>
+    <div class="card-footer text-center">
+        <button type="button" class="btn btn-primary px-3" onclick="_tableSubject.ajax.reload(null, false);">
+            <i class="fa fa-search"></i>&nbsp;Tìm kiếm đối tượng
+        </button>
+        <button type="button" class="btn btn-secondary px-3" onclick="resetSubjectSearch();">
+            <i class="fa fa-eraser"></i>&nbsp;Xoá điều kiện
+        </button>
     </div>
 </div>

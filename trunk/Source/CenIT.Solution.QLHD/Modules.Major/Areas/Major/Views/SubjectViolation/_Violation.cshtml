@@ -115,3 +115,76 @@
         }
     });
 </script>
+
+<script>
+    /* ---------------------------------------------------------------------
+       Cac ham xu ly tep dinh kem cua lan vi pham.
+       Dinh nghia ngay tai day de modal hoat dong duoc du duoc mo tu bat ky
+       man hinh nao (danh sach vi pham, lich su vi pham cua doi tuong...).
+       Chi dinh nghia khi chua co, tranh ghi de ban trong SubjectViolation.js.
+       --------------------------------------------------------------------- */
+    if (typeof _SubjectViolationActionURLs === "undefined") {
+        var _SubjectViolationActionURLs = {
+            SubjectViolation_GetData: "/Major/SubjectViolation/Get",
+            SubjectViolation_UploadImages: "/Major/SubjectViolation/UploadViolationImages"
+        };
+    }
+
+    if (typeof handleViolationImagesUpload !== "function") {
+        window.handleViolationImagesUpload = function (input) {
+            if (!input.files || input.files.length === 0) return;
+
+            var formData = new FormData();
+            for (var i = 0; i < input.files.length; i++) {
+                formData.append("files[" + i + "]", input.files[i]);
+            }
+
+            $.ajax({
+                url: _SubjectViolationActionURLs.SubjectViolation_UploadImages,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res.status && res.urls) {
+                        var current = $("#Violation_Images").val();
+                        var arr = current ? current.split(",") : [];
+                        for (var j = 0; j < res.urls.length; j++) {
+                            arr.push(res.urls[j]);
+                            $("#containerViolationImages").append(
+                                '<div class="position-relative d-inline-block mr-2 mb-2">' +
+                                '<img src="' + res.urls[j] + '" class="radius-1 border-1 brc-default-m2" style="width:90px;height:70px;object-fit:cover;" />' +
+                                '<button type="button" class="btn btn-xs btn-danger position-absolute" style="top:2px;right:2px;" ' +
+                                'onclick="removeViolationImage(this, \'' + res.urls[j] + '\')"><i class="fas fa-times"></i></button>' +
+                                '</div>'
+                            );
+                        }
+                        $("#Violation_Images").val(arr.join(","));
+                    } else {
+                        alert(res.message || "Tải ảnh thất bại.");
+                    }
+                },
+                error: function () {
+                    alert("Lỗi máy chủ khi tải ảnh vi phạm.");
+                }
+            });
+        };
+    }
+
+    if (typeof removeViolationImage !== "function") {
+        window.removeViolationImage = function (btn, url) {
+            $(btn).closest(".position-relative").remove();
+            var current = $("#Violation_Images").val();
+            var arr = current ? current.split(",") : [];
+            arr = arr.filter(function (item) { return item !== url; });
+            $("#Violation_Images").val(arr.join(","));
+        };
+    }
+
+    if (typeof syncViolationBehaviors !== "function") {
+        window.syncViolationBehaviors = function () {
+            var selected = $("#Select_Behaviors").val();
+            $("#Violation_BehaviorIds").val(selected ? selected.join(",") : "");
+        };
+    }
+</script>

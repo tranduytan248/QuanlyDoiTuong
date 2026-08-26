@@ -7,7 +7,7 @@
 @section FormIcon{ <i class="fa fa-history"></i> }
 @section SubmitControl{ }
 @section FormBody{
-    <input type="hidden" id="LogSubjectId" value="@Model?.SubjectId" />
+    <input type="hidden" id="LogSubjectId" value="@(Model?.SubjectId)" />
 
     <div class="card border-1 brc-info-m3 shadow-sm mb-3">
         <div class="card-body p-2">
@@ -17,8 +17,8 @@
                      class="radius-round border-2 brc-info-m2 mr-3 shadow-sm"
                      style="width:48px;height:48px;object-fit:cover;" />
                 <div style="min-width:180px;">
-                    <div class="font-bolder text-dark-m1 text-105">@Model?.FullName</div>
-                    <div class="text-secondary text-85"><i class="far fa-id-card mr-1"></i>@Model?.IdentityCardNumber</div>
+                    <div class="font-bolder text-dark-m1 text-105">@(Model?.FullName)</div>
+                    <div class="text-secondary text-85"><i class="far fa-id-card mr-1"></i>@(Model?.IdentityCardNumber)</div>
                 </div>
             </div>
         </div>

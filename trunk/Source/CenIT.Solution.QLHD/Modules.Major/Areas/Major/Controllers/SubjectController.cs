@@ -475,6 +475,11 @@ namespace Modules.Major.Areas.Major.Controllers
             _behaviorCache.InvalidateAll();
             ViewBag.ListFields = _fieldCache.GetAll();
             ViewBag.ListBehaviors = _behaviorCache.GetAll();
+
+            // Man hinh Cap nhat chi cho sua thong tin dinh danh. Viec ghi nhan vi pham
+            // da co man hinh Lich su vi pham rieng.
+            ViewBag.ShowViolationPanel = false;
+
             return PartialView("_Edit", model);
         }
 
@@ -494,6 +499,7 @@ namespace Modules.Major.Areas.Major.Controllers
                     }
                     ViewBag.ListFields = _fieldCache.GetAll();
                     ViewBag.ListBehaviors = _behaviorCache.GetAll();
+                    ViewBag.ShowViolationPanel = false;
                     return PartialView("_Subject", model);
                 }
 

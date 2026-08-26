@@ -7,6 +7,11 @@
     var listFields = ViewBag.ListFields as List<CateFieldModel> ?? new List<CateFieldModel>();
     var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
     var isEditMode = Model?.SubjectId.HasValue == true && Model.SubjectId.Value != Guid.Empty;
+
+    // Man hinh "Cap nhat thong tin" chi sua phan dinh danh, khong hien phan nhap
+    // vi pham. Mac dinh van hien de khong anh huong man hinh Them moi.
+    // Controller dat co nay. Man hinh Cap nhat dat false de an phan nhap vi pham.
+    var showViolationPanel = ViewBag.ShowViolationPanel == null || (bool)ViewBag.ShowViolationPanel;
 }
 
 @Html.AntiForgeryToken()
@@ -71,7 +76,7 @@
 
 <div class="row">
     <!-- CỘT 1: THÔNG TIN ĐỐI TƯỢNG & NGƯỜI KHAI BÁO -->
-    <div class="col-12 col-lg-6 pr-lg-2">
+    <div class="@(showViolationPanel ? "col-12 col-lg-6 pr-lg-2" : "col-12")">
         <div class="card border-1 brc-primary-m3 shadow-sm mb-3">
             <div class="card-header bgc-primary-l4 py-2">
                 <h6 class="card-title text-primary font-bold mb-0 text-95">
@@ -226,6 +231,8 @@
     </div>
 
     <!-- CỘT 2: LỊCH SỬ & THÔNG TIN VI PHẠM -->
+    @if (showViolationPanel)
+    {
     <div class="col-12 col-lg-6 pl-lg-2" id="violationPanel" data-locked="@(isEditMode ? "0" : "1")">
         <!-- Lớp phủ khoá: chỉ xuất hiện ở chế độ thêm mới, trước khi lưu đối tượng -->
         <div id="violationPanelOverlay" class="violation-locked-overlay @(isEditMode ? "d-none" : "")">
@@ -463,8 +470,13 @@
         </div>
         </fieldset>
     </div>
+    }
 </div>
 
+@* Toan bo doan script duoi day chi phuc vu phan nhap vi pham.
+   Khong nap khi man hinh chi cho sua thong tin dinh danh. *@
+@if (showViolationPanel)
+{
 <script>
     var _selectedBehaviors = [];
     var _attachedDocuments = [];
@@ -783,3 +795,4 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 </script>
+}

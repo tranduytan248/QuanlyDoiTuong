@@ -27,3 +27,7 @@ packages/
 ## Ban sao luu truoc khi deploy
 trunk/Release_backup_*/
 trunk/PublishStage/
+
+## Tep nguoi dung tai len (khong dua vao ma nguon)
+trunk/Source/**/Contents/File/Subjects/
+trunk/Source/**/Contents/File/Violations/

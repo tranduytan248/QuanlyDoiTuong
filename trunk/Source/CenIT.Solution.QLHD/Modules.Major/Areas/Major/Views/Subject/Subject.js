@@ -99,32 +99,43 @@ function initTableSubject() {
                 "orderable": false,
                 "render": function (data, type, row) {
                     if (type !== "display") return "";
-                    var html = '<div class="btn-group btn-group-sm" role="group">';
+
+                    // Dang menu tha xuong cho gon, giong man hinh Nguoi dung
+                    var html = '<div class="dropdown d-inline-block">' +
+                        '<button class="btn px-3 btn-lighter-primary v-hover dropdown-toggle" type="button" ' +
+                        'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                        '<i class="fa fa-ellipsis-h text-120"></i></button>' +
+                        '<div class="dropdown-menu dropdown-menu-right">';
+
                     html += _renderButton(true,
                         "EditSubject",
-                        "btn btn-light-primary v-hover",
+                        "btn btn-outline-primary mr-1 dropdown-item",
                         "/Major/Subject/Edit/" + data,
-                        '<i class="far fa-edit text-primary"></i>',
-                        "Cập nhật thông tin", { "data-width": "1350px" });
+                        '<i class="far fa-edit text-120"></i> Cập nhật thông tin',
+                        "Cập nhật thông tin", "1350px");
+
                     html += _renderButton(true,
                         "ViolationHistory",
-                        "btn btn-light-warning v-hover",
+                        "btn btn-outline-warning mr-1 dropdown-item",
                         "/Major/Subject/ViolationHistory/" + data,
-                        '<i class="fas fa-exclamation-triangle text-warning-d2"></i>',
-                        "Lịch sử vi phạm", { "data-width": "1100px" });
+                        '<i class="fas fa-exclamation-triangle text-120"></i> Lịch sử vi phạm',
+                        "Lịch sử vi phạm", "1100px");
+
                     html += _renderButton(true,
                         "SubjectChangeLog",
-                        "btn btn-light-info v-hover",
+                        "btn btn-outline-info mr-1 dropdown-item",
                         "/Major/Subject/ChangeLog/" + data,
-                        '<i class="fas fa-history text-info"></i>',
-                        "Log cập nhật", { "data-width": "1000px" });
+                        '<i class="fas fa-history text-120"></i> Log cập nhật',
+                        "Log cập nhật", "1000px");
+
                     html += _renderButton(true,
                         "DeleteSubject",
-                        "btn btn-light-danger v-hover",
+                        "btn btn-outline-danger mr-1 dropdown-item",
                         "/Major/Subject/Delete/" + data,
-                        '<i class="far fa-trash-alt text-danger"></i>',
-                        "Xoá");
-                    html += "</div>";
+                        '<i class="far fa-trash-alt text-120"></i> Xoá đối tượng',
+                        "Xoá đối tượng");
+
+                    html += "</div></div>";
                     return html;
                 }
             }
@@ -575,21 +586,8 @@ function toggleViolationDetail(button) {
     $body.slideToggle(150);
 }
 
-/* Mở modal Sửa / Xoá của một lần vi phạm */
-function openViolationAction(violationId, action) {
-    var url = "/Major/SubjectViolation/" + action + "/" + violationId;
-    var modalId = action + "Violation";
-
-    var $link = $("<a>").attr({
-        "href": url,
-        "data-modal": "true",
-        "data-modal-id": modalId,
-        "data-width": "1100px"
-    }).css("display", "none").appendTo("body");
-
-    $link.trigger("click");
-    setTimeout(function () { $link.remove(); }, 1000);
-}
+/* Nut Sua / Xoa lan vi pham dung thuoc tinh data-modal, khung TSFramework tu xu ly.
+   Khong con can ham trung gian tao the <a> roi trigger click. */
 
 
 /* =========================================================================

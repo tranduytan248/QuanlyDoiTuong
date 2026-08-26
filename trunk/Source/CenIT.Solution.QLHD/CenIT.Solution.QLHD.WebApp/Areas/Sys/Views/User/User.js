@@ -105,6 +105,13 @@ function initTableUser() {
                                 "Phân quyền báo cáo");
 
                             html += _renderButton(true,
+                                "PermitUserField",
+                                "btn btn-outline-success mr-1 dropdown-item",
+                                "/Cate/UserField/Edit/" + encodeURIComponent(row.UserName),
+                                '<i class="fas fa-layer-group text-120"></i> Phân quyền lĩnh vực',
+                                "Phân quyền lĩnh vực", "800px");
+
+                            html += _renderButton(true,
                                 "PermitUser",
                                 "btn btn-outline-warning mr-1 dropdown-item",
                                 "/Sys/User/Permit/" + data,

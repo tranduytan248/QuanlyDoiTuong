@@ -43,6 +43,47 @@ namespace Cores.Major.Models
 
         public List<int> ListBehaviorIds { get; set; } = new List<int>();
 
+        /// <summary>
+        /// Danh sach van ban dinh kem, duoc phan tich san tu chuoi JSON trong
+        /// RelatedDocuments. Nho vay giao dien chi can lap qua danh sach, khong
+        /// phai phan tich JSON bang JavaScript o tung man hinh.
+        /// </summary>
+        public List<ViolationDocumentModel> ListRelatedDocuments
+        {
+            get
+            {
+                var documents = new List<ViolationDocumentModel>();
+                if (string.IsNullOrWhiteSpace(RelatedDocuments)) return documents;
+
+                var raw = RelatedDocuments.Trim();
+
+                // Truong hop du lieu cu: chi luu mot duong dan don le
+                if (!raw.StartsWith("["))
+                {
+                    documents.Add(new ViolationDocumentModel
+                    {
+                        Name = System.IO.Path.GetFileName(raw),
+                        Url = raw
+                    });
+                    return documents;
+                }
+
+                try
+                {
+                    documents = Newtonsoft.Json.JsonConvert
+                        .DeserializeObject<List<ViolationDocumentModel>>(raw)
+                        ?? new List<ViolationDocumentModel>();
+                }
+                catch (Exception)
+                {
+                    // Chuoi khong dung dinh dang JSON - bo qua de khong lam hong giao dien
+                    documents.Clear();
+                }
+
+                return documents;
+            }
+        }
+
         /* --- Thông tin người khai báo: không hiển thị trên form, chỉ lưu xuống CSDL --- */
         public string ReporterName { get; set; }
 

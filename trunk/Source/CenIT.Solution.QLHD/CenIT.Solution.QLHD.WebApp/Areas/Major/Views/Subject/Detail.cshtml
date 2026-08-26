@@ -177,7 +177,16 @@
                                         <div class="mb-2">
                                             <label class="font-bold text-dark mb-1 d-block"><i class="fas fa-file-alt text-info mr-1"></i>Văn bản liên quan:</label>
                                             <div class="p-2 bgc-light radius-1 border-1 brc-grey-l2">
-                                                @v.RelatedDocuments
+                                                @foreach (var doc in v.ListRelatedDocuments)
+                                                {
+                                                    <a href="@doc.Url" target="_blank" class="badge badge-info text-90 mr-1 mb-1 px-2 py-1">
+                                                        <i class="fas fa-paperclip mr-1"></i>@doc.Name
+                                                        @if (!string.IsNullOrEmpty(doc.SizeText))
+                                                        {
+                                                            <span class="text-80 ml-1">(@doc.SizeText)</span>
+                                                        }
+                                                    </a>
+                                                }
                                             </div>
                                         </div>
                                     }

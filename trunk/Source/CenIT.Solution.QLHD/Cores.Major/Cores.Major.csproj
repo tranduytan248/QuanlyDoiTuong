@@ -163,6 +163,7 @@
     <Compile Include="Models\ConstsChangeLog.cs" />
     <Compile Include="Helpers\SubjectChangeDetector.cs" />
     <Compile Include="Models\MajorSubjectViolationModel.cs" />
+    <Compile Include="Models\ViolationDocumentModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@
 <div class="card border-1 brc-primary-m3 shadow-sm mb-2">
     <div class="card-header bgc-primary-l4 py-2">
         <h6 class="card-title text-primary font-bold mb-0 text-95">
-            <i class="fas fa-user-shield mr-2"></i>Người dùng: <span class="text-danger">@Model?.UserName</span>
+            <i class="fas fa-user-shield mr-2"></i>Người dùng: <span class="text-danger">@(Model?.UserName)</span>
         </h6>
     </div>
     <div class="card-body p-3">
@@ -76,3 +76,44 @@
         border-color: #3b82f6 !important;
     }
 </style>
+
+<script>
+    /* ---------------------------------------------------------------------
+       Cac ham xu ly cua man hinh phan quyen linh vuc.
+       Dinh nghia ngay tai day de modal hoat dong duoc du duoc mo tu man hinh
+       Nguoi dung hay man hinh Phan quyen linh vuc.
+       Chi dinh nghia khi chua co, tranh ghi de ban trong UserField.js.
+       --------------------------------------------------------------------- */
+    if (typeof onUserFieldChange !== "function") {
+        window.onUserFieldChange = function (checkbox) {
+            var $chk = $(checkbox);
+            $("#card-field-" + $chk.val()).toggleClass("is-selected", $chk.is(":checked"));
+            syncSelectedUserFields();
+        };
+    }
+
+    if (typeof toggleAllUserFields !== "function") {
+        window.toggleAllUserFields = function (isSelectAll) {
+            $(".js-user-field").each(function () {
+                $(this).prop("checked", isSelectAll);
+                $("#card-field-" + $(this).val()).toggleClass("is-selected", isSelectAll);
+            });
+            syncSelectedUserFields();
+        };
+    }
+
+    if (typeof syncSelectedUserFields !== "function") {
+        window.syncSelectedUserFields = function () {
+            var selected = [];
+            $(".js-user-field:checked").each(function () {
+                selected.push($(this).val());
+            });
+            $("#FieldIds").val(selected.join(","));
+            $("#countSelectedFields").text(selected.length);
+        };
+    }
+
+    /* Dong bo lai ngay khi modal vua nap xong, de so luong hien thi dung
+       voi cac muc da duoc tich san. */
+    $(function () { syncSelectedUserFields(); });
+</script>

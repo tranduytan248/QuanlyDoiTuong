@@ -138,7 +138,16 @@
                                 <span class="font-bold text-secondary text-85 d-block mb-1">
                                     <i class="fas fa-paperclip mr-1"></i>Văn bản liên quan:
                                 </span>
-                                <div class="js-render-docs" data-raw="@violation.RelatedDocuments"></div>
+                                @foreach (var doc in violation.ListRelatedDocuments)
+                                {
+                                    <a href="@doc.Url" target="_blank" class="badge badge-info text-85 mr-1 mb-1 px-2 py-1">
+                                        <i class="fas fa-paperclip mr-1"></i>@doc.Name
+                                        @if (!string.IsNullOrEmpty(doc.SizeText))
+                                        {
+                                            <span class="text-80 ml-1">(@doc.SizeText)</span>
+                                        }
+                                    </a>
+                                }
                             </div>
                         }
                         @if (!string.IsNullOrEmpty(violation.Images))

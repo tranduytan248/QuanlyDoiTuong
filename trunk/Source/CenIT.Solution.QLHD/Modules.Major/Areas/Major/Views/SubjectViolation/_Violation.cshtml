@@ -5,6 +5,26 @@
 @{
     var listSubjects = ViewBag.ListSubjects as List<MajorSubjectModel> ?? new List<MajorSubjectModel>();
     var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
+
+    // Danh sach linh vuc: uu tien ViewBag.ListFields neu controller co truyen,
+    // neu khong thi tu suy ra tu chinh danh sach hanh vi (moi hanh vi da mang
+    // san FieldId / FieldCode / FieldName). Nho vay modal chay duoc du duoc mo
+    // tu bat ky man hinh nao ma khong phu thuoc controller.
+    var listFields = ViewBag.ListFields as List<CateFieldModel>;
+    if (listFields == null || listFields.Count == 0)
+    {
+        listFields = listBehaviors
+            .GroupBy(b => b.FieldId)
+            .Select(g => new CateFieldModel
+            {
+                FieldId = g.Key,
+                FieldCode = g.First().FieldCode,
+                FieldName = g.First().FieldName
+            })
+            .OrderBy(f => f.FieldCode)
+            .ToList();
+    }
+
     var selectedBehaviorIds = new HashSet<string>();
     if (!string.IsNullOrEmpty(Model?.BehaviorIds))
     {
@@ -19,6 +39,43 @@
 @Html.HiddenFor(model => model.ViolationId)
 @Html.HiddenFor(model => model.BehaviorIds, new { id = "Violation_BehaviorIds" })
 @Html.HiddenFor(model => model.Images, new { id = "Violation_Images" })
+
+<style>
+    #violationFieldTabs .nav-link {
+        border-radius: 4px;
+        background-color: #f1f5f9;
+        color: #334155;
+        transition: all 0.2s ease;
+        border: 1px solid #cbd5e1;
+        font-size: 11.5px;
+        padding: 5px 8px;
+    }
+    #violationFieldTabs .nav-link:hover {
+        background-color: #e2e8f0;
+        color: #0f172a;
+    }
+    #violationFieldTabs .nav-link.active {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #1d4ed8 !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    }
+    #violationFieldTabs .nav-link.active .field-tab-title {
+        color: #ffffff !important;
+    }
+    .vio-behavior-card {
+        transition: all 0.15s ease;
+        border-radius: 4px;
+    }
+    .vio-behavior-card:hover {
+        background-color: #fffbeb !important;
+        border-color: #f59e0b !important;
+    }
+    .vio-behavior-card.is-selected {
+        background-color: #eff6ff !important;
+        border-color: #3b82f6 !important;
+    }
+</style>
 
 <div class="form-group row">
     <div class="col-md-6">
@@ -44,12 +101,108 @@
 <div class="form-group row">
     <div class="col-md-12">
         <label class="col-form-label pr-0 font-bold">Các hành vi vi phạm <span class="text-danger">(*) (Chọn một hoặc nhiều hành vi)</span></label>
-        <select class="form-control select2" id="Select_Behaviors" multiple="multiple" style="width: 100%;" onchange="syncViolationBehaviors();">
-            @foreach (var b in listBehaviors)
-            {
-                <option value="@b.BehaviorId" @(selectedBehaviorIds.Contains(b.BehaviorId.ToString()) ? "selected" : "")>[@b.BehaviorCode] @b.BehaviorName (@b.FieldName)</option>
-            }
-        </select>
+
+        <!-- BỘ CHỌN HÀNH VI VI PHẠM THEO LĨNH VỰC (NAV TABS + SEARCH + CHECKLIST TRỰC QUAN) -->
+        <div class="bgc-white p-2 radius-1 border-1 brc-warning-m2 mb-2 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="font-bold text-85 text-primary">
+                    <i class="fas fa-th-list mr-1"></i>Chọn Lĩnh vực & Hành vi vi phạm:
+                </span>
+                <span id="badgeVioTotalSelected" class="badge badge-secondary text-80 font-bold px-2 py-1">Đã chọn: 0 hành vi</span>
+            </div>
+
+            <!-- KHUNG TÌM KIẾM NHANH HÀNH VI VI PHẠM -->
+            <div class="input-group input-group-sm mb-2 shadow-none">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bgc-grey-l4 border-1 brc-grey-l1 text-primary py-0">
+                        <i class="fas fa-search text-85"></i>
+                    </span>
+                </div>
+                <input type="text" id="txtSearchViolationBehavior" class="form-control form-control-sm border-1 brc-grey-l1" placeholder="🔍 Tìm nhanh hành vi vi phạm (nhập tên hoặc mã ví dụ: MT-01, ma túy, bán dâm...)" onkeyup="filterViolationBehaviors(this.value);" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-xs btn-outline-secondary" onclick="$('#txtSearchViolationBehavior').val('').trigger('keyup');" title="Xóa tìm kiếm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danh sách Tabs Lĩnh vực -->
+            <ul class="nav nav-pills d-flex flex-wrap mb-2" id="violationFieldTabs" role="tablist">
+                @for (int i = 0; i < listFields.Count; i++)
+                {
+                    var f = listFields[i];
+                    var activeClass = i == 0 ? "active" : "";
+                    <li class="nav-item mr-1 mb-1">
+                        <a class="nav-link @activeClass" id="tab-vio-field-@f.FieldId" data-toggle="pill" href="#pane-vio-field-@f.FieldId" role="tab">
+                            <span class="field-tab-title font-bold">[@f.FieldCode] @f.FieldName</span>
+                            <span class="badge badge-danger badge-pill d-none vio-count-badge ml-1" id="count-vio-field-@f.FieldId">0</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            <!-- Nội dung từng Lĩnh vực: Danh sách Hành vi dạng Checkbox Card -->
+            <div class="tab-content border-1 brc-grey-l2 radius-1 bgc-grey-l5 p-2 mb-2 ace-scrollbar" id="violationFieldTabContent" style="max-height: 200px; overflow-y: auto;">
+                @for (int i = 0; i < listFields.Count; i++)
+                {
+                    var f = listFields[i];
+                    var activeClass = i == 0 ? "show active" : "";
+                    var fieldBehaviors = listBehaviors.Where(b => b.FieldId == f.FieldId).ToList();
+                    <div class="tab-pane fade @activeClass" id="pane-vio-field-@f.FieldId" role="tabpanel">
+                        @if (fieldBehaviors.Count == 0)
+                        {
+                            <div class="text-secondary text-80 text-center py-2">Chưa có hành vi nào thuộc lĩnh vực này</div>
+                        }
+                        else
+                        {
+                            <div class="row no-gutters">
+                                @foreach (var b in fieldBehaviors)
+                                {
+                                    <div class="col-12 mb-1 vio-behavior-col" data-search-full="@($"{b.BehaviorCode} {b.BehaviorName}".ToLower())">
+                                        <div class="vio-behavior-card bgc-white p-2 border-1 brc-grey-l2 d-flex align-items-center @(selectedBehaviorIds.Contains(b.BehaviorId.ToString()) ? "is-selected" : "")" id="card-vio-behavior-@b.BehaviorId">
+                                            <div class="custom-control custom-checkbox mr-2">
+                                                <input type="checkbox" class="custom-control-input chk-vio-behavior"
+                                                       id="chk-vio-@b.BehaviorId"
+                                                       value="@b.BehaviorId"
+                                                       data-fieldid="@f.FieldId"
+                                                       data-fieldname="@f.FieldName"
+                                                       data-code="@b.BehaviorCode"
+                                                       data-name="@b.BehaviorName"
+                                                       @(selectedBehaviorIds.Contains(b.BehaviorId.ToString()) ? "checked" : "")
+                                                       onchange="onViolationBehaviorChange(this)" />
+                                                <label class="custom-control-label" for="chk-vio-@b.BehaviorId"></label>
+                                            </div>
+                                            <label class="font-bold text-85 text-dark-m1 mb-0 cursor-pointer flex-grow-1" for="chk-vio-@b.BehaviorId">
+                                                <span class="badge badge-warning text-dark font-bold mr-1">@b.BehaviorCode</span>
+                                                @b.BehaviorName
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Danh sách tổng hợp hành vi đã chọn -->
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-80 font-bold text-dark-m2">
+                        <i class="fas fa-clipboard-check mr-1 text-success"></i>Danh sách hành vi đã chọn:
+                    </span>
+                    <button type="button" class="btn btn-xs btn-link text-danger p-0" id="btnClearAllViolationBehaviors" onclick="clearAllViolationBehaviors()" style="display:none;">
+                        <i class="fas fa-trash-alt mr-1"></i>Xóa tất cả
+                    </button>
+                </div>
+                <div id="selectedViolationBehaviors" class="border-1 brc-grey-l2 radius-1 bgc-white p-1 ace-scrollbar" style="max-height: 140px; overflow-y: auto;">
+                    <div class="text-secondary text-80 text-center py-2 empty-behavior-msg">
+                        <i class="fas fa-info-circle mr-1"></i>Chưa chọn hành vi nào. Hãy tích chọn các hành vi ở bảng trên.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @Html.ValidationMessageFor(model => model.BehaviorIds, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -64,8 +217,50 @@
 
 <div class="form-group row">
     <div class="col-md-12">
-        <label class="col-form-label pr-0 font-bold">Văn bản liên quan / Quyết định xử phạt</label>
-        @Html.TextAreaFor(model => model.RelatedDocuments, new { @class = "form-control", rows = "2", placeholder = "Số biên bản, số quyết định xử phạt, ngày ban hành..." })
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="col-form-label pr-0 font-bold mb-0">Văn bản liên quan / Quyết định xử phạt</label>
+            <div>
+                <input type="file" id="fileViolationDocs" class="d-none" multiple
+                       accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip,.rar"
+                       onchange="handleViolationDocumentUpload(this);" />
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="$('#fileViolationDocs').click();">
+                    <i class="fas fa-cloud-upload-alt mr-1"></i>Tải văn bản lên
+                </button>
+            </div>
+        </div>
+
+        <div id="violationDocsContainer" class="border-1 brc-grey-l2 radius-1 bgc-white p-2"
+             style="min-height: 56px;">
+            @if (Model != null && Model.ListRelatedDocuments.Any())
+            {
+                foreach (var doc in Model.ListRelatedDocuments)
+                {
+                    <div class="d-inline-flex align-items-center border-1 brc-grey-l2 radius-1 bgc-grey-l4 px-2 py-1 mr-1 mb-1 js-doc-item"
+                         data-url="@doc.Url">
+                        <a href="@doc.Url" target="_blank" class="text-primary text-90 mr-2">
+                            <i class="fas fa-paperclip mr-1"></i>@doc.Name
+                            @if (!string.IsNullOrEmpty(doc.SizeText))
+                            {
+                                <span class="text-secondary text-85">(@doc.SizeText)</span>
+                            }
+                        </a>
+                        <button type="button" class="btn btn-xs btn-outline-danger py-0 px-1"
+                                title="Bỏ văn bản này" onclick="removeViolationDocument(this);">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-secondary text-85 text-center py-1 empty-doc-msg">
+                    <i class="far fa-folder-open mr-1"></i>Chưa có văn bản đính kèm
+                </div>
+            }
+        </div>
+
+        @* Chuoi JSON that su duoc gui len may chu - giu nguyen dinh dang cu *@
+        @Html.HiddenFor(model => model.RelatedDocuments)
         @Html.ValidationMessageFor(model => model.RelatedDocuments, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -104,15 +299,204 @@
 <script>
     $(document).ready(function () {
         if ($.fn.select2) {
-            $('#Select_Behaviors').select2({
-                placeholder: "Chọn các hành vi vi phạm...",
-                allowClear: true
-            });
             $('#Violation_SubjectId').select2({
                 placeholder: "Chọn đối tượng vi phạm...",
                 allowClear: true
             });
         }
+    });
+</script>
+
+<script>
+    /* ---------------------------------------------------------------------
+       BO CHON HANH VI VI PHAM THEO LINH VUC (tabs + tim kiem + checkbox).
+       Ten ham va ten bien deu mang tien to "Violation" de khong dung do voi
+       cac ham cung chuc nang trong _Subject.cshtml khi ca hai cung co mat.
+       Moi ham deu co guard chong dinh nghia trung vi modal nay co the duoc
+       mo tu nhieu man hinh khac nhau.
+       --------------------------------------------------------------------- */
+    var _violationSelectedBehaviors = [];
+
+    if (typeof removeVietnameseTonesViolation !== "function") {
+        window.removeVietnameseTonesViolation = function (str) {
+            if (!str) return '';
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+            str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+            str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+            str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+            str = str.replace(/Đ/g, "D");
+            return str.toLowerCase().trim();
+        };
+    }
+
+    if (typeof filterViolationBehaviors !== "function") {
+        window.filterViolationBehaviors = function (keyword) {
+            var kw = removeVietnameseTonesViolation(keyword || '');
+            if (!kw) {
+                $('.vio-behavior-col').show();
+                $('#violationFieldTabContent .empty-vio-search-msg').remove();
+                return;
+            }
+
+            $('.vio-behavior-col').each(function () {
+                var rawText = $(this).attr('data-search-full') || '';
+                var slugText = removeVietnameseTonesViolation(rawText);
+                if (slugText.indexOf(kw) !== -1 || rawText.toLowerCase().indexOf(keyword.toLowerCase().trim()) !== -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            $('#violationFieldTabContent .tab-pane').each(function () {
+                var visibleCount = $(this).find('.vio-behavior-col:visible').length;
+                $(this).find('.empty-vio-search-msg').remove();
+                if (visibleCount === 0 && $(this).find('.vio-behavior-col').length > 0) {
+                    $(this).append('<div class="text-secondary text-80 text-center py-2 empty-vio-search-msg"><i class="fas fa-search mr-1"></i>Không tìm thấy hành vi phù hợp trong lĩnh vực này</div>');
+                }
+            });
+        };
+    }
+
+    if (typeof onViolationBehaviorChange !== "function") {
+        window.onViolationBehaviorChange = function (chk) {
+            var bId = $(chk).val();
+            var isChecked = $(chk).is(':checked');
+
+            if (isChecked) {
+                $('#card-vio-behavior-' + bId).addClass('is-selected');
+                var exists = _violationSelectedBehaviors.some(function (x) { return x.id == bId; });
+                if (!exists) {
+                    _violationSelectedBehaviors.push({
+                        id: bId,
+                        fieldId: $(chk).attr('data-fieldid') || '',
+                        fieldName: $(chk).attr('data-fieldname') || '',
+                        code: $(chk).attr('data-code') || '',
+                        name: $(chk).attr('data-name') || ''
+                    });
+                }
+            } else {
+                $('#card-vio-behavior-' + bId).removeClass('is-selected');
+                _violationSelectedBehaviors = _violationSelectedBehaviors.filter(function (x) { return x.id != bId; });
+            }
+
+            updateViolationBehaviorsUI();
+        };
+    }
+
+    if (typeof removeSelectedViolationBehavior !== "function") {
+        window.removeSelectedViolationBehavior = function (behaviorId) {
+            $('#chk-vio-' + behaviorId).prop('checked', false);
+            $('#card-vio-behavior-' + behaviorId).removeClass('is-selected');
+            _violationSelectedBehaviors = _violationSelectedBehaviors.filter(function (x) { return x.id != behaviorId; });
+            updateViolationBehaviorsUI();
+        };
+    }
+
+    if (typeof clearAllViolationBehaviors !== "function") {
+        window.clearAllViolationBehaviors = function () {
+            $('.chk-vio-behavior').prop('checked', false);
+            $('.vio-behavior-card').removeClass('is-selected');
+            _violationSelectedBehaviors = [];
+            updateViolationBehaviorsUI();
+        };
+    }
+
+    if (typeof updateViolationBehaviorsUI !== "function") {
+        window.updateViolationBehaviorsUI = function () {
+            var total = _violationSelectedBehaviors.length;
+            if (total > 0) {
+                $('#badgeVioTotalSelected').removeClass('badge-secondary').addClass('badge-danger').text('Đã chọn: ' + total + ' hành vi');
+                $('#btnClearAllViolationBehaviors').show();
+            } else {
+                $('#badgeVioTotalSelected').removeClass('badge-danger').addClass('badge-secondary').text('Đã chọn: 0 hành vi');
+                $('#btnClearAllViolationBehaviors').hide();
+            }
+
+            // Cap nhat so luong tren tung tab linh vuc
+            $('.vio-count-badge').addClass('d-none').text('0');
+            var fieldCounts = {};
+            _violationSelectedBehaviors.forEach(function (item) {
+                if (item.fieldId) {
+                    fieldCounts[item.fieldId] = (fieldCounts[item.fieldId] || 0) + 1;
+                }
+            });
+            for (var fId in fieldCounts) {
+                $('#count-vio-field-' + fId).text(fieldCounts[fId]).removeClass('d-none');
+            }
+
+            var $summary = $('#selectedViolationBehaviors');
+            if (total === 0) {
+                $summary.html('<div class="text-secondary text-80 text-center py-2 empty-behavior-msg"><i class="fas fa-info-circle mr-1"></i>Chưa chọn hành vi nào. Hãy tích chọn các hành vi ở bảng trên.</div>');
+                $('#Violation_BehaviorIds').val('');
+                return;
+            }
+
+            var html = '<table class="table table-bordered table-sm mb-0 bgc-white">' +
+                '<thead class="bgc-grey-l3 text-80">' +
+                '<tr>' +
+                '<th style="width:30%">Lĩnh vực</th>' +
+                '<th>Mã & Tên hành vi vi phạm</th>' +
+                '<th style="width:40px" class="text-center">Xóa</th>' +
+                '</tr>' +
+                '</thead><tbody>';
+
+            _violationSelectedBehaviors.forEach(function (item) {
+                html += '<tr>' +
+                    '<td class="text-80 font-bold text-primary">' + item.fieldName + '</td>' +
+                    '<td class="text-85"><span class="badge badge-sm badge-warning mr-1">' + item.code + '</span>' + item.name + '</td>' +
+                    '<td class="text-center">' +
+                    '<button type="button" class="btn btn-xs btn-outline-danger" onclick="removeSelectedViolationBehavior(\'' + item.id + '\')" title="Xóa hành vi này"><i class="fas fa-times"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+            $summary.html(html);
+
+            $('#Violation_BehaviorIds').val(_violationSelectedBehaviors.map(function (x) { return x.id; }).join(','));
+        };
+    }
+
+    if (typeof initViolationBehaviorSelector !== "function") {
+        window.initViolationBehaviorSelector = function () {
+            // Chuyen tab kieu bootstrap 4, giu nguyen tu khoa dang tim
+            $('#violationFieldTabs a[data-toggle="pill"]').off('click.vioTab').on('click.vioTab', function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                var currentSearch = $('#txtSearchViolationBehavior').val();
+                if (currentSearch) {
+                    filterViolationBehaviors(currentSearch);
+                }
+            });
+
+            // Nap lai cac hanh vi da luu (che do sua): checkbox da duoc tich san
+            // tu phia may chu, o day chi dung de dung lai mang trong bo nho.
+            _violationSelectedBehaviors = [];
+            $('.chk-vio-behavior:checked').each(function () {
+                var $chk = $(this);
+                _violationSelectedBehaviors.push({
+                    id: $chk.val(),
+                    fieldId: $chk.attr('data-fieldid') || '',
+                    fieldName: $chk.attr('data-fieldname') || '',
+                    code: $chk.attr('data-code') || '',
+                    name: $chk.attr('data-name') || ''
+                });
+            });
+            updateViolationBehaviorsUI();
+        };
+    }
+
+    $(document).ready(function () {
+        initViolationBehaviorSelector();
     });
 </script>
 
@@ -180,11 +564,104 @@
             $("#Violation_Images").val(arr.join(","));
         };
     }
+</script>
 
-    if (typeof syncViolationBehaviors !== "function") {
-        window.syncViolationBehaviors = function () {
-            var selected = $("#Select_Behaviors").val();
-            $("#Violation_BehaviorIds").val(selected ? selected.join(",") : "");
+<script>
+    /* ---------------------------------------------------------------------
+       Quan ly van ban dinh kem cua lan vi pham.
+       O hien thi la danh sach the co link tai ve va nut xoa; chuoi JSON that
+       su duoc giu trong o an #RelatedDocuments de gui len may chu.
+       --------------------------------------------------------------------- */
+    if (typeof readViolationDocuments !== "function") {
+        window.readViolationDocuments = function () {
+            var raw = $("#RelatedDocuments").val();
+            if (!raw) return [];
+            try {
+                var parsed = JSON.parse(raw);
+                return $.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        };
+    }
+
+    if (typeof writeViolationDocuments !== "function") {
+        window.writeViolationDocuments = function (docs) {
+            $("#RelatedDocuments").val(docs.length > 0 ? JSON.stringify(docs) : "");
+        };
+    }
+
+    if (typeof renderViolationDocuments !== "function") {
+        window.renderViolationDocuments = function () {
+            var docs = readViolationDocuments();
+            var $box = $("#violationDocsContainer");
+            if (docs.length === 0) {
+                $box.html('<div class="text-secondary text-85 text-center py-1 empty-doc-msg">' +
+                    '<i class="far fa-folder-open mr-1"></i>Chưa có văn bản đính kèm</div>');
+                return;
+            }
+            var html = "";
+            docs.forEach(function (d) {
+                var size = "";
+                if (d.size > 0) {
+                    size = d.size < 1024 ? d.size + " B"
+                        : (d.size < 1048576 ? (d.size / 1024).toFixed(1) + " KB"
+                            : (d.size / 1048576).toFixed(1) + " MB");
+                }
+                html += '<div class="d-inline-flex align-items-center border-1 brc-grey-l2 radius-1 bgc-grey-l4 px-2 py-1 mr-1 mb-1 js-doc-item" data-url="' + d.url + '">' +
+                    '<a href="' + d.url + '" target="_blank" class="text-primary text-90 mr-2">' +
+                    '<i class="fas fa-paperclip mr-1"></i>' + $("<div/>").text(d.name).html() +
+                    (size ? ' <span class="text-secondary text-85">(' + size + ')</span>' : '') +
+                    '</a>' +
+                    '<button type="button" class="btn btn-xs btn-outline-danger py-0 px-1" title="Bỏ văn bản này" ' +
+                    'onclick="removeViolationDocument(this);"><i class="fas fa-times"></i></button>' +
+                    '</div>';
+            });
+            $box.html(html);
+        };
+    }
+
+    if (typeof removeViolationDocument !== "function") {
+        window.removeViolationDocument = function (btn) {
+            var url = $(btn).closest(".js-doc-item").attr("data-url");
+            var docs = readViolationDocuments().filter(function (d) { return d.url !== url; });
+            writeViolationDocuments(docs);
+            renderViolationDocuments();
+        };
+    }
+
+    if (typeof handleViolationDocumentUpload !== "function") {
+        window.handleViolationDocumentUpload = function (input) {
+            if (!input.files || input.files.length === 0) return;
+
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                var formData = new FormData();
+                formData.append("file", file);
+
+                $.ajax({
+                    url: "/Major/Subject/UploadFile",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    success: function (res) {
+                        if (res.status) {
+                            var docs = readViolationDocuments();
+                            docs.push({ name: res.fileName, url: res.url, size: res.fileSize });
+                            writeViolationDocuments(docs);
+                            renderViolationDocuments();
+                        } else {
+                            alert(res.message || "Tải văn bản thất bại.");
+                        }
+                    },
+                    error: function () {
+                        alert("Lỗi kết nối máy chủ khi tải văn bản.");
+                    }
+                });
+            }
+            input.value = "";
         };
     }
 </script>

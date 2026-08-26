@@ -283,6 +283,8 @@
     <!-- include TSFramework.js -->
     <script src="~/Contents/Base/plugins/TSFramework/jquery.form.js"></script>
     <script src="~/Contents/Base/plugins/TSFramework/TSFramework.js"></script>
+    @* Xem anh phong to: bam vao anh bat ky se mo lon ngay tai trang *@
+    <script src="~/Contents/Base/plugins/TSFramework/ImageViewer.js?v=@(System.IO.File.GetLastWriteTime(Server.MapPath("~/Contents/Base/plugins/TSFramework/ImageViewer.js")).Ticks)"></script>
 
     <!-- demo.js is only for Ace's demo and you shouldn't use it -->
     @*<script src="~/Contents/Base/plugins/ace_v4/app/browser/demo.js"></script>*@

@@ -198,11 +198,6 @@ function removeViolationImage(btn, url) {
     $("#Violation_Images").val(arr.join(","));
 }
 
-function syncViolationBehaviors() {
-    var selected = $("#Select_Behaviors").val();
-    if (selected) {
-        $("#Violation_BehaviorIds").val(selected.join(","));
-    } else {
-        $("#Violation_BehaviorIds").val("");
-    }
-}
+/* Bo chon hanh vi vi pham nay da chuyen sang giao dien tabs + checkbox,
+   dat truc tiep trong _Violation.cshtml (onViolationBehaviorChange /
+   updateViolationBehaviorsUI). Ham dong bo select2 cu khong con dung nua. */

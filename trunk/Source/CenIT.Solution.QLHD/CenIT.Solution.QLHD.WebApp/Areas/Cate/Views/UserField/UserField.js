@@ -1,4 +1,4 @@
-﻿var _UserFieldActionURLs = {
+var _UserFieldActionURLs = {
     UserField_GetData: "/Cate/UserField/Get"
 };
 var _tableUserField;
@@ -76,9 +76,9 @@ function initTableUserField() {
                     return _renderButton(true,
                         "EditUserField",
                         "btn px-2 btn-lighter-primary mr-1 v-hover",
-                        "/Cate/UserField/Edit/" + encodeURIComponent(data),
+                        "/Cate/UserField/Edit?userName=" + encodeURIComponent(data),
                         '<i class="far fa-edit text-primary text-120"></i>',
-                        "Phân quyền lĩnh vực", { "data-width": "800px" });
+                        "Phân quyền lĩnh vực", "800px");
                 }
             }
         ],

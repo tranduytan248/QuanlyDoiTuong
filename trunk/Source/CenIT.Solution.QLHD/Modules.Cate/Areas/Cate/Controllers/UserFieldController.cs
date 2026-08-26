@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.Mvc;
 using Cores.Base.Apps;
 using Cores.Cate.Caches;
@@ -56,9 +56,10 @@ namespace Modules.Cate.Areas.Cate.Controllers
         [AjaxOnly]
         [HttpGet]
         [ActionType(Type = EnumActionType.Edit)]
-        public ActionResult Edit(string id)
+        public ActionResult Edit(string id, string userName = null)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            var targetUser = !string.IsNullOrWhiteSpace(userName) ? userName : id;
+            if (string.IsNullOrWhiteSpace(targetUser))
             {
                 return Json(new
                 {
@@ -69,10 +70,10 @@ namespace Modules.Cate.Areas.Cate.Controllers
 
             _fieldCache.InvalidateAll();
 
-            var assignedFields = _userFieldCache.GetByUser(id) ?? new System.Collections.Generic.List<CateFieldModel>();
+            var assignedFields = _userFieldCache.GetByUser(targetUser) ?? new System.Collections.Generic.List<CateFieldModel>();
             var model = new CateUserFieldModel
             {
-                UserName = id,
+                UserName = targetUser,
                 ListFields = _fieldCache.GetAll(),
                 FieldIds = string.Join(",", assignedFields.ConvertAll(item => item.FieldId.ToString()))
             };

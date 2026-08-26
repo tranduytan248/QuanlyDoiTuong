@@ -1,4 +1,4 @@
-﻿var _UserActionURLs = {
+var _UserActionURLs = {
     User_GetData: "/Sys/User/Get"
 };
 var _tableUser;
@@ -84,11 +84,11 @@ function initTableUser() {
                                 "Đơn vị công tác");
 
                             html += _renderButton(true,
-                                "PermitFieldViolation",
-                                "btn btn-outline-pink mr-1 dropdown-item",
-                                "/Major/PermitMember/Permit?forUser=" + row.UserName,
-                                '<i class="fas fa-list-ol text-120"></i> Quản lý lĩnh vực',
-                                "Quản lý lĩnh vực");
+                                "PermitUserField",
+                                "btn btn-outline-success mr-1 dropdown-item",
+                                "/Cate/UserField/Edit?userName=" + encodeURIComponent(row.UserName),
+                                '<i class="fas fa-layer-group text-120"></i> Phân quyền lĩnh vực',
+                                "Phân quyền lĩnh vực", "800px");
 
                             html += _renderButton(true,
                                 "EditUser",
@@ -103,13 +103,6 @@ function initTableUser() {
                                 "/Major/Report/PermitReport?forUser=" + row.UserName,
                                 '<i class="fas fa-tasks text-120"></i> Phân quyền báo cáo',
                                 "Phân quyền báo cáo");
-
-                            html += _renderButton(true,
-                                "PermitUserField",
-                                "btn btn-outline-success mr-1 dropdown-item",
-                                "/Cate/UserField/Edit/" + encodeURIComponent(row.UserName),
-                                '<i class="fas fa-layer-group text-120"></i> Phân quyền lĩnh vực',
-                                "Phân quyền lĩnh vực", "800px");
 
                             html += _renderButton(true,
                                 "PermitUser",

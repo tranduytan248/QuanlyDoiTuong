@@ -36,5 +36,5 @@
 
 @section BottomScript
 {
-    <script src="~/Areas/Cate/Views/Field/Field.js"></script>
+    <script src="~/Areas/Cate/Views/Field/Field.js?v=@(System.IO.File.GetLastWriteTime(Server.MapPath("~/Areas/Cate/Views/Field/Field.js")).Ticks)"></script>
 }

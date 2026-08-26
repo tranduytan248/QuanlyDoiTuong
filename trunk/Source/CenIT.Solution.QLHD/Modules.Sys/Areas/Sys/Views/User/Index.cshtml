@@ -33,7 +33,7 @@
 
 @section BottomScript
 {
-    <script src="@Url.Content("~/Areas/Sys/Views/User/User.js")"></script>
+    <script src="@Url.Content("~/Areas/Sys/Views/User/User.js")?v=@(System.IO.File.GetLastWriteTime(Server.MapPath("~/Areas/Sys/Views/User/User.js")).Ticks)"></script>
     <script type="text/javascript">
     $(function () {
         var permissions = function () { return @Html.Raw(Json.Encode(Model)); }();

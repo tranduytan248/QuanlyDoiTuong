@@ -29,6 +29,12 @@ namespace Modules.Major.Areas.Major.Controllers
         private readonly MajorSubjectChangeLogCache _changeLogCache = new MajorSubjectChangeLogCache();
         private readonly string _subjectTitle = AppProcessor.Messagor.GetMessage("Subject_Title") ?? "Đối tượng";
 
+        /// <summary>Thư mục lưu ảnh định danh của đối tượng (ảnh chân dung, CCCD).</summary>
+        private const string SUBJECT_UPLOAD_FOLDER = "~/Contents/File/Subjects/";
+
+        /// <summary>Đường dẫn truy cập ảnh từ trình duyệt, phải khớp với SUBJECT_UPLOAD_FOLDER.</summary>
+        private const string SUBJECT_UPLOAD_URL = "/Contents/File/Subjects/";
+
         private const string DEFAULT_REPORTER_UNIT = "Văn phòng Đăng ký Đất đai Khánh Hòa";
         private const string DEFAULT_REPORTER_POSITION = "Cán bộ tiếp nhận";
 
@@ -627,7 +633,7 @@ namespace Modules.Major.Areas.Major.Controllers
                     var file = Request.Files[0];
                     if (file != null && file.ContentLength > 0)
                     {
-                        var folder = Server.MapPath("~/Uploads/Subjects/");
+                        var folder = Server.MapPath(SUBJECT_UPLOAD_FOLDER);
                         if (!Directory.Exists(folder))
                         {
                             Directory.CreateDirectory(folder);
@@ -635,7 +641,7 @@ namespace Modules.Major.Areas.Major.Controllers
                         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                         var path = Path.Combine(folder, fileName);
                         file.SaveAs(path);
-                        var fileUrl = $"/Uploads/Subjects/{fileName}";
+                        var fileUrl = $"{SUBJECT_UPLOAD_URL}{fileName}";
                         return Json(new { status = true, url = fileUrl, fileName = file.FileName, fileSize = file.ContentLength });
                     }
                 }

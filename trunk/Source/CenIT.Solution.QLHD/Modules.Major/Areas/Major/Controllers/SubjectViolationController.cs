@@ -29,6 +29,12 @@ namespace Modules.Major.Areas.Major.Controllers
         private readonly MajorSubjectChangeLogCache _changeLogCache = new MajorSubjectChangeLogCache();
         private readonly string _violationTitle = AppProcessor.Messagor.GetMessage("SubjectViolation_Title") ?? "Lịch sử vi phạm";
 
+        /// <summary>Thư mục lưu hình ảnh, văn bản đính kèm của lần vi phạm.</summary>
+        private const string VIOLATION_UPLOAD_FOLDER = "~/Contents/File/Violations/";
+
+        /// <summary>Đường dẫn truy cập tệp từ trình duyệt, phải khớp với VIOLATION_UPLOAD_FOLDER.</summary>
+        private const string VIOLATION_UPLOAD_URL = "/Contents/File/Violations/";
+
         private const string DEFAULT_REPORTER_UNIT = "Văn phòng Đăng ký Đất đai Khánh Hòa";
         private const string DEFAULT_REPORTER_POSITION = "Cán bộ tiếp nhận";
 
@@ -385,7 +391,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 var uploadedUrls = new List<string>();
                 if (Request.Files.Count > 0)
                 {
-                    var folder = Server.MapPath("~/Uploads/Violations/");
+                    var folder = Server.MapPath(VIOLATION_UPLOAD_FOLDER);
                     if (!Directory.Exists(folder))
                     {
                         Directory.CreateDirectory(folder);
@@ -398,7 +404,7 @@ namespace Modules.Major.Areas.Major.Controllers
                             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                             var path = Path.Combine(folder, fileName);
                             file.SaveAs(path);
-                            uploadedUrls.Add($"/Uploads/Violations/{fileName}");
+                            uploadedUrls.Add($"{VIOLATION_UPLOAD_URL}{fileName}");
                         }
                     }
                     return Json(new { status = true, urls = uploadedUrls });

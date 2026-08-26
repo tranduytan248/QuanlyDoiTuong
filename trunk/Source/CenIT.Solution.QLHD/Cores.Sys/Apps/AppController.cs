@@ -15,13 +15,17 @@ using TSFramework.Core.Utils;
 namespace Cores.Sys.Apps
 {
     /// <remarks>
-    /// Khai bao abstract de ASP.NET MVC KHONG coi day la mot controller co the
-    /// dinh tuyen. Truoc day ca Cores.Base.Apps.AppController va
-    /// Cores.Sys.Apps.AppController deu la lop public thuong, khien MVC bao loi
-    /// "Multiple types were found that match the controller named App".
-    /// Lop nay chi dung lam lop cha, khong bao gio duoc goi truc tiep.
+    /// Lop cha cho toan bo controller cua he thong, dong thoi phuc vu route
+    /// /App/ActionIsAllow ma TSFramework.js goi de kiem tra quyen truoc khi
+    /// hien thi nut.
+    ///
+    /// KHONG duoc danh dau abstract: MVC se khong tao duoc the hien va moi
+    /// lenh kiem tra quyen se loi "controller not found".
+    ///
+    /// Viec trung ten voi Cores.Base.Apps.AppController duoc xu ly bang route
+    /// rieng trong RouteConfig, chi dinh ro namespace Cores.Sys.Apps.
     /// </remarks>
-    public abstract class AppController : BaseController
+    public class AppController : BaseController
     {
         //private const string SESSION_KEY_MODULE_WIDGET = "ModuleWidgetForUser{0}";
         private readonly SysMenuCache _sysMenuCache = new SysMenuCache();

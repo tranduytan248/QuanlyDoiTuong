@@ -14,7 +14,14 @@ using TSFramework.Core.Utils;
 
 namespace Cores.Sys.Apps
 {
-    public class AppController : BaseController
+    /// <remarks>
+    /// Khai bao abstract de ASP.NET MVC KHONG coi day la mot controller co the
+    /// dinh tuyen. Truoc day ca Cores.Base.Apps.AppController va
+    /// Cores.Sys.Apps.AppController deu la lop public thuong, khien MVC bao loi
+    /// "Multiple types were found that match the controller named App".
+    /// Lop nay chi dung lam lop cha, khong bao gio duoc goi truc tiep.
+    /// </remarks>
+    public abstract class AppController : BaseController
     {
         //private const string SESSION_KEY_MODULE_WIDGET = "ModuleWidgetForUser{0}";
         private readonly SysMenuCache _sysMenuCache = new SysMenuCache();

@@ -35,6 +35,11 @@ BEGIN
 
     DECLARE @IsSuperAdmin BIT = dbo.fn_IsSuperAdmin(@UserName);
 
+    /* @UserName IS NULL nghia la KHONG gioi han pham vi du lieu.
+       Dung cho cac tra cuu noi bo cua he thong, vi du kiem tra trung so CCCD
+       khi them moi doi tuong - luc do can nhin thay toan bo du lieu. */
+    DECLARE @NoScope BIT = CASE WHEN @UserName IS NULL THEN 1 ELSE 0 END;
+
     /* Chuẩn hoá tham số đầu vào */
     SET @IdentityCardNumber = NULLIF(LTRIM(RTRIM(ISNULL(@IdentityCardNumber, ''))), '');
     SET @FullName           = NULLIF(LTRIM(RTRIM(ISNULL(@FullName, ''))), '');
@@ -102,7 +107,7 @@ BEGIN
                   WHERE v.SubjectId = s.SubjectId AND ISNULL(v.IsDeleted, 0) = 0))
 
           /* --- PHÂN QUYỀN: đơn vị khai báo phải nằm trong phạm vi của người dùng --- */
-          AND (@IsSuperAdmin = 1
+          AND (@NoScope = 1 OR @IsSuperAdmin = 1
                OR s.ReporterUnionId IN (SELECT UnionId FROM dbo.fn_GetPermittedUnions(@UserName))
                /* Cho phép thấy đối tượng nếu có lần vi phạm do đơn vị trong phạm vi khai báo */
                OR EXISTS (
@@ -113,7 +118,7 @@ BEGIN
                      AND v.ReporterUnionId IN (SELECT UnionId FROM dbo.fn_GetPermittedUnions(@UserName))))
 
           /* --- PHÂN QUYỀN: đối tượng phải có vi phạm thuộc lĩnh vực được phân công --- */
-          AND (@IsSuperAdmin = 1
+          AND (@NoScope = 1 OR @IsSuperAdmin = 1
                OR EXISTS (
                    SELECT 1
                    FROM dbo.Major_SubjectViolations AS v
@@ -157,7 +162,7 @@ BEGIN
          FROM dbo.Major_SubjectViolations AS v
          WHERE v.SubjectId = c.SubjectId
            AND ISNULL(v.IsDeleted, 0) = 0
-           AND (@IsSuperAdmin = 1
+           AND (@NoScope = 1 OR @IsSuperAdmin = 1
                 OR v.ReporterUnionId IN (SELECT UnionId FROM dbo.fn_GetPermittedUnions(@UserName)))
         ) AS ViolationCount,
         c.TotalRow

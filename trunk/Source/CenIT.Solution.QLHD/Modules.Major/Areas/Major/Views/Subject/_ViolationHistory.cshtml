@@ -72,13 +72,13 @@
                                     <a href="@Url.Action("Edit", "SubjectViolation", new { area = "Major", id = violation.ViolationId })"
                                        class="btn btn-light-primary" title="Chỉnh sửa"
                                        data-modal="true" data-modal-id="EditViolation" data-width="1100px"
-                                       data-modal-id-parent="ViolationHistory" data-close-modal-parent="true">
+                                       data-modal-id-parent="ViolationHistory">
                                         <i class="far fa-edit"></i><span class="d-none d-md-inline ml-1">Sửa</span>
                                     </a>
                                     <a href="@Url.Action("Delete", "SubjectViolation", new { area = "Major", id = violation.ViolationId })"
                                        class="btn btn-light-danger" title="Xoá"
                                        data-modal="true" data-modal-id="DeleteViolation" data-width="800px"
-                                       data-modal-id-parent="ViolationHistory" data-close-modal-parent="true">
+                                       data-modal-id-parent="ViolationHistory">
                                         <i class="far fa-trash-alt"></i><span class="d-none d-md-inline ml-1">Xoá</span>
                                     </a>
                                 }

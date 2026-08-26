@@ -23,4 +23,31 @@
             @Html.Partial("_Violation")
         </div>
     }
+
+    <script>
+        /* Ham xu ly ket qua sau khi luu.
+           Dinh nghia ngay trong modal de hoat dong duoc du modal duoc mo tu bat
+           ky man hinh nao - khong phu thuoc trang cha da nap file .js hay chua. */
+        if (typeof SubjectViolation_OnProcessSuccess !== "function") {
+            window.SubjectViolation_OnProcessSuccess = function (response, formId) {
+                if (response.status === undefined) {
+                    $("#ModalContent #modal_" + formId + " #bodyForm").html(response);
+                    return;
+                }
+
+                $("#ModalContent #modal_" + formId).modal("hide");
+                $("#ModalContent #modal_" + formId).on("hidden.bs.modal", function () {
+                    if (response.status === undefined) return;
+                    if (response.message) { eval(response.message); }
+
+                    /* Lam moi bang du lieu cua man hinh dang mo, neu co */
+                    if (typeof _tableSubjectViolation !== "undefined" && _tableSubjectViolation) { _tableSubjectViolation.ajax.reload(null, false); }
+                    if (typeof _tableSubject !== "undefined" && _tableSubject) { _tableSubject.ajax.reload(null, false); }
+                    if (typeof _tableUserField !== "undefined" && _tableUserField) { _tableUserField.ajax.reload(null, false); }
+
+                    response.status = undefined;
+                });
+            };
+        }
+    </script>
 }

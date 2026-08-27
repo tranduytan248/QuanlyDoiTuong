@@ -17,10 +17,10 @@ GO
 CREATE PROCEDURE dbo.p_Major_Subject_Get
     @IdentityCardNumber NVARCHAR(50)  = NULL,
     @FullName           NVARCHAR(200) = NULL,
-    @Gender             NVARCHAR(20)  = NULL,
     @BehaviorIds        NVARCHAR(MAX) = NULL,
-    @Search             NVARCHAR(500) = NULL,
+    @Gender             NVARCHAR(20)  = NULL,
     @UserName           NVARCHAR(100) = NULL,
+    @Search             NVARCHAR(500) = NULL,
     @Order              NVARCHAR(10)  = '0',
     @OrderDir           NVARCHAR(10)  = 'ASC',
     @StartIndex         INT           = 0,
@@ -31,8 +31,8 @@ BEGIN
 
     SET @IdentityCardNumber = NULLIF(LTRIM(RTRIM(@IdentityCardNumber)), '');
     SET @FullName           = NULLIF(LTRIM(RTRIM(@FullName)), '');
-    SET @Gender             = NULLIF(LTRIM(RTRIM(@Gender)), '');
     SET @BehaviorIds        = NULLIF(LTRIM(RTRIM(@BehaviorIds)), '');
+    SET @Gender             = NULLIF(LTRIM(RTRIM(@Gender)), '');
     SET @Search             = NULLIF(LTRIM(RTRIM(@Search)), '');
     SET @Order              = ISNULL(@Order, '0');
     SET @OrderDir           = ISNULL(@OrderDir, 'ASC');

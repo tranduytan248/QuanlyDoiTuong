@@ -7,6 +7,9 @@
           <Procedure Name="Sys_User_LoginViaEmail" Value="p_Sys_User_LoginViaEmail" />
           <Procedure Name="Sys_User_Save" Value="p_Sys_User_Save" />
           <Procedure Name="Sys_User_Get" Value="p_Sys_User_Get" />
+          <Procedure Name="Sys_UserActivity_Track" Value="p_Sys_UserActivity_Track" />
+          <Procedure Name="Sys_UserActivity_End" Value="p_Sys_UserActivity_End" />
+          <Procedure Name="Sys_UserActivity_Get" Value="p_Sys_UserActivity_Get" />
           <Procedure Name="Sys_User_GetByUserName" Value="p_Sys_User_GetByUserName" />
           <Procedure Name="Sys_User_GetByEmail" Value="p_Sys_User_GetByEmail" />
           <Procedure Name="Sys_User_Delete" Value="p_Sys_User_Delete" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -137,7 +137,10 @@
     <Compile Include="Models\Sys\SysRoleModel.cs" />
     <Compile Include="Models\Sys\SysUserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
+      <Compile Include="Models\Sys\SysUserActivityModel.cs" />
+    <Compile Include="Biz\Sys\SysUserActivityBiz.cs" />
+    <Compile Include="Caches\Sys\SysUserActivityCache.cs" />
+</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TSFramework.App\TSFramework.App.csproj">
       <Project>{0577F056-6B2C-4CDA-B85B-4E47AA37DDB4}</Project>

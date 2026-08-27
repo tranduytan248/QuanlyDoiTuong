@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -133,6 +133,7 @@
     <Compile Include="Areas\Sys\Controllers\SysLogController.cs" />
     <Compile Include="Areas\Sys\Controllers\SysToolController.cs" />
     <Compile Include="Areas\Sys\Controllers\UserController.cs" />
+    <Compile Include="Areas\Sys\Controllers\UserActivityController.cs" />
     <Compile Include="Areas\Sys\Models\AppConfigModel.cs" />
     <Compile Include="Areas\Sys\Models\ChangePasswordModel.cs" />
     <Compile Include="Areas\Sys\Models\EnterpriseUserModel.cs" />
@@ -386,6 +387,8 @@
     <Content Include="Areas\Sys\Views\SysLog\_ViewFile.cshtml" />
     <Content Include="Areas\Sys\Views\SysTool\Index.cshtml" />
     <Content Include="Areas\Sys\Views\User\Index.cshtml" />
+    <Content Include="Areas\Sys\Views\UserActivity\UserActivity.js" />
+    <Content Include="Areas\Sys\Views\UserActivity\Index.cshtml" />
     <Content Include="Areas\Sys\Views\User\_Active.cshtml" />
     <Content Include="Areas\Sys\Views\User\_ActiveBody.cshtml" />
     <Content Include="Areas\Sys\Views\User\_Add.cshtml" />

@@ -1,0 +1,88 @@
+﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = "Giám sát trực tuyến";
+    var timeout = ViewBag.TimeoutMinutes ?? 5;
+}
+
+@section PageTitle
+{
+    @ViewBag.Title
+}
+
+@section PageAction
+{
+    <span class="text-secondary-d1 text-90 mr-3 d-none d-md-inline align-middle">
+        <i class="fa fa-sync-alt text-blue-d1 mr-1"></i>
+        Tự động làm mới mỗi 15 giây
+    </span>
+    <button type="button" id="btnRefreshActivity"
+            class="btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90">
+        <i class="fa fa-redo mr-1"></i> Làm mới
+    </button>
+}
+
+<div class="alert alert-light border-l-4 brc-blue-m2 py-2 px-3 mb-3 text-90 text-secondary-d1">
+    <i class="fa fa-info-circle text-blue-d1 mr-1"></i>
+    Chỉ hiển thị tài khoản có hoạt động trong <b>@timeout phút</b> gần nhất.
+    Người dùng đăng xuất hoặc đóng trình duyệt sẽ tự biến mất khỏi danh sách.
+</div>
+
+<div class="row mb-3">
+    <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+        <div class="card dcard h-100 border-l-4 brc-green-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-green-l3 text-green-d2 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-users text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate">Đang trực tuyến</div>
+                    <div class="text-190 text-600 text-green-d2 line-height-1" id="statOnline">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card dcard h-100 border-l-4 brc-blue-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-blue-l3 text-blue-d1 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-clock text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate">Cập nhật lúc</div>
+                    <div class="text-150 text-600 text-blue-d1 line-height-1 mt-1" id="statUpdated">--:--:--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card dcard">
+    <div class="p-2 table-responsive-md">
+        <table id="DSActivity" class="d-style w-100 table text-dark-m1 text-95 border-y-1 brc-black-tp11">
+            <thead class="sticky-nav text-secondary-m1 text-uppercase text-85 bgc-secondary-l1">
+                <tr>
+                    <th class="text-center" style="width:50px;">STT</th>
+                    <th style="min-width:230px;">Người dùng</th>
+                    <th style="min-width:190px;">Đơn vị &amp; Chức vụ</th>
+                    <th style="min-width:200px;">Đang ở màn hình</th>
+                    <th class="text-center" style="width:130px;">Địa chỉ IP</th>
+                    <th class="text-center" style="width:120px;">Đăng nhập lúc</th>
+                    <th class="text-center" style="width:130px;">Hoạt động cuối</th>
+                </tr>
+            </thead>
+            <tbody id="bodyActivity">
+                <tr><td colspan="7" class="text-center text-grey-m1 py-4">Đang tải...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section BottomScript
+{
+    <script type="text/javascript">
+        var urlGetActivities = "@Url.Action("Get", "UserActivity", new { area = "Sys" })";
+    </script>
+    <script src="~/Areas/Sys/Views/UserActivity/UserActivity.js?v=@(System.IO.File.GetLastWriteTime(Server.MapPath("~/Areas/Sys/Views/UserActivity/UserActivity.js")).Ticks)"></script>
+}

@@ -361,6 +361,18 @@ namespace CenIT.Solution.QLHD.WebApp.Controllers
         [HttpGet]
         public ActionResult Logout(string returnUrl = "")
         {
+            // Xoa phien khoi man hinh Giam sat truc tuyen ngay khi dang xuat,
+            // khong doi het thoi gian cho.
+            try
+            {
+                if (Session != null)
+                    new Cores.Sys.Caches.Sys.SysUserActivityCache().End(Session.SessionID);
+            }
+            catch
+            {
+                // Khong lam gi: loi o day khong duoc chan viec dang xuat
+            }
+
             var typeMembershipProvider = ConfigurationManager.AppSettings["AppMembershipType"];
             var typeMembershipProviderNotRedirect = ConfigurationManager.AppSettings["MembershipProviderNotRedirect"];
 

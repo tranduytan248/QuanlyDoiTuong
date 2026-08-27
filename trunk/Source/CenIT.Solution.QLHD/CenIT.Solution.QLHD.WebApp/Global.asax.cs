@@ -14,6 +14,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using TSFramework.App.BaseApps;
+using TSFramework.App.Processors;
 using TSFramework.Core.Members.Job;
 using TSFramework.Core.Providers;
 using TSFramework.Core.Utils;
@@ -112,6 +113,110 @@ namespace CenIT.Solution.QLHD.WebApp
             }
 
             if (!Request.IsLocal) HttpContext.Current.RewritePath("AppOffline.htm");
+        }
+
+        /// <summary>
+        /// Ghi nhan phien lam viec cua nguoi da dang nhap, phuc vu man hinh
+        /// Giam sat truc tuyen.
+        ///
+        /// Chi ghi voi request giao dien that: bo qua file tinh (.js, .css, anh)
+        /// va cac loi goi ngam nhu ActionIsAllow - neu khong man hinh giam sat
+        /// se hien nhung duong dan vo nghia thay vi man hinh nguoi dung dang xem.
+        ///
+        /// Moi loi o day deu nuot: ghi nhan hoat dong khong duoc phep lam hong
+        /// request cua nguoi dung.
+        /// </summary>
+        private void TrackUserActivity()
+        {
+            try
+            {
+                var ctx = HttpContext.Current;
+                if (ctx?.User?.Identity == null || !ctx.User.Identity.IsAuthenticated) return;
+                if (ctx.Session == null) return;
+
+                var path = Request.Path ?? string.Empty;
+                if (string.IsNullOrEmpty(path)) return;
+
+                // Bo qua file tinh
+                var ext = Path.GetExtension(path);
+                if (!string.IsNullOrEmpty(ext)) return;
+
+                // Bo qua cac loi goi ngam khong phai man hinh nguoi dung dang xem
+                if (path.StartsWith("/App/", StringComparison.OrdinalIgnoreCase)) return;
+                if (path.IndexOf("/Get", StringComparison.OrdinalIgnoreCase) >= 0) return;
+                if (path.StartsWith("/signalr", StringComparison.OrdinalIgnoreCase)) return;
+
+                // Bo qua dang xuat: hanh dong do vua xoa phien, ghi nhan lai o day
+                // se tao lai ban ghi va nguoi vua thoat van hien dang truc tuyen.
+                if (path.StartsWith("/Account/Logout", StringComparison.OrdinalIgnoreCase)) return;
+
+                new SysUserActivityCache().Track(
+                    ctx.Session.SessionID,
+                    ctx.User.Identity.Name,
+                    path,
+                    ResolveScreenName(path),
+                    Request.UserHostAddress,
+                    Request.UserAgent);
+            }
+            catch (Exception ex)
+            {
+                // Theo doi hoat dong khong duoc lam hong request cua nguoi dung,
+                // nhung van ghi log de con biet duong chan doan khi no khong chay.
+                try { AppProcessor.Logger.Error(ex); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Doi duong dan thanh ten man hinh doc duoc.
+        /// Vi du /Major/Subject -> "Quan ly Doi tuong".
+        /// </summary>
+        private static string ResolveScreenName(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "/Major/Subject",            "Quản lý Đối tượng" },
+                { "/Major/SubjectViolation",   "Vi phạm của Đối tượng" },
+                { "/Cate/Field",               "Danh mục Lĩnh vực" },
+                { "/Cate/ViolationBehavior",   "Danh mục Hành vi vi phạm" },
+                { "/Cate/Union",               "Quản lý Đơn vị" },
+                { "/Cate/UserField",           "Phân quyền Lĩnh vực" },
+                { "/Sys/User",                 "Quản lý Người dùng" },
+                { "/Sys/UserActivity",         "Giám sát trực tuyến" },
+                { "/Sys/Role",                 "Quản lý Vai trò" },
+                { "/Sys/Permission",           "Phân quyền chức năng" },
+                { "/Sys/Config",               "Cấu hình hệ thống" },
+                { "/Account/Login",            "Đăng nhập" },
+                { "/",                         "Trang chủ" },
+                { "/Home",                     "Trang chủ" },
+                { "/Home/Index",               "Trang chủ" }
+            };
+
+            if (map.TryGetValue(path, out var name)) return name;
+
+            // Khong khop chinh xac thi thu bo phan hanh dong o cuoi
+            var idx = path.LastIndexOf('/');
+            if (idx > 0)
+            {
+                var parent = path.Substring(0, idx);
+                if (map.TryGetValue(parent, out name)) return name;
+            }
+
+            return path;
+        }
+
+        /// <summary>
+        /// Ghi nhan hoat dong nguoi dung ngay sau khi controller xu ly xong.
+        ///
+        /// Phai dung su kien nay chu khong phai BeginRequest hay EndRequest:
+        ///   - BeginRequest: Session chua duoc khoi tao
+        ///   - EndRequest  : Session da bi giai phong
+        /// Chi o PostRequestHandlerExecute thi HttpContext.Session moi con song.
+        /// </summary>
+        protected void Application_PostRequestHandlerExecute(object sender, EventArgs e)
+        {
+            TrackUserActivity();
         }
 
         protected void Application_EndRequest(object sender, EventArgs e)

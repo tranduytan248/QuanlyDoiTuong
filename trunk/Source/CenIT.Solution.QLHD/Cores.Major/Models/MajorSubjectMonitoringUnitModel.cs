@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Cores.Major.Models
 {
@@ -29,6 +29,6 @@ namespace Cores.Major.Models
         public string RelatedDocuments { get; set; }
         public string Images { get; set; }
 
-        public bool IsOwner { get; set; }
+        public bool? IsOwner { get; set; }
     }
 }

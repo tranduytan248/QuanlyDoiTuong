@@ -767,8 +767,15 @@ namespace Modules.Major.Areas.Major.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            model.ListMonitoringUnits = _subjectCache.GetMonitoringUnits(id, User?.UserName)
-                                        ?? new List<MajorSubjectMonitoringUnitModel>();
+            try
+            {
+                model.ListMonitoringUnits = _subjectCache.GetMonitoringUnits(id, User?.UserName)
+                                            ?? new List<MajorSubjectMonitoringUnitModel>();
+            }
+            catch
+            {
+                model.ListMonitoringUnits = new List<MajorSubjectMonitoringUnitModel>();
+            }
             return PartialView("_MonitoringUnits", model);
         }
 

@@ -260,7 +260,7 @@ BEGIN
         NULL AS Notes,
         NULL AS RelatedDocuments,
         NULL AS Images,
-        CASE WHEN s.CreatedBy = @UserName OR @IsSuperAdmin = 1 THEN 1 ELSE 0 END AS IsOwner
+        CAST(CASE WHEN s.CreatedBy = @UserName OR @IsSuperAdmin = 1 THEN 1 ELSE 0 END AS BIT) AS IsOwner
     FROM dbo.Major_Subjects AS s
     LEFT JOIN dbo.Cate_Unions AS un ON un.UnionId = s.ReporterUnionId
     WHERE (s.SubjectId = @SubjectId OR (s.IdentityCardNumber = @IdentityCardNumber AND @IdentityCardNumber <> ''))
@@ -297,7 +297,7 @@ BEGIN
         v.Notes,
         v.RelatedDocuments,
         v.Images,
-        CASE WHEN v.CreatedBy = @UserName OR @IsSuperAdmin = 1 THEN 1 ELSE 0 END AS IsOwner
+        CAST(CASE WHEN v.CreatedBy = @UserName OR @IsSuperAdmin = 1 THEN 1 ELSE 0 END AS BIT) AS IsOwner
     FROM dbo.Major_SubjectViolations AS v
     INNER JOIN dbo.Major_Subjects AS s ON s.SubjectId = v.SubjectId
     LEFT JOIN dbo.Cate_Unions AS un ON un.UnionId = v.ReporterUnionId

@@ -13,6 +13,9 @@
     @Html.Button(true, "AddSubject", Url.Action("Add", new { area = "Major" }), "<i class='fa fa-user-plus'></i>", "Thêm đối tượng", new { @class = "btn btn-light-blue btn-h-blue btn-a-blue border-0 radius-3 py-2 text-600 text-90 pull-right", data_width = "1350px" })
 }
 
+@* Khoi so lieu tong hop - dat truoc bo loc de nhin thay ngay khi vao man hinh *@
+@Html.Partial("_Dashboard")
+
 @Html.Partial("_Search")
 
 <div class="mt-3">

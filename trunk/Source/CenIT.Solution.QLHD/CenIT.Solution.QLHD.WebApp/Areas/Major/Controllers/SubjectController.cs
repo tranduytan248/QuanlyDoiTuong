@@ -112,6 +112,11 @@ namespace Modules.Major.Areas.Major.Controllers
             // Danh mục phục vụ bộ lọc tra cứu theo lĩnh vực / hành vi vi phạm
             LoadPermittedCatalogs();
 
+            // So lieu tong hop hien o khoi the dau man hinh.
+            // Proc tu gioi han theo don vi va linh vuc cua nguoi dang dang nhap
+            // nen con so luon khop voi danh sach ben duoi.
+            ViewBag.Dashboard = _subjectCache.GetDashboard(User?.UserName);
+
             var searchModel = new SearchSubjectModel();
             return View(searchModel);
         }

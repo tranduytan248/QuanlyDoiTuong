@@ -134,6 +134,7 @@
     <Compile Include="Models\MajorDossierTaskModel.cs" />
     <Compile Include="Models\MajorDossierTaskSwitchHandlerModel.cs" />
     <Compile Include="Models\MajorMessageModel.cs" />
+    <Compile Include="Models\MajorSubjectDashboardModel.cs" />
     <Compile Include="Models\MajorProcedureModel.cs" />
     <Compile Include="Models\MajorProcedureStepHandlerModel.cs" />
     <Compile Include="Models\MajorProcedureStepHandlingTimeModel.cs" />

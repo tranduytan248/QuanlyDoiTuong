@@ -1,0 +1,69 @@
+﻿@using Cores.Major.Models
+@{
+    var stats = ViewBag.Dashboard as MajorSubjectDashboardModel ?? new MajorSubjectDashboardModel();
+}
+
+@* Khoi so lieu tong hop. Moi con so da ap dung phan quyen theo don vi va linh
+   vuc cua nguoi dang dang nhap, nen luon khop voi danh sach ben duoi. *@
+<div class="row mb-3">
+    <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+        <div class="card dcard h-100 border-l-4 brc-blue-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-blue-l3 text-blue-d1 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-users text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate">Tổng đối tượng</div>
+                    <div class="text-190 text-600 text-blue-d1 line-height-1">@stats.TotalSubjects</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+        <div class="card dcard h-100 border-l-4 brc-orange-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-orange-l3 text-orange-d2 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-exclamation-triangle text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate">Tổng lượt vi phạm</div>
+                    <div class="text-190 text-600 text-orange-d2 line-height-1">@stats.TotalViolations</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 mb-2 mb-lg-0">
+        <div class="card dcard h-100 border-l-4 brc-red-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-red-l3 text-red-d2 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-layer-group text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate"
+                         title="Đối tượng có vi phạm thuộc từ 2 lĩnh vực trở lên">Vi phạm đa lĩnh vực</div>
+                    <div class="text-190 text-600 text-red-d2 line-height-1">@stats.MultiFieldSubjects</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card dcard h-100 border-l-4 brc-green-m2">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+                <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-green-l3 text-green-d2 mr-3 flex-shrink-0"
+                      style="width:44px;height:44px;">
+                    <i class="fa fa-calendar-check text-140"></i>
+                </span>
+                <div class="min-w-0">
+                    <div class="text-secondary-d1 text-85 text-uppercase text-truncate">Vi phạm 30 ngày qua</div>
+                    <div class="text-190 text-600 text-green-d2 line-height-1">@stats.RecentViolations</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,6 +15,7 @@ namespace Cores.Major.Biz
         private readonly string _majorSubjectGetById = "Major_Subject_GetById";
         private readonly string _majorSubjectGetAll = "Major_Subject_GetAll";
         private readonly string _majorSubjectSave = "Major_Subject_Save";
+        private readonly string _majorSubjectDashboard = "Major_Subject_Dashboard";
 
         /// <summary>
         /// Lấy danh sách đối tượng theo các tiêu chí tra cứu, đã áp dụng phân quyền dữ liệu.
@@ -49,6 +50,17 @@ namespace Cores.Major.Biz
             if (listSubjects != null && listSubjects.Count > 0)
                 total = int.Parse(listSubjects.First()?.TotalRow.ToString() ?? "0");
             return listSubjects;
+        }
+
+        /// <summary>
+        /// So lieu tong hop cho khoi thong ke dau man hinh.
+        /// Proc tu ap dung phan quyen theo don vi va linh vuc dua vao userName.
+        /// </summary>
+        public MajorSubjectDashboardModel GetDashboard(string userName)
+        {
+            return AppProcessor.ProcedureProvider
+                .ExecuteScalarObject<MajorSubjectDashboardModel>(_majorSubjectDashboard,
+                    DATA_PROVIDER_NAME, userName);
         }
 
         public List<MajorSubjectModel> GetAll()

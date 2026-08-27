@@ -33,6 +33,20 @@ namespace Cores.Major.Caches
         /// từng người dùng; nếu thiếu sẽ gây rò rỉ dữ liệu giữa các tài khoản.
         /// </summary>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
+        /// <summary>
+        /// So lieu tong hop cho khoi thong ke dau man hinh.
+        ///
+        /// CO Y KHONG CACHE: so lieu phu thuoc ca bang Doi tuong lan bang Vi pham,
+        /// ma hai tang cache dung hai khoa khac nhau (SubjectsCache /
+        /// SubjectViolationsCache). Cache o day thi khi ghi nhan vi pham moi, con so
+        /// tren the se dung yen trong khi danh sach ben duoi da doi.
+        /// Truy van chi ~100ms va chay mot lan moi khi mo man hinh nen doc thang la du.
+        /// </summary>
+        public MajorSubjectDashboardModel GetDashboard(string userName)
+        {
+            return Api.GetDashboard(userName) ?? new MajorSubjectDashboardModel();
+        }
+
         public List<MajorSubjectModel> Get(out int total, string identityCardNumber, string fullName,
             string behaviorIds, string gender, string userName, BaseSearchModel search = null)
         {

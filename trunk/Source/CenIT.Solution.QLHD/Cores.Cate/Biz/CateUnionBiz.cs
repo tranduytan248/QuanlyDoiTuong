@@ -224,8 +224,19 @@ namespace Cores.Cate.Biz
         private readonly string _cateUnionManagerGetUnions = "Cate_Union_Manager_GetUnions";
         private readonly string _cateUnionManagerGetManagers = "Cate_Union_Manager_GetManagers";
         private readonly string _cateUnionManagerSave = "Cate_Union_Manager_Save";
+        private readonly string _cateUnionManagerSaveList = "Cate_Union_Manager_SaveList";
         private readonly string _cateUnionManagerGetByKey = "Cate_Union_Manager_GetByKey";
         private readonly string _cateUnionManagerDeleteByKey = "Cate_Union_Manager_DeleteByKey";
+
+        public int? SaveManagerList(string userName, string unionIds, string savedBy)
+        {
+            var result = AppProcessor.ProcedureProvider.Execute(_cateUnionManagerSaveList, DATA_PROVIDER_NAME,
+                userName,
+                unionIds,
+                savedBy);
+
+            return result;
+        }
 
         public int? SaveManager(Guid? unionId, string users, string savedBy)
         {

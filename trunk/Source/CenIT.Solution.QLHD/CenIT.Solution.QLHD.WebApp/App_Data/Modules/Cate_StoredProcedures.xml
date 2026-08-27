@@ -179,6 +179,7 @@
           <Procedure Name="Cate_Union_Manager_Save" Value="p_Cate_Union_Manager_Save" />
           <Procedure Name="Cate_Union_Manager_GetByKey" Value="p_Cate_Union_Manager_GetByKey" />
           <Procedure Name="Cate_Union_Manager_DeleteByKey" Value="p_Cate_Union_Manager_DeleteByKey" />
+          <Procedure Name="Cate_Union_Manager_SaveList" Value="p_Cate_Union_Manager_SaveList" />
 
      </StoredProcedures>
 </Provider>

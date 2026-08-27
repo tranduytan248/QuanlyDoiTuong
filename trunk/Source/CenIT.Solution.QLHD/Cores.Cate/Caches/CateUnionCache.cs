@@ -309,6 +309,15 @@ namespace Cores.Cate.Caches
         }
 
         [DataObjectMethod(DataObjectMethodType.Update, false)]
+        public int? SaveManagerList(string userName, string unionIds, string savedBy)
+        {
+            var retSave = Api.SaveManagerList(userName, unionIds, savedBy);
+            if (retSave > 0)
+                InvalidateCache();
+            return retSave;
+        }
+
+        [DataObjectMethod(DataObjectMethodType.Update, false)]
         public int? SaveManager(CateUnionManagerModel model)
         {
             var retSave = Api.SaveManager(model);

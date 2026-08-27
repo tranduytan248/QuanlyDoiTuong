@@ -690,9 +690,52 @@ namespace Modules.Cate.Areas.Cate.Controllers
         [ActionType(Type = EnumActionType.View)]
         public ActionResult UnionsBelong(int id)
         {
-            var model = _userCache.GetById(id);
+            var user = _userCache.GetById(id);
+            if (user == null)
+            {
+                return Json(new { status = false, message = CreateMessage("Người dùng", EnumProcessType.DataNotExist, EnumMsgIcon.Error) }, JsonRequestBehavior.AllowGet);
+            }
 
-            return PartialView("_UnionsBelong", model);
+            var allUnions = _unionCache.GetAll()
+                .Where(u => u.IsActive)
+                .OrderBy(u => u.BelongUnionName)
+                .ThenBy(u => u.TypeUnion)
+                .ThenBy(u => u.UnionName)
+                .ToList();
+
+            var assignedUnions = _unionCache.GetUnionsViaManager(user.UserName) ?? new List<CateUnionManagerModel>();
+            var assignedUnionIds = assignedUnions.Select(u => u.UnionId.ToString().ToLower()).ToList();
+
+            ViewBag.AllUnions = allUnions;
+            ViewBag.AssignedUnionIds = assignedUnionIds;
+            ViewBag.AssignedUnions = assignedUnions;
+
+            return PartialView("_UnionsBelong", user);
+        }
+
+        [AjaxOnly]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionType(Type = EnumActionType.Edit)]
+        public ActionResult SaveUnionsBelong(string userName, string unionIds)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return Json(new { status = false, message = CreateMessage("Người dùng", EnumProcessType.DataNotExist, EnumMsgIcon.Error) });
+            }
+
+            var retSave = _unionCache.SaveManagerList(userName.Trim(), unionIds ?? string.Empty, User?.UserName);
+            string response;
+            if (retSave == null || retSave <= 0)
+            {
+                response = CreateMessage($"Đơn vị quản lý của [{userName}]", EnumProcessType.Edit, EnumMsgIcon.Error);
+            }
+            else
+            {
+                response = CreateMessage($"Đơn vị quản lý của [{userName}]", EnumProcessType.Edit, EnumMsgIcon.Success);
+            }
+
+            return Json(new { status = true, message = response }, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxOnly]

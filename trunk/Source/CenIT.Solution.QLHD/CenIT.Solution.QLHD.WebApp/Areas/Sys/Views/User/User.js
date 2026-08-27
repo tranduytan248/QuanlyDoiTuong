@@ -1,4 +1,4 @@
-var _UserActionURLs = {
+﻿var _UserActionURLs = {
     User_GetData: "/Sys/User/Get"
 };
 var _tableUser;
@@ -59,6 +59,90 @@ function initTableUser() {
             {
                 "data": "UserName",
                 "defaultContent": ""
+            },
+            {
+                // Don vi cong tac va chuc vu - gop chung mot cot cho gon
+                "data": "UnionName",
+                "defaultContent": "",
+                "orderable": false,
+                "render": function (data, type, row) {
+                    if (type !== "display") return data || "";
+                    var unit = data || "";
+                    var pos = row["PositionName"] || "";
+                    if (!unit && !pos) {
+                        return '<span class="text-grey-m1 text-90"><i class="fa fa-minus"></i> Chưa phân đơn vị</span>';
+                    }
+                    var html = "";
+                    if (unit) {
+                        html += '<div class="text-600 text-blue-d1 text-95">'
+                              + '<i class="fa fa-sitemap text-grey-m1 mr-1"></i>' + unit + '</div>';
+                    }
+                    if (pos) {
+                        html += '<div class="text-grey-d1 text-90 mt-1">' + pos + '</div>';
+                    }
+                    return html;
+                }
+            },
+            {
+                // Vai tro he thong - moi vai tro mot nhan
+                "data": "RoleNames",
+                "defaultContent": "",
+                "orderable": false,
+                "render": function (data, type) {
+                    if (type !== "display") return data || "";
+                    if (!data) {
+                        return '<span class="text-grey-m1 text-90"><i class="fa fa-minus"></i> Chưa phân vai trò</span>';
+                    }
+                    return data.split(",").map(function (r) {
+                        return '<span class="badge badge-sm bgc-blue-l3 text-blue-d2 mr-1 mb-1 px-2 py-1">'
+                             + r.trim() + '</span>';
+                    }).join("");
+                }
+            },
+            {
+                // So linh vuc duoc phan. Bang 0 thi nguoi dung khong thao tac
+                // duoc gi voi du lieu doi tuong - canh bao mau do.
+                "data": "FieldCount",
+                "defaultContent": "0",
+                "className": "text-center",
+                "orderable": false,
+                "render": function (data, type) {
+                    if (type !== "display") return data;
+                    var n = parseInt(data, 10) || 0;
+                    if (n === 0) {
+                        return '<span class="badge badge-sm bgc-red-l3 text-red-d2 px-2 py-1" '
+                             + 'title="Chưa được phân lĩnh vực nên không thao tác được dữ liệu đối tượng">'
+                             + '<i class="fa fa-exclamation-triangle mr-1"></i>Chưa phân</span>';
+                    }
+                    return '<span class="badge badge-sm bgc-green-l3 text-green-d2 px-2 py-1">'
+                         + n + ' lĩnh vực</span>';
+                }
+            },
+            {
+                // Trang thai tai khoan: khoa > ngung > dang hoat dong
+                "data": "IsActive",
+                "defaultContent": "",
+                "className": "text-center",
+                "orderable": false,
+                "render": function (data, type, row) {
+                    if (type !== "display") return data;
+                    var html = "";
+                    if (row["IsLocked"]) {
+                        html = '<span class="badge badge-sm bgc-red-l3 text-red-d2 px-2 py-1">'
+                             + '<i class="fa fa-lock mr-1"></i>Bị khoá</span>';
+                    } else if (data) {
+                        html = '<span class="badge badge-sm bgc-green-l3 text-green-d2 px-2 py-1">'
+                             + '<i class="fa fa-check-circle mr-1"></i>Hoạt động</span>';
+                    } else {
+                        html = '<span class="badge badge-sm bgc-grey-l3 text-grey-d2 px-2 py-1">'
+                             + '<i class="fa fa-ban mr-1"></i>Ngưng</span>';
+                    }
+                    if (row["IsOnline"]) {
+                        html += '<div class="text-green-d1 text-85 mt-1">'
+                              + '<i class="fa fa-circle text-70 mr-1"></i>Trực tuyến</div>';
+                    }
+                    return html;
+                }
             },
             {
                 "data": "UserId",

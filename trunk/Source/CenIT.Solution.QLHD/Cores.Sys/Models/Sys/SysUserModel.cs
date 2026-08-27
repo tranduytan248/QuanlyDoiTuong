@@ -48,6 +48,24 @@ namespace Cores.Sys.Models.Sys
         [CustomDisplayName("User_Label_Phone")]
         public string Phone { get; set; }
 
+        /// <summary>Don vi cong tac - lay tu Cate_Unions_Members.</summary>
+        public string UnionName { get; set; }
+
+        /// <summary>Chuc vu trong don vi.</summary>
+        public string PositionName { get; set; }
+
+        /// <summary>Danh sach vai tro he thong, phan tach bang dau phay.</summary>
+        public string RoleNames { get; set; }
+
+        /// <summary>
+        /// So linh vuc duoc phan cong. Bang 0 nghia la nguoi dung chua thao tac
+        /// duoc gi voi du lieu doi tuong - can canh bao tren giao dien.
+        /// </summary>
+        public int FieldCount { get; set; }
+
+        /// <summary>Tai khoan co dang bi khoa hay khong.</summary>
+        public bool IsLocked { get; set; }
+
         [RequiredIfNot("UserId", null)]
         [CustomDisplayName("Reason_Title")]
         public override string Reason { get; set; }

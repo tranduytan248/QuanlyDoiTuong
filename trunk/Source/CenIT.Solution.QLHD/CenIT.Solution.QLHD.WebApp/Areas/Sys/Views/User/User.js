@@ -137,10 +137,10 @@ function initTableUser() {
                         html = '<span class="badge badge-sm bgc-grey-l3 text-grey-d2 px-2 py-1">'
                              + '<i class="fa fa-ban mr-1"></i>Ngưng</span>';
                     }
-                    if (row["IsOnline"]) {
-                        html += '<div class="text-green-d1 text-85 mt-1">'
-                              + '<i class="fa fa-circle text-70 mr-1"></i>Trực tuyến</div>';
-                    }
+                    // KHONG hien dau hieu truc tuyen: cot IsOnline trong Sys_Users
+                    // khong duoc cap nhat o bat ky dau (khong proc nao ghi, dang
+                    // nhap / dang xuat deu khong dung toi) nen gia tri la du lieu
+                    // chet, hien len se sai lech.
                     return html;
                 }
             },

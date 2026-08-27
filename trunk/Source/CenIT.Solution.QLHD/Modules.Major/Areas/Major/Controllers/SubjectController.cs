@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -888,6 +888,15 @@ namespace Modules.Major.Areas.Major.Controllers
                     identityCardFrontUrl = subject.IdentityCardFrontUrl,
                     identityCardBackUrl = subject.IdentityCardBackUrl,
                     violationCount = listViolations.Count,
+
+                    /* Giao dien dung de hien goi y cho dung ngu canh:
+                       ban ghi cua chinh minh thi la "ban da tung khai bao",
+                       cua nguoi khac thi noi ro ai da khai bao. */
+                    dateOfBirthStr = subject.DateOfBirth?.ToString("dd/MM/yyyy"),
+                    createdBy = subject.CreatedBy,
+                    isMine = string.Equals(subject.CreatedBy, User?.UserName,
+                                           StringComparison.OrdinalIgnoreCase),
+
                     listViolations
                 };
 

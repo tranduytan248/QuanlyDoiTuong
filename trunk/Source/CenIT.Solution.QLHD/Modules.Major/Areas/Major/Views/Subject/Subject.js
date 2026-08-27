@@ -1,4 +1,4 @@
-var _SubjectActionURLs = {
+﻿var _SubjectActionURLs = {
     Subject_GetData: "/Major/Subject/Get",
     Subject_UploadFile: "/Major/Subject/UploadFile",
     Subject_LookupByCard: "/Major/Subject/LookupByIdentityCard",
@@ -403,6 +403,115 @@ $(document).on("keydown", "#IdentityCardNumber", function (e) {
 $(document).on("click", "#btnLookupSubject", function (e) {
     e.preventDefault();
     lookupSubjectByIdentityCard();
+});
+
+/* =========================================================================
+ *  CHUAN HOA VA KIEM TRA SO CCCD
+ *  CCCD Viet Nam gom dung 12 chu so. Chan go ky tu khac ngay tu dau va
+ *  bao loi ro rang thay vi de nguoi dung luu roi moi bao.
+ * ========================================================================= */
+
+var CCCD_LENGTH = 12;
+
+/* Chi giu chu so, cat toi da 12 ky tu */
+function normalizeIdentityCard(value) {
+    return String(value || "").replace(/[^0-9]/g, "").substring(0, CCCD_LENGTH);
+}
+
+/* Kiem tra va hien thong bao ngay duoi o nhap. Tra ve true neu hop le. */
+function validateIdentityCardInput($input) {
+    var value = normalizeIdentityCard($input.val());
+    var $box = $("#lookupSubjectResult");
+
+    if (value.length === 0) {
+        $box.addClass("d-none").empty();
+        $input.removeClass("is-invalid");
+        return false;
+    }
+
+    if (value.length < CCCD_LENGTH) {
+        $input.addClass("is-invalid");
+        $box.removeClass("d-none")
+            .html('<span class="text-danger"><i class="fa fa-exclamation-circle mr-1"></i>'
+                + 'Số CCCD phải gồm đúng ' + CCCD_LENGTH + ' chữ số (hiện có ' + value.length + ').</span>');
+        return false;
+    }
+
+    $input.removeClass("is-invalid");
+    return true;
+}
+
+/* Chi cho go chu so trong o CCCD */
+$(document).on("input", "#Subject #IdentityCardNumber", function () {
+    var $this = $(this);
+    var normalized = normalizeIdentityCard($this.val());
+    if ($this.val() !== normalized) $this.val(normalized);
+
+    // Xoa canh bao cu khi nguoi dung dang go lai
+    if (normalized.length < CCCD_LENGTH) {
+        $("#lookupSubjectResult").addClass("d-none").empty();
+    }
+});
+
+/* Roi o nhap: kiem tra dinh dang, neu hop le thi goi y neu CCCD da ton tai.
+   Dung cho man hinh THEM MOI - man hinh sua khong can goi y. */
+$(document).on("blur", "#Subject #IdentityCardNumber", function () {
+    var $input = $(this);
+
+    if (!validateIdentityCardInput($input)) return;
+
+    // Da co SubjectId nghia la dang sua ban ghi cu -> khong goi y
+    var currentId = $("#Subject #SubjectId").val();
+    if (currentId && currentId !== "00000000-0000-0000-0000-000000000000") return;
+
+    suggestExistingSubject($input.val());
+});
+
+/* Hoi nguoi dung co muon tai thong tin da co len khong */
+function suggestExistingSubject(identityCardNumber) {
+    $.ajax({
+        type: "GET",
+        url: urlActions.Subject_LookupByCard,
+        data: { identityCardNumber: identityCardNumber },
+        dataType: "json",
+        success: function (res) {
+            if (!res || res.status !== true || !res.data) return;
+
+            var d = res.data;
+            var owner = d.isMine
+                ? "Bạn đã từng khai báo đối tượng này."
+                : "Đối tượng này đã được " + escapeLookupHtml(d.createdBy || "đơn vị khác") + " khai báo.";
+
+            var html = [
+                '<div class="alert alert-info py-2 px-3 mb-0 text-90">',
+                '<div class="mb-1"><i class="fa fa-info-circle text-blue-d1 mr-1"></i>',
+                '<b>Số CCCD này đã tồn tại trong hệ thống.</b></div>',
+                '<div class="mb-1">', escapeLookupHtml(d.fullName || ""),
+                d.dateOfBirthStr ? (' &mdash; sinh ngày ' + escapeLookupHtml(d.dateOfBirthStr)) : '',
+                '</div>',
+                '<div class="text-grey-d1 mb-2">', owner, '</div>',
+                '<button type="button" class="btn btn-sm btn-primary py-1 px-2 mr-1" id="btnLoadSuggested">',
+                '<i class="fa fa-download mr-1"></i>Tải thông tin lên</button>',
+                '<button type="button" class="btn btn-sm btn-light py-1 px-2" id="btnDismissSuggested">',
+                'Bỏ qua, tôi tự nhập</button>',
+                '</div>'
+            ].join("");
+
+            $("#lookupSubjectResult").removeClass("d-none").html(html);
+        }
+    });
+}
+
+/* Tai thong tin da co len form */
+$(document).on("click", "#btnLoadSuggested", function (e) {
+    e.preventDefault();
+    lookupSubjectByIdentityCard();
+});
+
+/* Bo qua goi y, tu nhap moi */
+$(document).on("click", "#btnDismissSuggested", function (e) {
+    e.preventDefault();
+    $("#lookupSubjectResult").addClass("d-none").empty();
 });
 
 /* =========================================================================

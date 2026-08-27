@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TSFramework.App.Attributes;
@@ -11,6 +11,8 @@ namespace Cores.Major.Models
 
         [CustomRequired]
         [CustomDisplayName("Subject_Label_IdentityCardNumber")]
+        [RegularExpression(@"^\d{12}$",
+            ErrorMessage = "Số CCCD phải gồm đúng 12 chữ số.")]
         public string IdentityCardNumber { get; set; }
 
         [CustomRequired]
@@ -76,7 +78,13 @@ namespace Cores.Major.Models
         /// </summary>
         public Guid? ReporterUnionId { get; set; }
 
-        public int ViolationCount { get; set; } = 0;
+        public int ViolationCount { get; set; }
+
+        /// <summary>
+        /// So ban ghi cua cung mot con nguoi (cung CCCD, ho ten, ngay sinh, que quan).
+        /// Lon hon 1 nghia la don vi khac cung dang quan ly ho so nay.
+        /// </summary>
+        public int RecordCount { get; set; } = 0;
         public int TrackingUnitCount { get; set; } = 1;
         public string TrackingUnits { get; set; }
         public bool IsDeleted { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -747,6 +747,29 @@ namespace Modules.Major.Areas.Major.Controllers
                                    ?? new List<MajorSubjectViolationModel>();
             ViewBag.CurrentUserName = User?.UserName;
             return PartialView("_ViolationHistory", model);
+        }
+
+        /// <summary>
+        /// Màn hình chi tiết các đơn vị cùng quản lý / theo dõi đối tượng (hồ sơ gốc + vi phạm).
+        /// </summary>
+        [AjaxOnly]
+        [HttpGet]
+        [ActionType(Type = EnumActionType.View)]
+        public ActionResult MonitoringUnits(Guid id)
+        {
+            var model = _subjectCache.GetById(id);
+            if (model == null)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = CreateMessage(_subjectTitle, EnumProcessType.DataNotExist, EnumMsgIcon.Error)
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            model.ListMonitoringUnits = _subjectCache.GetMonitoringUnits(id, User?.UserName)
+                                        ?? new List<MajorSubjectMonitoringUnitModel>();
+            return PartialView("_MonitoringUnits", model);
         }
 
         /// <summary>Màn hình Log cập nhật của một đối tượng.</summary>

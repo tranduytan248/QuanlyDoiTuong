@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Configuration;
+using System.Linq;
 using System.Web.Mvc;
 using Cores.Base.Apps;
 using Cores.Sys.Caches.Sys;
@@ -19,6 +20,7 @@ namespace Modules.Sys.Areas.Sys.Controllers
         /// <summary>So phut khong hoat dong thi coi la da thoat.</summary>
         private const int TIMEOUT_MINUTES = 5;
 
+        private readonly string _avatarFolderPath = ConfigurationManager.AppSettings["AppAvatarFolder_Path"] ?? "/Contents/imgs/avatars";
         private readonly SysUserActivityCache _activityCache = new SysUserActivityCache();
 
         // GET: Sys/UserActivity
@@ -48,11 +50,14 @@ namespace Modules.Sys.Areas.Sys.Controllers
                 data = data.Select(item => new
                 {
                     item.SessionId,
+                    item.UserId,
                     item.UserName,
                     item.FullName,
                     item.Email,
                     item.Phone,
-                    item.Avatar,
+                    Avatar = !string.IsNullOrEmpty(item.Avatar) && item.UserId > 0
+                        ? $"{_avatarFolderPath}/{item.UserId}/{item.Avatar}"
+                        : "/Contents/Base/imgs/avatar-default.png",
                     item.CurrentUrl,
                     item.ScreenName,
                     item.IpAddress,

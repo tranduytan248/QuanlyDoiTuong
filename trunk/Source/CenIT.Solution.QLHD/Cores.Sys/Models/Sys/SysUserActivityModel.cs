@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Cores.Sys.Models.Sys
 {
@@ -9,6 +9,7 @@ namespace Cores.Sys.Models.Sys
     public class SysUserActivityModel
     {
         public string SessionId { get; set; }
+        public int UserId { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }

@@ -1,4 +1,4 @@
-﻿/* =============================================================================
+/* =============================================================================
    26. LAY TEN MAN HINH TU BANG MENU CHO MAN HINH GIAM SAT TRUC TUYEN
    -----------------------------------------------------------------------------
    VAN DE: ten man hinh dang duoc doi tu bang anh xa cung trong Global.asax.
@@ -30,6 +30,7 @@ BEGIN
 
     SELECT a.SessionId,
            a.UserName,
+           u.UserId,
            u.FullName,
            u.Email,
            u.Phone,

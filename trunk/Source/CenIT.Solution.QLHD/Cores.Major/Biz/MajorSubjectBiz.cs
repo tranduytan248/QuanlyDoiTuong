@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cores.Major.Models;
@@ -16,6 +16,7 @@ namespace Cores.Major.Biz
         private readonly string _majorSubjectGetAll = "Major_Subject_GetAll";
         private readonly string _majorSubjectSave = "Major_Subject_Save";
         private readonly string _majorSubjectDashboard = "Major_Subject_Dashboard";
+        private readonly string _majorSubjectGetMonitoringUnits = "Major_Subject_GetMonitoringUnits";
 
         /// <summary>
         /// Lấy danh sách đối tượng theo các tiêu chí tra cứu, đã áp dụng phân quyền dữ liệu.
@@ -101,6 +102,17 @@ namespace Cores.Major.Biz
             if (!subjectId.HasValue || subjectId.Value == Guid.Empty) return null;
             return AppProcessor.ProcedureProvider.ExecuteScalarObject<MajorSubjectModel>(_majorSubjectGetById,
                 DATA_PROVIDER_NAME, subjectId.Value);
+        }
+
+        /// <summary>
+        /// Lấy danh sách các đơn vị đã phát sinh hồ sơ hoặc ghi nhận vi phạm cho đối tượng.
+        /// </summary>
+        public List<MajorSubjectMonitoringUnitModel> GetMonitoringUnits(Guid subjectId, string userName)
+        {
+            if (subjectId == Guid.Empty) return new List<MajorSubjectMonitoringUnitModel>();
+            return AppProcessor.ProcedureProvider.ExecuteTypedList<MajorSubjectMonitoringUnitModel>(
+                _majorSubjectGetMonitoringUnits, DATA_PROVIDER_NAME, subjectId, userName)
+                ?? new List<MajorSubjectMonitoringUnitModel>();
         }
 
         public string Save(MajorSubjectModel model, string username)

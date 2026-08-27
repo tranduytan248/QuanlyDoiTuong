@@ -1,4 +1,4 @@
-﻿// Man hinh Giam sat truc tuyen.
+// Man hinh Giam sat truc tuyen.
 // Tu lam moi dinh ky de danh sach luon phan anh thuc te.
 
 var ACTIVITY_REFRESH_MS = 15000;
@@ -56,9 +56,7 @@ function loadActivities() {
 
             var html = "";
             $.each(rows, function (i, r) {
-                var avatar = r.Avatar
-                    ? ("/Contents/imgs/avatars/" + _escapeHtml(r.UserName) + "/" + _escapeHtml(r.Avatar))
-                    : AVATAR_DEFAULT;
+                var avatar = r.Avatar ? _escapeHtml(r.Avatar) : AVATAR_DEFAULT;
 
                 // Thong tin nguoi dung
                 var user = [

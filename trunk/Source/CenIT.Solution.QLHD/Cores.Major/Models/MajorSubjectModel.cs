@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TSFramework.App.Attributes;
@@ -77,6 +77,8 @@ namespace Cores.Major.Models
         public Guid? ReporterUnionId { get; set; }
 
         public int ViolationCount { get; set; } = 0;
+        public int TrackingUnitCount { get; set; } = 1;
+        public string TrackingUnits { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
@@ -94,5 +96,6 @@ namespace Cores.Major.Models
         public string InitialImages { get; set; }
 
         public List<MajorSubjectViolationModel> ListViolations { get; set; } = new List<MajorSubjectViolationModel>();
+        public List<MajorSubjectMonitoringUnitModel> ListMonitoringUnits { get; set; } = new List<MajorSubjectMonitoringUnitModel>();
     }
 }

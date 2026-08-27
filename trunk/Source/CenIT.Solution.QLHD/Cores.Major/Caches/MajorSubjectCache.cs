@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Cores.Major.Biz;
@@ -98,6 +98,15 @@ namespace Cores.Major.Caches
         public MajorSubjectModel GetByIdFresh(Guid? subjectId)
         {
             return Api.GetById(subjectId);
+        }
+
+        /// <summary>
+        /// Lấy danh sách các đơn vị đã phát sinh hồ sơ hoặc ghi nhận vi phạm cho đối tượng.
+        /// Đọc trực tiếp từ CSDL để dữ liệu luôn mới nhất.
+        /// </summary>
+        public List<MajorSubjectMonitoringUnitModel> GetMonitoringUnits(Guid subjectId, string userName)
+        {
+            return Api.GetMonitoringUnits(subjectId, userName);
         }
 
         public string Save(MajorSubjectModel model, string username)

@@ -1,4 +1,4 @@
-﻿@model Cores.Major.Models.MajorSubjectModel
+@model Cores.Major.Models.MajorSubjectModel
 @{
     ViewBag.Title = "Thêm mới Đối tượng";
     Layout = "~/Views/Shared/_Form.cshtml";
@@ -10,11 +10,4 @@
         <div id="bodyForm">@Html.Partial("_Subject", Model)</div>
     </form>
 }
-@section SubmitControl{
-    <button type="button" id="btnSaveSubject" class="btn px-3 btn-primary mb-1">
-        <i class="fa fa-user-check"></i>&nbsp;Lưu đối tượng
-    </button>
-    <button type="button" id="btnSaveViolation" class="btn px-3 btn-danger mb-1" disabled="disabled">
-        <i class="fa fa-exclamation-triangle"></i>&nbsp;Lưu thông tin vi phạm
-    </button>
-}
+@section SubmitControl{ }

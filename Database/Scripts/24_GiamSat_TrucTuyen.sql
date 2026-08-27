@@ -1,4 +1,4 @@
-﻿/* =============================================================================
+/* =============================================================================
    24. GIAM SAT TRUC TUYEN - AI DANG DANG NHAP VA DANG O MAN HINH NAO
    -----------------------------------------------------------------------------
    Truoc day cot IsOnline trong Sys_Users khong duoc cap nhat o dau nen khong
@@ -110,6 +110,7 @@ BEGIN
 
     SELECT a.SessionId,
            a.UserName,
+           u.UserId,
            u.FullName,
            u.Email,
            u.Phone,

@@ -1,4 +1,4 @@
-﻿@using TSFramework.App.Processors
+@using TSFramework.App.Processors
 @model Cores.Major.Models.SAVDossierJobWarningModel
 
 <style type="text/css" rel="stylesheet" media="all">
@@ -525,21 +525,10 @@
                         <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                             <tr>
                                 <td class="content-cell" align="center">
-                                    <p class="f-fallback sub align-center">&copy; 2021 <strong> XỬ PHẠT VI PHẠM HÀNH CHÍNH KHÁNH HOÀ </strong></p>
-                                    <p class="f-fallback sub align-center">
-                                        Phát triển bởi <strong>Trung Tâm Công Nghệ Thông Tin - <a href="http://cenit.vn">Cen<b class="text-red">IT</b></a> - <a class="text-blue" href="http://khanhhoa.vnpt.vn/">VNPT Khánh Hoà</a></strong>
-                                        <br />04 Lê Lợi, Tp Nha Trang, Khánh Hoà.
-                                    </p>
+                                    <p class="f-fallback sub align-center"><strong> @AppProcessor.Messagor.GetMessage("App_Title") </strong></p>
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
-                <tr style="text-align: center;">
-                    <td>
-                        <a href="https://vnpt.com.vn/">
-                            <img src="cid:LogoVNPT" style="background-position: center; background-repeat: no-repeat;" />
-                        </a>
                     </td>
                 </tr>
             </table>

@@ -17,6 +17,35 @@
 @section FormIcon{ <i class="fas fa-sitemap"></i> }
 
 @section FormBody{
+    <style>
+        .union-item {
+            border-color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .union-item:hover {
+            background-color: #f1f5f9 !important;
+            border-color: #94a3b8;
+        }
+        .union-item.is-selected {
+            background-color: #eff6ff !important;
+            border-color: #3b82f6 !important;
+        }
+        .union-item.is-selected .btn-action-add {
+            display: none;
+        }
+        .selected-union-card {
+            border-left: 3px solid #3b82f6 !important;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            transition: all 0.15s ease;
+        }
+        .selected-union-card:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+    </style>
+
     @using (Ajax.BeginForm("SaveUnionsBelong", "Union", new { area = "Cate" }, new AjaxOptions
     {
         HttpMethod = "POST",
@@ -75,7 +104,7 @@
                                     <span class="input-group-text bgc-white border-r-0"><i class="fa fa-search text-grey-m1"></i></span>
                                 </div>
                                 <input type="text" id="txtSearchAvailable" class="form-control border-l-0 pl-0"
-                                       placeholder="Tìm kiếm theo tên, mã đơn vị..." onkeyup="filterAvailableUnions();" />
+                                       placeholder="Tìm kiếm theo tên, mã đơn vị..." onkeyup="filterAvailableUnions();" oninput="filterAvailableUnions();" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" onclick="$('#txtSearchAvailable').val(''); filterAvailableUnions();" title="Xóa tìm kiếm">
                                         <i class="fa fa-times"></i>
@@ -140,9 +169,9 @@
                                          data-code="@(u.UnionCode ?? "")"
                                          data-parent="@parentName"
                                          data-level="@levelTag"
-                                         style="cursor: pointer; transition: all 0.15s ease;">
+                                         onclick="toggleUnionSelect('@uId');">
                                         
-                                        <div class="d-flex align-items-center flex-grow-1 mr-2" style="min-width:0;" onclick="toggleUnionSelect('@uId');">
+                                        <div class="d-flex align-items-center flex-grow-1 mr-2" style="min-width:0;">
                                             <input type="checkbox" class="mr-2 js-chk-union" id="chk-@uId"
                                                    data-id="@uId" @(isSelected ? "checked" : "")
                                                    onclick="event.stopPropagation(); toggleUnionSelect('@uId');" style="cursor:pointer;" />
@@ -159,7 +188,7 @@
                                         </div>
 
                                         <button type="button" class="btn btn-xs btn-outline-primary radius-round px-2 flex-shrink-0 btn-action-add"
-                                                onclick="addUnionToSelected('@uId');" title="Chọn đơn vị này">
+                                                onclick="event.stopPropagation(); addUnionToSelected('@uId');" title="Chọn đơn vị này">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
@@ -190,7 +219,7 @@
                                     <span class="input-group-text bgc-white border-r-0"><i class="fa fa-search text-grey-m1"></i></span>
                                 </div>
                                 <input type="text" id="txtSearchSelected" class="form-control border-l-0 pl-0"
-                                       placeholder="Tìm trong danh sách đã chọn..." onkeyup="filterSelectedUnions();" />
+                                       placeholder="Tìm trong danh sách đã chọn..." onkeyup="filterSelectedUnions();" oninput="filterSelectedUnions();" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" onclick="$('#txtSearchSelected').val(''); filterSelectedUnions();" title="Xóa tìm kiếm">
                                         <i class="fa fa-times"></i>
@@ -217,6 +246,228 @@
             </div>
         </div>
     }
+
+    <script type="text/javascript">
+        /* =========================================================================
+           DUAL-LIST TRANSFER HANDLER FOR UNIONS BELONG (INSIDE FormBody)
+           ========================================================================= */
+
+        var _allUnionsData = [];
+        var _selectedUnionIds = new Set();
+
+        window.initUnionsData = function () {
+            _allUnionsData = [];
+            _selectedUnionIds = new Set();
+
+            var initialIds = $("#SelectedUnionIds").val() ? $("#SelectedUnionIds").val().toLowerCase().split(",") : [];
+            initialIds.forEach(function (id) {
+                if (id && id.trim()) { _selectedUnionIds.add(id.trim()); }
+            });
+
+            $(".union-item").each(function () {
+                var $el = $(this);
+                var item = {
+                    id: String($el.data("id") || "").toLowerCase(),
+                    name: String($el.data("name") || ""),
+                    code: String($el.data("code") || ""),
+                    parent: String($el.data("parent") || ""),
+                    level: String($el.data("level") || "ALL")
+                };
+                _allUnionsData.push(item);
+            });
+        };
+
+        window.toggleUnionSelect = function (id) {
+            if (!id) return;
+            id = String(id).toLowerCase();
+            if (_selectedUnionIds.has(id)) {
+                window.removeUnionFromSelected(id);
+            } else {
+                window.addUnionToSelected(id);
+            }
+        };
+
+        window.addUnionToSelected = function (id) {
+            if (!id) return;
+            id = String(id).toLowerCase();
+            _selectedUnionIds.add(id);
+            updateItemState(id, true);
+            syncDataAndRender();
+        };
+
+        window.removeUnionFromSelected = function (id) {
+            if (!id) return;
+            id = String(id).toLowerCase();
+            _selectedUnionIds.delete(id);
+            updateItemState(id, false);
+            syncDataAndRender();
+        };
+
+        function updateItemState(id, isSelected) {
+            var $item = $("#avail-item-" + id);
+            $item.toggleClass("is-selected", isSelected);
+            $item.find(".js-chk-union").prop("checked", isSelected);
+        }
+
+        window.selectAllVisibleAvailable = function () {
+            $(".union-item:visible").each(function () {
+                var id = String($(this).data("id") || "").toLowerCase();
+                if (id) {
+                    _selectedUnionIds.add(id);
+                    updateItemState(id, true);
+                }
+            });
+            syncDataAndRender();
+        };
+
+        window.deselectAllVisibleAvailable = function () {
+            $(".union-item:visible").each(function () {
+                var id = String($(this).data("id") || "").toLowerCase();
+                if (id) {
+                    _selectedUnionIds.delete(id);
+                    updateItemState(id, false);
+                }
+            });
+            syncDataAndRender();
+        };
+
+        window.removeAllSelected = function () {
+            _selectedUnionIds.clear();
+            $(".union-item").removeClass("is-selected").find(".js-chk-union").prop("checked", false);
+            syncDataAndRender();
+        };
+
+        function syncDataAndRender() {
+            var arr = Array.from(_selectedUnionIds);
+            $("#SelectedUnionIds").val(arr.join(","));
+            $("#lblSelectedCount").text(arr.length + " đơn vị");
+            window.renderSelectedList();
+        }
+
+        window.renderSelectedList = function () {
+            var $container = $("#selectedUnionsContainer");
+            var searchText = ($("#txtSearchSelected").val() || "").toLowerCase().trim();
+            var arr = Array.from(_selectedUnionIds);
+
+            if (arr.length === 0) {
+                $container.html('<div class="text-center text-muted py-5">' +
+                    '<i class="fa fa-inbox fa-2x mb-2 text-grey-m2"></i>' +
+                    '<div class="text-90 font-600">Chưa chọn đơn vị nào</div>' +
+                    '<small class="text-secondary">Click chọn từ danh sách bên trái để phân quyền</small>' +
+                    '</div>');
+                return;
+            }
+
+            var html = "";
+            var matchCount = 0;
+
+            arr.forEach(function (id) {
+                var union = _allUnionsData.find(function (u) { return u.id === id; });
+                if (!union) {
+                    var $el = $("#avail-item-" + id);
+                    if ($el.length) {
+                        union = {
+                            id: id,
+                            name: String($el.data("name") || id),
+                            code: String($el.data("code") || ""),
+                            parent: String($el.data("parent") || "Công an Tỉnh")
+                        };
+                    } else {
+                        union = { id: id, name: id, code: "", parent: "Công an Tỉnh" };
+                    }
+                }
+
+                var matches = !searchText ||
+                    union.name.toLowerCase().indexOf(searchText) !== -1 ||
+                    union.code.toLowerCase().indexOf(searchText) !== -1 ||
+                    union.parent.toLowerCase().indexOf(searchText) !== -1;
+
+                if (matches) {
+                    matchCount++;
+                    html += '<div class="selected-union-card p-2 mb-1 radius-1 border-1 d-flex align-items-center justify-content-between" id="sel-card-' + union.id + '">' +
+                        '<div class="text-truncate mr-2" style="min-width:0;">' +
+                            '<div class="font-bold text-dark-m1 text-90 text-truncate">' + union.name + '</div>' +
+                            '<div class="text-80 text-secondary text-truncate">' +
+                                '<i class="fa fa-level-up-alt fa-rotate-90 text-grey-m1 mr-1"></i>' + (union.parent || "Công an Tỉnh") +
+                                (union.code ? ' <span class="badge badge-secondary text-75 ml-1">' + union.code + '</span>' : '') +
+                            '</div>' +
+                        '</div>' +
+                        '<button type="button" class="btn btn-xs btn-outline-danger radius-round px-2 flex-shrink-0" ' +
+                                'onclick="removeUnionFromSelected(\'' + union.id + '\');" title="Gỡ bỏ đơn vị này">' +
+                            '<i class="fa fa-times"></i>' +
+                        '</button>' +
+                    '</div>';
+                }
+            });
+
+            if (matchCount === 0 && searchText) {
+                html = '<div class="text-center text-muted py-4"><i class="fa fa-search text-grey-m2 mr-1"></i> Không tìm thấy đơn vị phù hợp</div>';
+            }
+
+            $container.html(html);
+        };
+
+        window.filterAvailableUnions = function () {
+            var keyword = ($("#txtSearchAvailable").val() || "").toLowerCase().trim();
+            var level = $("#cboLevelFilter").val() || "ALL";
+            var visibleCount = 0;
+
+            $(".union-item").each(function () {
+                var $item = $(this);
+                var name = String($item.data("name") || "").toLowerCase();
+                var code = String($item.data("code") || "").toLowerCase();
+                var parent = String($item.data("parent") || "").toLowerCase();
+                var itemLevel = String($item.data("level") || "ALL");
+
+                var matchKeyword = !keyword || (name.indexOf(keyword) !== -1 || code.indexOf(keyword) !== -1 || parent.indexOf(keyword) !== -1);
+                var matchLevel = (level === "ALL") || (itemLevel === level);
+
+                if (matchKeyword && matchLevel) {
+                    $item.show();
+                    visibleCount++;
+                } else {
+                    $item.hide();
+                }
+            });
+
+            $("#lblAvailableCount").text(visibleCount + " đơn vị");
+        };
+
+        window.filterSelectedUnions = function () {
+            window.renderSelectedList();
+        };
+
+        window.UnionsBelong_OnSuccess = function (response, formId) {
+            if (response == null) return;
+
+            if (response.status === undefined && typeof response === "string") {
+                $("#bodyForm").html(response);
+                return;
+            }
+
+            var $modal = $("#ModalContent #modal_" + formId);
+            if (!$modal.length || !$modal.hasClass("show")) {
+                $modal = $(".modal.show, #ModalContent .modal");
+            }
+
+            if (response.message) {
+                try { eval(response.message); } catch (e) { console.error(e); }
+            }
+
+            $modal.modal("hide");
+
+            if (typeof _tableUser !== "undefined" && _tableUser) {
+                _tableUser.ajax.reload(null, false);
+            }
+        };
+
+        /* Khởi tạo ngay khi form được nạp */
+        $(function () {
+            window.initUnionsData();
+            window.renderSelectedList();
+            window.filterAvailableUnions();
+        });
+    </script>
 }
 
 @section SubmitControl{
@@ -224,249 +475,3 @@
         <i class="fa fa-save mr-1"></i> Lưu đơn vị quản lý
     </button>
 }
-
-<style>
-    .union-item {
-        border-color: #e2e8f0;
-    }
-    .union-item:hover {
-        background-color: #f1f5f9 !important;
-        border-color: #94a3b8;
-    }
-    .union-item.is-selected {
-        background-color: #eff6ff !important;
-        border-color: #3b82f6 !important;
-    }
-    .union-item.is-selected .btn-action-add {
-        display: none;
-    }
-    .selected-union-card {
-        border-left: 3px solid #3b82f6 !important;
-        background-color: #f8fafc;
-        border-color: #e2e8f0;
-        transition: all 0.15s ease;
-    }
-    .selected-union-card:hover {
-        background-color: #eff6ff;
-        border-color: #93c5fd;
-    }
-</style>
-
-<script type="text/javascript">
-    /* =========================================================================
-       DUAL-LIST TRANSFER HANDLER FOR UNIONS BELONG
-       ========================================================================= */
-
-    /* Bộ nhớ lưu trữ dữ liệu các đơn vị */
-    var _allUnionsData = [];
-    var _selectedUnionIds = new Set();
-
-    $(document).ready(function () {
-        initUnionsData();
-        renderSelectedList();
-        filterAvailableUnions();
-    });
-
-    /* Thu thập dữ liệu các đơn vị từ DOM */
-    function initUnionsData() {
-        _allUnionsData = [];
-        _selectedUnionIds = new Set();
-
-        var initialIds = $("#SelectedUnionIds").val() ? $("#SelectedUnionIds").val().toLowerCase().split(",") : [];
-        initialIds.forEach(function (id) {
-            if (id.trim()) { _selectedUnionIds.add(id.trim()); }
-        });
-
-        $(".union-item").each(function () {
-            var $el = $(this);
-            var item = {
-                id: $el.data("id"),
-                name: $el.data("name"),
-                code: $el.data("code"),
-                parent: $el.data("parent"),
-                level: $el.data("level")
-            };
-            _allUnionsData.push(item);
-        });
-    }
-
-    /* Chọn / Bỏ chọn một đơn vị */
-    function toggleUnionSelect(id) {
-        id = id.toLowerCase();
-        if (_selectedUnionIds.has(id)) {
-            removeUnionFromSelected(id);
-        } else {
-            addUnionToSelected(id);
-        }
-    }
-
-    /* Thêm đơn vị vào danh sách đã chọn */
-    function addUnionToSelected(id) {
-        id = id.toLowerCase();
-        _selectedUnionIds.add(id);
-        updateItemState(id, true);
-        syncDataAndRender();
-    }
-
-    /* Gỡ bỏ đơn vị khỏi danh sách đã chọn */
-    function removeUnionFromSelected(id) {
-        id = id.toLowerCase();
-        _selectedUnionIds.delete(id);
-        updateItemState(id, false);
-        syncDataAndRender();
-    }
-
-    /* Cập nhật giao diện của item bên cột trái */
-    function updateItemState(id, isSelected) {
-        var $item = $("#avail-item-" + id);
-        $item.toggleClass("is-selected", isSelected);
-        $item.find(".js-chk-union").prop("checked", isSelected);
-    }
-
-    /* Chọn tất cả các đơn vị đang hiển thị (theo bộ lọc) */
-    function selectAllVisibleAvailable() {
-        $(".union-item:visible").each(function () {
-            var id = $(this).data("id");
-            _selectedUnionIds.add(id);
-            updateItemState(id, true);
-        });
-        syncDataAndRender();
-    }
-
-    /* Bỏ chọn tất cả các đơn vị đang hiển thị (theo bộ lọc) */
-    function deselectAllVisibleAvailable() {
-        $(".union-item:visible").each(function () {
-            var id = $(this).data("id");
-            _selectedUnionIds.delete(id);
-            updateItemState(id, false);
-        });
-        syncDataAndRender();
-    }
-
-    /* Xóa toàn bộ danh sách đã chọn */
-    function removeAllSelected() {
-        _selectedUnionIds.clear();
-        $(".union-item").removeClass("is-selected").find(".js-chk-union").prop("checked", false);
-        syncDataAndRender();
-    }
-
-    /* Đồng bộ hidden input và vẽ lại cột phải */
-    function syncDataAndRender() {
-        var arr = Array.from(_selectedUnionIds);
-        $("#SelectedUnionIds").val(arr.join(","));
-        $("#lblSelectedCount").text(arr.length + " đơn vị");
-        renderSelectedList();
-    }
-
-    /* Render danh sách cột phải */
-    function renderSelectedList() {
-        var $container = $("#selectedUnionsContainer");
-        var searchText = ($("#txtSearchSelected").val() || "").toLowerCase().trim();
-        var arr = Array.from(_selectedUnionIds);
-
-        if (arr.length === 0) {
-            $container.html('<div class="text-center text-muted py-5">' +
-                '<i class="fa fa-inbox fa-2x mb-2 text-grey-m2"></i>' +
-                '<div class="text-90">Chưa chọn đơn vị nào</div>' +
-                '<small class="text-secondary">Chọn từ danh sách bên trái để phân quyền</small>' +
-                '</div>');
-            return;
-        }
-
-        var html = "";
-        var matchCount = 0;
-
-        arr.forEach(function (id) {
-            var union = _allUnionsData.find(function (u) { return u.id === id; });
-            if (!union) {
-                union = { id: id, name: id, code: "", parent: "" };
-            }
-
-            var matches = !searchText ||
-                union.name.toLowerCase().indexOf(searchText) !== -1 ||
-                union.code.toLowerCase().indexOf(searchText) !== -1 ||
-                union.parent.toLowerCase().indexOf(searchText) !== -1;
-
-            if (matches) {
-                matchCount++;
-                html += '<div class="selected-union-card p-2 mb-1 radius-1 border-1 d-flex align-items-center justify-content-between" id="sel-card-' + union.id + '">' +
-                    '<div class="text-truncate mr-2" style="min-width:0;">' +
-                        '<div class="font-bold text-dark-m1 text-90 text-truncate">' + union.name + '</div>' +
-                        '<div class="text-80 text-secondary text-truncate">' +
-                            '<i class="fa fa-level-up-alt fa-rotate-90 text-grey-m1 mr-1"></i>' + (union.parent || "Công an Tỉnh") +
-                            (union.code ? ' <span class="badge badge-secondary text-75 ml-1">' + union.code + '</span>' : '') +
-                        '</div>' +
-                    '</div>' +
-                    '<button type="button" class="btn btn-xs btn-outline-danger radius-round px-2 flex-shrink-0" ' +
-                            'onclick="removeUnionFromSelected(\'' + union.id + '\');" title="Gỡ bỏ đơn vị này">' +
-                        '<i class="fa fa-times"></i>' +
-                    '</button>' +
-                '</div>';
-            }
-        });
-
-        if (matchCount === 0 && searchText) {
-            html = '<div class="text-center text-muted py-4"><i class="fa fa-search text-grey-m2 mr-1"></i> Không tìm thấy đơn vị phù hợp</div>';
-        }
-
-        $container.html(html);
-    }
-
-    /* Bộ lọc cột trái */
-    function filterAvailableUnions() {
-        var keyword = ($("#txtSearchAvailable").val() || "").toLowerCase().trim();
-        var level = $("#cboLevelFilter").val();
-        var visibleCount = 0;
-
-        $(".union-item").each(function () {
-            var $item = $(this);
-            var name = ($item.data("name") || "").toLowerCase();
-            var code = ($item.data("code") || "").toLowerCase();
-            var parent = ($item.data("parent") || "").toLowerCase();
-            var itemLevel = $item.data("level") || "ALL";
-
-            var matchKeyword = !keyword || (name.indexOf(keyword) !== -1 || code.indexOf(keyword) !== -1 || parent.indexOf(keyword) !== -1);
-            var matchLevel = (level === "ALL") || (itemLevel === level);
-
-            if (matchKeyword && matchLevel) {
-                $item.show();
-                visibleCount++;
-            } else {
-                $item.hide();
-            }
-        });
-
-        $("#lblAvailableCount").text(visibleCount + " đơn vị");
-    }
-
-    /* Bộ lọc cột phải */
-    function filterSelectedUnions() {
-        renderSelectedList();
-    }
-
-    /* Xử lý khi lưu thành công */
-    window.UnionsBelong_OnSuccess = function (response, formId) {
-        if (response == null) return;
-
-        if (response.status === undefined && typeof response === "string") {
-            $("#bodyForm").html(response);
-            return;
-        }
-
-        var $modal = $("#ModalContent #modal_" + formId);
-        if (!$modal.length || !$modal.hasClass("show")) {
-            $modal = $(".modal.show, #ModalContent .modal");
-        }
-
-        if (response.message) {
-            try { eval(response.message); } catch (e) { console.error(e); }
-        }
-
-        $modal.modal("hide");
-
-        /* Reload bảng Users nếu đang mở */
-        if (typeof _tableUser !== "undefined" && _tableUser) {
-            _tableUser.ajax.reload(null, false);
-        }
-    };
-</script>

@@ -9,6 +9,7 @@
           <Procedure Name="Major_Subject_GetById" Value="p_Major_Subject_GetById" />
           <Procedure Name="Major_Subject_GetAll" Value="p_Major_Subject_GetAll" />
           <Procedure Name="Major_Subject_Save" Value="p_Major_Subject_Save" />
+          <Procedure Name="Major_Subject_Dashboard" Value="p_Major_Subject_Dashboard" />
 
           <!-- Log cap nhat doi tuong / lich su vi pham -->
           <Procedure Name="Major_Subject_ChangeLog_Save" Value="p_Major_Subject_ChangeLog_Save" />

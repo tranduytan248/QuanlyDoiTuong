@@ -167,41 +167,22 @@ namespace CenIT.Solution.QLHD.WebApp
         }
 
         /// <summary>
-        /// Doi duong dan thanh ten man hinh doc duoc.
-        /// Vi du /Major/Subject -> "Quan ly Doi tuong".
+        /// Ten man hinh de doc, chi dung cho nhung duong dan KHONG co trong menu
+        /// (trang chu, dang nhap...). Voi cac man hinh co trong menu, proc
+        /// p_Sys_UserActivity_Get tu tra ten tu bang Sys_Menus - nho vay ten hien
+        /// thi luon trung voi ten nguoi dung thay va tu cap nhat khi menu doi.
         /// </summary>
         private static string ResolveScreenName(string path)
         {
             if (string.IsNullOrEmpty(path)) return null;
 
-            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "/Major/Subject",            "Quản lý Đối tượng" },
-                { "/Major/SubjectViolation",   "Vi phạm của Đối tượng" },
-                { "/Cate/Field",               "Danh mục Lĩnh vực" },
-                { "/Cate/ViolationBehavior",   "Danh mục Hành vi vi phạm" },
-                { "/Cate/Union",               "Quản lý Đơn vị" },
-                { "/Cate/UserField",           "Phân quyền Lĩnh vực" },
-                { "/Sys/User",                 "Quản lý Người dùng" },
-                { "/Sys/UserActivity",         "Giám sát trực tuyến" },
-                { "/Sys/Role",                 "Quản lý Vai trò" },
-                { "/Sys/Permission",           "Phân quyền chức năng" },
-                { "/Sys/Config",               "Cấu hình hệ thống" },
-                { "/Account/Login",            "Đăng nhập" },
-                { "/",                         "Trang chủ" },
-                { "/Home",                     "Trang chủ" },
-                { "/Home/Index",               "Trang chủ" }
-            };
+            if (path == "/" ||
+                path.Equals("/Home", StringComparison.OrdinalIgnoreCase) ||
+                path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase))
+                return "Trang chủ";
 
-            if (map.TryGetValue(path, out var name)) return name;
-
-            // Khong khop chinh xac thi thu bo phan hanh dong o cuoi
-            var idx = path.LastIndexOf('/');
-            if (idx > 0)
-            {
-                var parent = path.Substring(0, idx);
-                if (map.TryGetValue(parent, out name)) return name;
-            }
+            if (path.StartsWith("/Account/", StringComparison.OrdinalIgnoreCase))
+                return "Tài khoản";
 
             return path;
         }

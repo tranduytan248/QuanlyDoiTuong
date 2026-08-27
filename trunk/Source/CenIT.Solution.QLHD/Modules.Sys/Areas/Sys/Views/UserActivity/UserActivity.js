@@ -81,10 +81,12 @@ function loadActivities() {
                 }
                 if (!unit) unit = '<span class="text-grey-m1 text-90">-</span>';
 
-                // Man hinh dang xem
-                var screen = '<span class="badge bgc-blue-l3 text-blue-d2 px-2 py-1">'
-                           + '<i class="fa fa-desktop mr-1"></i>' + _escapeHtml(r.ScreenName) + '</span>'
-                           + '<div class="text-85 text-grey-m1 mt-1">' + _escapeHtml(r.CurrentUrl) + '</div>';
+                // Man hinh dang xem. Ten lay tu bang menu nen trung voi ten nguoi
+                // dung thay tren thanh menu. Duong dan de o thuoc tinh title, chi
+                // hien khi re chuot - tranh lam roi bang.
+                var screen = '<span class="badge bgc-blue-l3 text-blue-d2 px-2 py-1" title="'
+                           + _escapeHtml(r.CurrentUrl) + '">'
+                           + '<i class="fa fa-desktop mr-1"></i>' + _escapeHtml(r.ScreenName) + '</span>';
 
                 // Hoat dong cuoi - duoi 60 giay thi to xanh cho de nhan
                 var fresh = (parseInt(r.SecondsAgo, 10) || 0) < 60;

@@ -58,29 +58,40 @@ function initTableSubject() {
                 "defaultContent": "",
                 "className": "align-middle",
                 "render": function (data, type, row) {
-                    var html = '<a href="/Major/Subject/Detail/' + row.SubjectId + '" class="text-primary font-bolder d-block">' +
-                        '<i class="far fa-id-card mr-1"></i>' + (data || "") + "</a>";
-                    html += '<span class="font-bold text-dark-m1">' + (row.FullName || "") + "</span>";
+                    var html = '<div class="d-flex flex-column py-1">';
+
+                    // Dòng 1: CCCD & Họ tên
+                    html += '<div class="d-flex align-items-center flex-wrap">';
+                    html += '<a href="/Major/Subject/Detail/' + row.SubjectId + '" class="text-primary font-bolder text-95 mr-2" title="Xem chi tiết hồ sơ">';
+                    html += '<i class="far fa-id-card mr-1"></i>' + (data || "---") + '</a>';
+                    html += '<span class="font-bold text-dark-m1 text-95 mr-2">' + (row.FullName || "") + '</span>';
                     if (row.OtherName) {
-                        html += '<br><small class="text-secondary">(Tên gọi khác: ' + row.OtherName + ")</small>";
+                        html += '<span class="text-secondary text-85 font-normal mr-2">(Tên khác: ' + row.OtherName + ')</span>';
                     }
+                    html += '</div>';
+
+                    // Dòng 2: Giới tính | Ngày sinh | Quê quán
+                    var details = [];
+                    if (row.Gender) {
+                        var genderIcon = row.Gender === "Nam" ? "fa-mars text-blue" : (row.Gender === "Nữ" ? "fa-venus text-pink" : "fa-genderless text-secondary");
+                        details.push('<span class="text-85 text-dark-m3"><i class="fa ' + genderIcon + ' mr-1"></i>' + row.Gender + '</span>');
+                    }
+                    if (row.DateOfBirthStr) {
+                        details.push('<span class="text-85 text-dark-m3"><i class="far fa-calendar-alt text-orange-d1 mr-1"></i>' + row.DateOfBirthStr + '</span>');
+                    }
+                    if (row.PlaceOfOrigin) {
+                        details.push('<span class="text-85 text-dark-m3" title="' + row.PlaceOfOrigin.replace(/"/g, '&quot;') + '"><i class="fas fa-map-marker-alt text-danger-m1 mr-1"></i>' + row.PlaceOfOrigin + '</span>');
+                    }
+
+                    if (details.length > 0) {
+                        html += '<div class="text-85 text-secondary mt-1 d-flex align-items-center flex-wrap">' +
+                            details.join('<span class="mx-2 text-grey-l2">|</span>') +
+                            '</div>';
+                    }
+
+                    html += '</div>';
                     return html;
                 }
-            },
-            {
-                "data": "Gender",
-                "defaultContent": "",
-                "className": "text-center align-middle"
-            },
-            {
-                "data": "DateOfBirthStr",
-                "defaultContent": "",
-                "className": "text-center align-middle"
-            },
-            {
-                "data": "PlaceOfOrigin",
-                "defaultContent": "",
-                "className": "align-middle"
             },
             {
                 "data": "TrackingUnitCount",

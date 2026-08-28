@@ -69,50 +69,53 @@ namespace CenIT.Solution.QLHD.WebApp
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (ConfigurationManager.AppSettings["MaintenanceMode"] != "true")
+            if (ConfigurationManager.AppSettings["MaintenanceMode"] == "true")
             {
-                //if (!Request.IsLocal)
+                if (!Request.IsLocal)
                 {
-                    var userNameResetLock = Request.QueryString["ping"];
-                    var blockIPCache = new SysBlockIPCache();
-                    var blockIPModel = blockIPCache.GetByIp(Request.UserHostAddress);
-                    if (blockIPModel?.IsLock ?? false)
-                    {
-                        if (!string.IsNullOrEmpty(userNameResetLock))
-                        {
-                            var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
-                            if (retUnlockIp > 0)
-                            {
-                                Response.Clear();
-                                Response.Redirect($"/?g={Guid.NewGuid()}", true);
-                                return;
-                            }
-                        }
-                        Response.Clear();
-                        Response.Status = "301 Moved Permanently";
-                        return;
-                    }
-
-                    var ipRequestCache = new SysIpRequestCache();
-                    var ipRequestModel = ipRequestCache.GetByIp(Request.UserHostAddress);
-                    if (ipRequestModel == null || !ipRequestModel.IsLock) return;
-
-                    if (!string.IsNullOrEmpty(userNameResetLock))
-                    {
-                        var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
-                        if (retUnlockIp > 0)
-                        {
-                            Response.RedirectPermanent("/", true);
-                            return;
-                        }
-                    }
-
-                    Response.Clear();
-                    Response.Status = "301 Moved Permanently";
+                    HttpContext.Current.RewritePath("AppOffline.htm");
                 }
+                return;
             }
 
-            if (!Request.IsLocal) HttpContext.Current.RewritePath("AppOffline.htm");
+            var userNameResetLock = Request.QueryString["ping"];
+            var blockIPCache = new SysBlockIPCache();
+            var blockIPModel = blockIPCache.GetByIp(Request.UserHostAddress);
+            if (blockIPModel?.IsLock ?? false)
+            {
+                if (!string.IsNullOrEmpty(userNameResetLock))
+                {
+                    var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
+                    if (retUnlockIp > 0)
+                    {
+                        Response.Clear();
+                        Response.Redirect($"/?g={Guid.NewGuid()}", true);
+                        return;
+                    }
+                }
+                Response.Clear();
+                Response.Status = "301 Moved Permanently";
+                return;
+            }
+
+            var ipRequestCache = new SysIpRequestCache();
+            var ipRequestModel = ipRequestCache.GetByIp(Request.UserHostAddress);
+            if (ipRequestModel != null && ipRequestModel.IsLock)
+            {
+                if (!string.IsNullOrEmpty(userNameResetLock))
+                {
+                    var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
+                    if (retUnlockIp > 0)
+                    {
+                        Response.RedirectPermanent("/", true);
+                        return;
+                    }
+                }
+
+                Response.Clear();
+                Response.Status = "301 Moved Permanently";
+                return;
+            }
         }
 
         /// <summary>

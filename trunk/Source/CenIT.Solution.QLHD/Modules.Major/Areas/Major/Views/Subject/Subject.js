@@ -96,33 +96,27 @@ function initTableSubject() {
             {
                 "data": "TrackingUnitCount",
                 "defaultContent": "1",
-                "className": "align-middle",
+                "className": "text-center align-middle",
                 "orderable": false,
                 "render": function (data, type, row) {
                     if (type !== "display") return data;
                     var count = parseInt(data, 10) || 1;
-                    var unitsSummary = row.TrackingUnits || row.ReporterUnit || "";
                     var html = "";
 
                     if (count > 1) {
                         html += _renderButton(true,
                             "MonitoringUnits",
-                            "btn btn-xs btn-outline-danger radius-round px-2 font-bolder text-85 shadow-xs d-inline-flex align-items-center mb-1",
+                            "btn btn-xs btn-outline-danger radius-round px-2 font-bolder text-85 shadow-xs d-inline-flex align-items-center",
                             "/Major/Subject/MonitoringUnits/" + row.SubjectId,
                             '<i class="fa fa-exclamation-triangle mr-1"></i> ' + count + ' đơn vị giám sát',
                             "Đơn vị quản lý & Giám sát đối tượng", "1150px");
                     } else {
                         html += _renderButton(true,
                             "MonitoringUnits",
-                            "btn btn-xs btn-outline-default radius-round px-2 text-secondary-d2 font-600 text-85 d-inline-flex align-items-center mb-1",
+                            "btn btn-xs btn-outline-default radius-round px-2 text-secondary-d2 font-600 text-85 d-inline-flex align-items-center",
                             "/Major/Subject/MonitoringUnits/" + row.SubjectId,
                             '<i class="fa fa-building mr-1"></i> 1 đơn vị',
                             "Đơn vị quản lý & Giám sát đối tượng", "1150px");
-                    }
-
-                    if (unitsSummary) {
-                        html += '<div class="text-80 text-secondary text-truncate" style="max-width:180px;" title="' + unitsSummary.replace(/"/g, '&quot;') + '">' +
-                            '<i class="fa fa-sitemap text-grey-m1 mr-1"></i>' + unitsSummary + '</div>';
                     }
 
                     return html;

@@ -39,13 +39,13 @@
                         @if (totalUnits > 1)
                         {
                             <span class="badge badge-sm bgc-red-l3 text-red-d2 border-1 brc-red-m3 px-2 py-1 font-bold">
-                                <i class="fa fa-exclamation-triangle mr-1"></i> @totalUnits đơn vị cùng giám sát
+                                <i class="fa fa-exclamation-triangle mr-1"></i> @totalUnits đơn vị cùng khai báo
                             </span>
                         }
                         else
                         {
                             <span class="badge badge-sm bgc-blue-l3 text-blue-d2 border-1 brc-blue-m3 px-2 py-1 font-bold">
-                                <i class="fa fa-building mr-1"></i> 1 đơn vị quản lý
+                                <i class="fa fa-building mr-1"></i> 1 đơn vị khai báo
                             </span>
                         }
                     </div>
@@ -72,9 +72,9 @@
     <div class="alert alert-light border-l-4 brc-blue-m2 py-2 px-3 mb-3 text-90 text-secondary-d1 d-flex align-items-center justify-content-between">
         <div>
             <i class="fa fa-info-circle text-blue-d1 mr-1"></i>
-            Danh sách các đơn vị đã khai báo hồ sơ hoặc ghi nhận vi phạm đối với CCCD <b>@(Model?.IdentityCardNumber)</b>.
+            Danh sách các đơn vị đã khai báo hồ sơ đối tượng đối với CCCD <b>@(Model?.IdentityCardNumber)</b>.
         </div>
-        <small class="text-secondary font-italic d-none d-md-inline">(Click vào từng đơn vị để xem chi tiết vi phạm)</small>
+        <small class="text-secondary font-italic d-none d-md-inline">(Click vào từng đơn vị để xem chi tiết)</small>
     </div>
 
     <!-- DANH SÁCH CÁC ĐƠN VỊ DẠNG ACCORDION -->
@@ -82,7 +82,7 @@
     {
         <div class="alert alert-info py-3 mb-0 text-center">
             <i class="fas fa-info-circle mr-1"></i>
-            Chưa có thông tin đơn vị nào trong phạm vi quyền hạn của bạn.
+            Chưa có thông tin đơn vị nào khai báo đối tượng này trong phạm vi quyền hạn của bạn.
         </div>
     }
     else
@@ -91,14 +91,10 @@
             @for (int i = 0; i < listUnits.Count; i++)
             {
                 var item = listUnits[i];
-                var isOriginal = item.RecordType == "KHAI_BAO";
                 var collapseId = "collapseUnit_" + i;
                 var headingId = "headingUnit_" + i;
-                var badgeClass = isOriginal ? "badge-primary" : "badge-danger";
-                var iconClass = isOriginal ? "fa-folder text-blue-d1" : "fa-exclamation-circle text-danger-d1";
-                var borderLeft = isOriginal ? "border-l-4 brc-blue-m1" : "border-l-4 brc-danger-m1";
 
-                <div class="card border-1 brc-grey-l2 @borderLeft radius-1 shadow-sm mb-2">
+                <div class="card border-1 brc-grey-l2 border-l-4 brc-blue-m1 radius-1 shadow-sm mb-2">
                     <!-- HEADER ĐƠN VỊ (CLICK ĐỂ BUNG/THU GỌN CHI TIẾT) -->
                     <div class="card-header bgc-white hover-bgc-blue-l4 py-2 px-3 cursor-pointer d-flex flex-wrap align-items-center justify-content-between"
                          id="@headingId"
@@ -110,13 +106,13 @@
                         
                         <div class="d-flex align-items-center flex-wrap mr-2 py-1">
                             <span class="d-inline-flex align-items-center justify-content-center radius-round bgc-secondary-l3 text-90 mr-2 shadow-none" style="width:28px;height:28px;">
-                                <i class="fas @iconClass"></i>
+                                <i class="fas fa-building text-primary"></i>
                             </span>
                             <span class="font-bolder text-dark-m1 text-100 mr-2">
                                 @item.UnitName
                             </span>
-                            <span class="badge @badgeClass text-80 font-bold px-2 py-1 mr-2">
-                                @item.RecordTypeName
+                            <span class="badge badge-primary text-80 font-bold px-2 py-1 mr-2">
+                                <i class="fas fa-folder mr-1"></i>Khai báo hồ sơ đối tượng
                             </span>
                             @if (!string.IsNullOrEmpty(item.ReporterName))
                             {
@@ -147,7 +143,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-6 mb-2 mb-md-0">
                                     <span class="text-secondary text-85 d-block font-bold">
-                                        <i class="fas fa-user-shield text-blue-d2 mr-1"></i> Cán bộ tiếp nhận / thụ lý:
+                                        <i class="fas fa-user-shield text-blue-d2 mr-1"></i> Cán bộ tiếp nhận / khai báo:
                                     </span>
                                     <div class="text-90 text-dark-m1 font-600 pl-3">
                                         @(string.IsNullOrEmpty(item.ReporterName) ? "Chưa ghi nhận" : item.ReporterName)
@@ -171,55 +167,9 @@
                                 </div>
                             </div>
 
-                            <!-- CHI TIẾT NỘI DUNG VI PHẠM (NẾU LÀ GHI NHẬN VI PHẠM) -->
-                            @if (!isOriginal)
-                            {
-                                <div class="bgc-white p-3 radius-1 border-1 brc-grey-l2 mt-2">
-                                    @if (!string.IsNullOrEmpty(item.FieldNames))
-                                    {
-                                        <div class="mb-2">
-                                            <span class="text-secondary text-85 font-bold mr-2"><i class="fas fa-layer-group text-primary mr-1"></i> Lĩnh vực:</span>
-                                            @foreach (var field in item.FieldNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                            {
-                                                <span class="badge bgc-purple-l3 text-purple-d2 mr-1 mb-1 px-2 py-1 font-bold">@field.Trim()</span>
-                                            }
-                                        </div>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(item.BehaviorNames))
-                                    {
-                                        <div class="mb-2">
-                                            <span class="text-secondary text-85 font-bold mr-2"><i class="fas fa-gavel text-danger mr-1"></i> Hành vi vi phạm:</span>
-                                            @foreach (var beh in item.BehaviorNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                            {
-                                                <span class="badge bgc-red-l3 text-red-d2 mr-1 mb-1 px-2 py-1 font-bold">@beh.Trim()</span>
-                                            }
-                                        </div>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(item.TreatmentMeasures))
-                                    {
-                                        <div class="mb-1">
-                                            <span class="text-secondary text-85 font-bold"><i class="fas fa-balance-scale text-orange-d2 mr-1"></i> Biện pháp xử lý:</span>
-                                            <span class="text-90 text-dark-m2 ml-1">@item.TreatmentMeasures</span>
-                                        </div>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(item.Notes))
-                                    {
-                                        <div class="mb-1">
-                                            <span class="text-secondary text-85 font-bold"><i class="far fa-sticky-note text-secondary mr-1"></i> Ghi chú nghiệp vụ:</span>
-                                            <span class="text-90 text-dark-m2 ml-1">@item.Notes</span>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="bgc-white p-3 radius-1 border-1 brc-blue-l2 mt-2 text-85 text-secondary-d2">
-                                    <i class="fa fa-check-circle text-success mr-1"></i> Đơn vị đã tạo hồ sơ định danh gốc và quản lý đối tượng trên hệ thống vào lúc <b>@item.RecordDateStr</b>.
-                                </div>
-                            }
+                            <div class="bgc-white p-3 radius-1 border-1 brc-blue-l2 mt-2 text-85 text-secondary-d2">
+                                <i class="fa fa-check-circle text-success mr-1"></i> Đơn vị đã tạo hồ sơ định danh và quản lý đối tượng trên hệ thống vào lúc <b>@item.RecordDateStr</b>.
+                            </div>
                         </div>
                     </div>
                 </div>

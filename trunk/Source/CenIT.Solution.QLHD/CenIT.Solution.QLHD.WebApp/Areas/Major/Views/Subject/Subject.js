@@ -38,6 +38,7 @@ function initTableSubject() {
                 d.IdentityCardNumber = $("#Search #IdentityCardNumber").val();
                 d.FullName = $("#Search #FullName").val();
                 d.Gender = $("#Search #Gender").val();
+                d.SubjectTypeIds = $("#Search #SubjectTypeIds").val();
                 // Danh sách hành vi vi phạm được chọn, ghép thành chuỗi phân tách bởi dấu phẩy
                 var behaviors = $("#Search #BehaviorIds").val();
                 d.BehaviorIds = (behaviors && behaviors.length > 0) ? behaviors.join(",") : "";
@@ -89,17 +90,22 @@ function initTableSubject() {
                             '</div>';
                     }
 
-                    // Dòng 3: Loại đối tượng (Hiển thị dạng badge tags)
-                    if (row.SubjectTypeNames) {
-                        var types = row.SubjectTypeNames.split(',');
-                        var typeBadges = types.map(function (t) {
-                            return '<span class="badge badge-light-blue text-primary-d2 border-1 brc-primary-m3 text-80 font-bold mr-1 mb-1 shadow-none"><i class="fas fa-tag mr-1 text-80"></i>' + (t ? t.trim() : "") + '</span>';
-                        });
-                        html += '<div class="mt-1 d-flex align-items-center flex-wrap">' + typeBadges.join('') + '</div>';
-                    }
-
                     html += '</div>';
                     return html;
+                }
+            },
+            {
+                "data": "SubjectTypeNames",
+                "defaultContent": "",
+                "className": "align-middle",
+                "orderable": false,
+                "render": function (data, type, row) {
+                    if (!data) return '<span class="text-secondary-m2 font-italic text-85">Chưa phân loại</span>';
+                    var types = data.split(',');
+                    var badges = types.map(function (t) {
+                        return '<span class="badge badge-light-blue text-primary-d2 border-1 brc-primary-m3 text-85 font-bold mr-1 mb-1 px-2 py-1 shadow-none"><i class="fas fa-tag mr-1 text-80"></i>' + (t ? t.trim() : "") + '</span>';
+                    });
+                    return '<div class="d-flex flex-wrap align-items-center">' + badges.join('') + '</div>';
                 }
             },
             {
@@ -572,6 +578,7 @@ function resetSubjectSearch() {
     $("#Search #IdentityCardNumber").val("");
     $("#Search #FullName").val("");
     $("#Search #Gender").val("");
+    $("#Search #SubjectTypeIds").val("");
     $("#Search #SearchFieldId").val("");
     $("#Search #BehaviorIds").val([]);
     filterSearchBehaviorsByField();

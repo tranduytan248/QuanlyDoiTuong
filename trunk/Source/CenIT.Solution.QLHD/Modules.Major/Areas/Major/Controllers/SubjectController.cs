@@ -138,6 +138,7 @@ namespace Modules.Major.Areas.Major.Controllers
                 searchModel?.FullName,
                 searchModel?.BehaviorIds,
                 searchModel?.Gender,
+                searchModel?.SubjectTypeIds,
                 User?.UserName,
                 dataSearch);
             var result = Json(

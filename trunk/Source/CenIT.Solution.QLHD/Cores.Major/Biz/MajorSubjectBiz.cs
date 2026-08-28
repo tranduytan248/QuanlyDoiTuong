@@ -23,7 +23,7 @@ namespace Cores.Major.Biz
         /// Tham số <paramref name="userName"/> được proc dùng để giới hạn phạm vi đơn vị và lĩnh vực.
         /// </summary>
         public List<MajorSubjectModel> Get(out int total, string identityCardNumber, string fullName,
-            string behaviorIds, string gender, string userName, BaseSearchModel search)
+            string behaviorIds, string gender, string subjectTypeIds, string userName, BaseSearchModel search)
         {
             search = search ?? new BaseSearchModel
             {
@@ -40,6 +40,7 @@ namespace Cores.Major.Biz
                 fullName,
                 behaviorIds,
                 gender,
+                subjectTypeIds,
                 userName,
                 search.Search,
                 search.Order,
@@ -89,7 +90,7 @@ namespace Cores.Major.Biz
 
             // userName = null => proc bỏ qua giới hạn phạm vi, vì đây là tra cứu nội bộ
             // phục vụ việc chống trùng số CCCD khi thêm mới.
-            var listSubjects = Get(out int _, cardNumber, null, null, null, null, search);
+            var listSubjects = Get(out int _, cardNumber, null, null, null, null, null, search);
             if (listSubjects == null || listSubjects.Count == 0) return null;
 
             return listSubjects.FirstOrDefault(item =>

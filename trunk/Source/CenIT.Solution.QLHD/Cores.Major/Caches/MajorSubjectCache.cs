@@ -48,20 +48,21 @@ namespace Cores.Major.Caches
         }
 
         public List<MajorSubjectModel> Get(out int total, string identityCardNumber, string fullName,
-            string behaviorIds, string gender, string userName, BaseSearchModel search = null)
+            string behaviorIds, string gender, string subjectTypeIds, string userName, BaseSearchModel search = null)
         {
             var objectKey = EHashMD5.FromObject(search);
             var objectKey2 = EHashMD5.FromObject(identityCardNumber);
             var objectKey3 = EHashMD5.FromObject(fullName);
             var objectKey4 = EHashMD5.FromObject(behaviorIds);
             var objectKey5 = EHashMD5.FromObject(gender);
-            var objectKey6 = EHashMD5.FromObject(userName);
-            var rawKey = string.Concat("ListSubjects-", objectKey, objectKey2, objectKey3, objectKey4, objectKey5, objectKey6);
+            var objectKey6 = EHashMD5.FromObject(subjectTypeIds);
+            var objectKey7 = EHashMD5.FromObject(userName);
+            var rawKey = string.Concat("ListSubjects-", objectKey, objectKey2, objectKey3, objectKey4, objectKey5, objectKey6, objectKey7);
             var rawKeyTotal = string.Concat(rawKey, "-Total");
             var cacheTotal = (int?)GetCacheItem(rawKeyTotal);
             total = cacheTotal ?? 0;
             if (GetCacheItem(rawKey) is List<MajorSubjectModel> subjects) return subjects;
-            subjects = Api.Get(out total, identityCardNumber, fullName, behaviorIds, gender, userName, search);
+            subjects = Api.Get(out total, identityCardNumber, fullName, behaviorIds, gender, subjectTypeIds, userName, search);
             AddCacheItem(rawKey, subjects);
             AddCacheItem(rawKeyTotal, total);
             return subjects;

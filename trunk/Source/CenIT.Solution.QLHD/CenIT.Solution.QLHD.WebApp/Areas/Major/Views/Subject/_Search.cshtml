@@ -4,6 +4,7 @@
 @{
     var listFields = ViewBag.ListFields as List<CateFieldModel> ?? new List<CateFieldModel>();
     var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
+    var listSubjectTypes = ViewBag.ListSubjectTypes as List<CateSubjectTypeModel> ?? new List<CateSubjectTypeModel>();
 }
 <div class="card dcard">
     <div class="card-header">
@@ -61,7 +62,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row mb-0">
+                    <div class="form-group row mb-3">
                         <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Hành vi vi phạm</label>
                         <div class="col-sm-8">
                             <select class="form-control" id="BehaviorIds" name="BehaviorIds" multiple size="4">
@@ -73,6 +74,19 @@
                             <small class="form-text text-secondary text-85">
                                 <i class="fas fa-info-circle mr-1"></i>Giữ Ctrl để chọn nhiều hành vi. Chọn lĩnh vực để thu gọn danh sách.
                             </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-0">
+                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Loại đối tượng</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="SubjectTypeIds" name="SubjectTypeIds">
+                                <option value="">-- Tất cả loại đối tượng --</option>
+                                @foreach (var st in listSubjectTypes)
+                                {
+                                    <option value="@st.SubjectTypeId">@st.SubjectTypeName</option>
+                                }
+                            </select>
                         </div>
                     </div>
                 </div>

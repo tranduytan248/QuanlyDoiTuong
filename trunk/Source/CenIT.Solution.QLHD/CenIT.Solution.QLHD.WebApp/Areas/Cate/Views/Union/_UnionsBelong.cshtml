@@ -19,6 +19,9 @@
 @section FormBody{
     <style>
         .union-item {
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
             border-color: #e2e8f0;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -34,7 +37,13 @@
         .union-item.is-selected .btn-action-add {
             display: none;
         }
+        .union-item.is-hidden, .union-item.d-none {
+            display: none !important;
+        }
         .selected-union-card {
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
             border-left: 3px solid #3b82f6 !important;
             background-color: #f8fafc;
             border-color: #e2e8f0;
@@ -43,6 +52,9 @@
         .selected-union-card:hover {
             background-color: #eff6ff;
             border-color: #93c5fd;
+        }
+        .selected-union-card.is-hidden, .selected-union-card.d-none {
+            display: none !important;
         }
     </style>
 
@@ -162,7 +174,7 @@
                                     else if (isKhoi) { levelTag = "KHOI"; }
                                     else if (isToDoi) { levelTag = "TO_DOI"; }
 
-                                    <div class="union-item p-2 mb-1 radius-1 border-1 bgc-white d-flex align-items-center justify-content-between @(isSelected ? "is-selected" : "")"
+                                    <div class="union-item p-2 mb-1 radius-1 border-1 bgc-white @(isSelected ? "is-selected" : "")"
                                          id="avail-item-@uId"
                                          data-id="@uId"
                                          data-name="@u.UnionName"
@@ -255,6 +267,27 @@
         var _allUnionsData = [];
         var _selectedUnionIds = new Set();
 
+        /* Hàm loại bỏ dấu tiếng Việt để tìm kiếm thông minh */
+        function removeVietnameseTones(str) {
+            if (!str) return "";
+            str = String(str);
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+            str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+            str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+            str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+            str = str.replace(/Đ/g, "D");
+            return str.toLowerCase().trim();
+        }
+
         window.initUnionsData = function () {
             _allUnionsData = [];
             _selectedUnionIds = new Set();
@@ -310,7 +343,7 @@
         }
 
         window.selectAllVisibleAvailable = function () {
-            $(".union-item:visible").each(function () {
+            $(".union-item:not(.is-hidden):not(.d-none)").each(function () {
                 var id = String($(this).data("id") || "").toLowerCase();
                 if (id) {
                     _selectedUnionIds.add(id);
@@ -321,7 +354,7 @@
         };
 
         window.deselectAllVisibleAvailable = function () {
-            $(".union-item:visible").each(function () {
+            $(".union-item:not(.is-hidden):not(.d-none)").each(function () {
                 var id = String($(this).data("id") || "").toLowerCase();
                 if (id) {
                     _selectedUnionIds.delete(id);
@@ -346,7 +379,9 @@
 
         window.renderSelectedList = function () {
             var $container = $("#selectedUnionsContainer");
-            var searchText = ($("#txtSearchSelected").val() || "").toLowerCase().trim();
+            var keyword = ($("#txtSearchSelected").val() || "").trim();
+            var rawKey = keyword.toLowerCase();
+            var cleanKey = removeVietnameseTones(keyword);
             var arr = Array.from(_selectedUnionIds);
 
             if (arr.length === 0) {
@@ -377,14 +412,14 @@
                     }
                 }
 
-                var matches = !searchText ||
-                    union.name.toLowerCase().indexOf(searchText) !== -1 ||
-                    union.code.toLowerCase().indexOf(searchText) !== -1 ||
-                    union.parent.toLowerCase().indexOf(searchText) !== -1;
+                var rawText = (union.name + " " + union.code + " " + (union.parent || "")).toLowerCase();
+                var cleanText = removeVietnameseTones(rawText);
+
+                var matches = !keyword || (rawText.indexOf(rawKey) !== -1 || cleanText.indexOf(cleanKey) !== -1);
 
                 if (matches) {
                     matchCount++;
-                    html += '<div class="selected-union-card p-2 mb-1 radius-1 border-1 d-flex align-items-center justify-content-between" id="sel-card-' + union.id + '">' +
+                    html += '<div class="selected-union-card p-2 mb-1 radius-1 border-1" id="sel-card-' + union.id + '">' +
                         '<div class="text-truncate mr-2" style="min-width:0;">' +
                             '<div class="font-bold text-dark-m1 text-90 text-truncate">' + union.name + '</div>' +
                             '<div class="text-80 text-secondary text-truncate">' +
@@ -400,7 +435,7 @@
                 }
             });
 
-            if (matchCount === 0 && searchText) {
+            if (matchCount === 0 && keyword) {
                 html = '<div class="text-center text-muted py-4"><i class="fa fa-search text-grey-m2 mr-1"></i> Không tìm thấy đơn vị phù hợp</div>';
             }
 
@@ -408,25 +443,30 @@
         };
 
         window.filterAvailableUnions = function () {
-            var keyword = ($("#txtSearchAvailable").val() || "").toLowerCase().trim();
+            var keyword = ($("#txtSearchAvailable").val() || "").trim();
+            var rawKey = keyword.toLowerCase();
+            var cleanKey = removeVietnameseTones(keyword);
             var level = $("#cboLevelFilter").val() || "ALL";
             var visibleCount = 0;
 
             $(".union-item").each(function () {
                 var $item = $(this);
-                var name = String($item.data("name") || "").toLowerCase();
-                var code = String($item.data("code") || "").toLowerCase();
-                var parent = String($item.data("parent") || "").toLowerCase();
+                var name = String($item.data("name") || "");
+                var code = String($item.data("code") || "");
+                var parent = String($item.data("parent") || "");
                 var itemLevel = String($item.data("level") || "ALL");
 
-                var matchKeyword = !keyword || (name.indexOf(keyword) !== -1 || code.indexOf(keyword) !== -1 || parent.indexOf(keyword) !== -1);
+                var rawText = (name + " " + code + " " + parent).toLowerCase();
+                var cleanText = removeVietnameseTones(rawText);
+
+                var matchKeyword = !keyword || (rawText.indexOf(rawKey) !== -1 || cleanText.indexOf(cleanKey) !== -1);
                 var matchLevel = (level === "ALL") || (itemLevel === level);
 
                 if (matchKeyword && matchLevel) {
-                    $item.show();
+                    $item.removeClass("is-hidden d-none");
                     visibleCount++;
                 } else {
-                    $item.hide();
+                    $item.addClass("is-hidden d-none");
                 }
             });
 

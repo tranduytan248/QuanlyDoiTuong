@@ -69,52 +69,40 @@ namespace CenIT.Solution.QLHD.WebApp
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (ConfigurationManager.AppSettings["MaintenanceMode"] == "true")
+            try
             {
-                if (!Request.IsLocal)
+                if (ConfigurationManager.AppSettings["MaintenanceMode"] == "true")
                 {
-                    HttpContext.Current.RewritePath("AppOffline.htm");
-                }
-                return;
-            }
-
-            var userNameResetLock = Request.QueryString["ping"];
-            var blockIPCache = new SysBlockIPCache();
-            var blockIPModel = blockIPCache.GetByIp(Request.UserHostAddress);
-            if (blockIPModel?.IsLock ?? false)
-            {
-                if (!string.IsNullOrEmpty(userNameResetLock))
-                {
-                    var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
-                    if (retUnlockIp > 0)
+                    if (!Request.IsLocal)
                     {
-                        Response.Clear();
-                        Response.Redirect($"/?g={Guid.NewGuid()}", true);
-                        return;
+                        HttpContext.Current.RewritePath("AppOffline.htm");
                     }
+                    return;
                 }
-                Response.Clear();
-                Response.Status = "301 Moved Permanently";
-                return;
-            }
 
-            var ipRequestCache = new SysIpRequestCache();
-            var ipRequestModel = ipRequestCache.GetByIp(Request.UserHostAddress);
-            if (ipRequestModel != null && ipRequestModel.IsLock)
-            {
-                if (!string.IsNullOrEmpty(userNameResetLock))
+                var userNameResetLock = Request.QueryString["ping"];
+                var blockIPCache = new SysBlockIPCache();
+                var blockIPModel = blockIPCache.GetByIp(Request.UserHostAddress);
+                if (blockIPModel?.IsLock ?? false)
                 {
-                    var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
-                    if (retUnlockIp > 0)
+                    if (!string.IsNullOrEmpty(userNameResetLock))
                     {
-                        Response.RedirectPermanent("/", true);
-                        return;
+                        var retUnlockIp = blockIPCache.Unlock(userNameResetLock, Request.UserHostAddress);
+                        if (retUnlockIp > 0)
+                        {
+                            Response.Clear();
+                            Response.Redirect($"/?g={Guid.NewGuid()}", true);
+                            return;
+                        }
                     }
+                    Response.Clear();
+                    Response.Status = "301 Moved Permanently";
+                    return;
                 }
-
-                Response.Clear();
-                Response.Status = "301 Moved Permanently";
-                return;
+            }
+            catch (Exception ex)
+            {
+                try { AppProcessor.Logger.Error(ex); } catch { }
             }
         }
 

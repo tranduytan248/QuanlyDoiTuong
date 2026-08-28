@@ -27,6 +27,14 @@
           <Procedure Name="Cate_ViolationBehavior_GetAll" Value="p_Cate_ViolationBehavior_GetAll" />
           <Procedure Name="Cate_ViolationBehavior_Save" Value="p_Cate_ViolationBehavior_Save" />
 
+          <!-- Danh muc Loai doi tuong -->
+          <Procedure Name="Cate_SubjectType_Delete" Value="p_Cate_SubjectType_Delete" />
+          <Procedure Name="Cate_SubjectType_Get" Value="p_Cate_SubjectType_Get" />
+          <Procedure Name="Cate_SubjectType_GetById" Value="p_Cate_SubjectType_GetById" />
+          <Procedure Name="Cate_SubjectType_GetAll" Value="p_Cate_SubjectType_GetAll" />
+          <Procedure Name="Cate_SubjectType_Save" Value="p_Cate_SubjectType_Save" />
+          <Procedure Name="Cate_SubjectType_ToggleStatus" Value="p_Cate_SubjectType_ToggleStatus" />
+
           <Procedure Name="Cate_Union_Delete" Value="p_Cate_Union_Delete" />
           <Procedure Name="Cate_Union_Get" Value="p_Cate_Union_Get" />
           <Procedure Name="Cate_Union_GetById" Value="p_Cate_Union_GetById" />

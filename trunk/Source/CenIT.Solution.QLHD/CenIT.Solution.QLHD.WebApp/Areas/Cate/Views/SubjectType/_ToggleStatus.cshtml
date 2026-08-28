@@ -1,0 +1,33 @@
+﻿﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateSubjectTypeModel
+@{
+    var actionText = Model.IsActive ? "Tạm dừng" : "Kích hoạt";
+    ViewBag.Title = $"Xác nhận {actionText} Loại đối tượng";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    warning
+}
+
+@section FormIcon{
+    <i class="fa fa-sync-alt"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("ToggleStatus", "SubjectType", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SubjectType_OnProcessSuccess(data, 'ToggleStatusSubjectType')"
+    }, new { @class = "form-horizontal", id = "ToggleStatusSubjectType" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.SubjectTypeId)
+        @Html.HiddenFor(model => model.SubjectTypeName)
+        @Html.HiddenFor(model => model.IsActive)
+
+        <div class="alert alert-info text-center">
+            Bạn có chắc chắn muốn <b>@(actionText.ToLower())</b> Loại đối tượng <b>[@Model.SubjectTypeName]</b> không?
+        </div>
+    }
+}

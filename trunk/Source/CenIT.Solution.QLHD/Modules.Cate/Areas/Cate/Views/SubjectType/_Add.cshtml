@@ -1,0 +1,26 @@
+﻿﻿@using TSFramework.App.Processors
+@{
+    ViewBag.Title = "Thêm mới Loại đối tượng";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-plus"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Add", "SubjectType", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SubjectType_OnProcessSuccess(data, 'AddSubjectType')"
+    }, new { @class = "form-horizontal", id = "AddSubjectType" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_SubjectType")
+        </div>
+    }
+}

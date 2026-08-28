@@ -1,4 +1,4 @@
-﻿/* =============================================================================
+/* =============================================================================
    28. LƯU DANH SÁCH ĐƠN VỊ QUẢN LÝ CHO NGƯỜI DÙNG (SaveList)
    -----------------------------------------------------------------------------
    Tạo Stored Procedure p_Cate_Union_Manager_SaveList để cập nhật toàn bộ
@@ -21,7 +21,6 @@ BEGIN
     SET @UserName = LTRIM(RTRIM(ISNULL(@UserName, '')));
     IF @UserName = ''
     BEGIN
-        RAISERROR(N'UserName không được để trống.', 16, 1);
         RETURN 0;
     END
 
@@ -31,9 +30,9 @@ BEGIN
     IF @UnionIds IS NOT NULL AND LTRIM(RTRIM(@UnionIds)) <> ''
     BEGIN
         INSERT INTO @TblUnions (UnionId)
-        SELECT DISTINCT TRY_CAST(LTRIM(RTRIM(value)) AS UNIQUEIDENTIFIER)
-        FROM STRING_SPLIT(@UnionIds, ',')
-        WHERE TRY_CAST(LTRIM(RTRIM(value)) AS UNIQUEIDENTIFIER) IS NOT NULL;
+        SELECT DISTINCT CAST(LTRIM(RTRIM(fs.Name)) AS UNIQUEIDENTIFIER)
+        FROM dbo.fnSplit(@UnionIds, ',') AS fs
+        WHERE LEN(LTRIM(RTRIM(fs.Name))) >= 32;
     END
 
     BEGIN TRANSACTION;
@@ -60,17 +59,35 @@ BEGIN
         );
 
         IF @@TRANCOUNT > 0
+        BEGIN
             COMMIT TRANSACTION;
+        END
 
+        SELECT 1;
         RETURN 1;
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0
+        BEGIN
             ROLLBACK TRANSACTION;
+        END
 
-        INSERT INTO dbo.Sys_ProcedureLogs (LogDate, ProcedureName, ErrorLine, ErrorMessage, AdditionalInfo)
-        SELECT GETDATE(), ERROR_PROCEDURE(), ERROR_LINE(), ERROR_MESSAGE(), @UserName;
+        INSERT INTO Sys_ProcedureLogs
+        (
+            LogDate,
+            ProcedureName,
+            ErrorLine,
+            ErrorMessage,
+            AdditionalInfo
+        )
+        SELECT
+            GETDATE(),
+            ERROR_PROCEDURE(),
+            ERROR_LINE(),
+            ERROR_MESSAGE(),
+            @UserName;
 
+        SELECT 0;
         RETURN 0;
     END CATCH
 END

@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -113,6 +113,7 @@
     <Content Include="Areas\Cate\Views\ViolatedConstruction\Construction.js" />
     <Content Include="Areas\Cate\Views\ViolationArea\ViolationArea.js" />
     <Content Include="Areas\Cate\Views\Field\Field.js" />
+    <Content Include="Areas\Cate\Views\SubjectType\SubjectType.js" />
     <Content Include="Areas\Cate\Views\UserField\UserField.js" />
     <Content Include="Areas\Cate\Views\ViolationBehavior\ViolationBehavior.js" />
     <Content Include="Areas\Cate\Views\ViolationTypes\ViolationTypes.js" />
@@ -142,6 +143,7 @@
     <Compile Include="Areas\Cate\Controllers\PriceController.cs" />
     <Compile Include="Areas\Cate\Controllers\PurPoseController.cs" />
     <Compile Include="Areas\Cate\Controllers\SubSectionController.cs" />
+    <Compile Include="Areas\Cate\Controllers\SubjectTypeController.cs" />
     <Compile Include="Areas\Cate\Controllers\UnionController.cs" />
     <Compile Include="Areas\Cate\Controllers\UserFieldController.cs" />
     <Compile Include="Areas\Cate\Controllers\ViolationBehaviorController.cs" />
@@ -230,6 +232,13 @@
     <Content Include="Areas\Cate\Views\ViolationArea\_Delete.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationArea\_Edit.cshtml" />
     <Content Include="Areas\Cate\Views\ViolationArea\_ViolationArea.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\Index.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_Add.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_Delete.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_Edit.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_Search.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_SubjectType.cshtml" />
+    <Content Include="Areas\Cate\Views\SubjectType\_ToggleStatus.cshtml" />
     <Content Include="Areas\Cate\Views\UserField\Index.cshtml" />
     <Content Include="Areas\Cate\Views\UserField\_Edit.cshtml" />
     <Content Include="Areas\Cate\Views\UserField\_Search.cshtml" />

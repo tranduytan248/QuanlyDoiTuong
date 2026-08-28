@@ -1,0 +1,27 @@
+﻿﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.SearchSubjectTypeModel
+<div class="card dcard">
+    <div class="card-header">
+        <h5 class="card-title text-120 text-primary">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+        <div class="card-toolbar no-border">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+                <i class="fa fa-angle-double-up w-2 mx-1px"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show">
+        <div class="col-md-12 form-horizontal mt-3" id="Search">
+            <div class="form-row form-group align-items-center">
+                <div class="col-md-3 col-form-label text-sm-right pr-0 font-bold">Từ khóa tìm kiếm:</div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(model => model.Key, new { @class = "form-control", placeholder = "Nhập mã loại hoặc tên loại đối tượng (ma túy, mua bán dâm...)..." })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" onclick="_tableSubjectType.ajax.reload(null, false);"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+</div>

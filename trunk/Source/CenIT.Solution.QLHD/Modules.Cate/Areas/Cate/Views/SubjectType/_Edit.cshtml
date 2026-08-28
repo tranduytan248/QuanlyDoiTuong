@@ -1,0 +1,27 @@
+﻿﻿@using TSFramework.App.Processors
+@model Cores.Cate.Models.CateSubjectTypeModel
+@{
+    ViewBag.Title = $"Cập nhật Loại đối tượng [{Model?.SubjectTypeName}]";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section FormType{
+    primary
+}
+
+@section FormIcon{
+    <i class="fa fa-edit"></i>
+}
+
+@section FormBody{
+    @using (Ajax.BeginForm("Edit", "SubjectType", new { area = "Cate" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "SubjectType_OnProcessSuccess(data, 'EditSubjectType')"
+    }, new { @class = "form-horizontal", id = "EditSubjectType" }))
+    {
+        <div id="bodyForm">
+            @Html.Partial("_SubjectType", Model)
+        </div>
+    }
+}

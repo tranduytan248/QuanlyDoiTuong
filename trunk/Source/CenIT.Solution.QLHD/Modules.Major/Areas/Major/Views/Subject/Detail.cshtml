@@ -30,6 +30,17 @@
                 {
                     <p class="text-secondary mb-2">Tên gọi khác: <b>@Model.OtherName</b></p>
                 }
+                @if (!string.IsNullOrEmpty(Model.SubjectTypeNames))
+                {
+                    <div class="my-2 d-flex flex-wrap justify-content-center">
+                        @foreach (var typeName in Model.SubjectTypeNames.Split(','))
+                        {
+                            <span class="badge badge-lg badge-light-blue text-primary-d2 border-1 brc-primary-m3 font-bold mr-1 mb-1 shadow-none">
+                                <i class="fas fa-tag mr-1 text-80"></i>@typeName.Trim()
+                            </span>
+                        }
+                    </div>
+                }
                 <div class="badge badge-lg @(Model.ViolationCount > 0 ? "badge-danger" : "badge-success") px-3 py-2 mt-1">
                     <i class="fas fa-exclamation-circle mr-1"></i> Đã vi phạm: @Model.ViolationCount lần
                 </div>
@@ -39,6 +50,13 @@
                     <span class="text-secondary"><i class="far fa-id-card mr-2 text-primary"></i>Số CCCD/Định danh:</span>
                     <span class="font-bold text-primary">@Model.IdentityCardNumber</span>
                 </li>
+                @if (!string.IsNullOrEmpty(Model.SubjectTypeNames))
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-secondary"><i class="fas fa-tags mr-2 text-primary"></i>Loại đối tượng:</span>
+                        <span class="font-bold text-right text-primary-d1">@Model.SubjectTypeNames</span>
+                    </li>
+                }
                 <li class="list-group-item d-flex justify-content-between">
                     <span class="text-secondary"><i class="far fa-calendar-alt mr-2 text-primary"></i>Ngày sinh:</span>
                     <span class="font-bold">@Model.DateOfBirthStr</span>

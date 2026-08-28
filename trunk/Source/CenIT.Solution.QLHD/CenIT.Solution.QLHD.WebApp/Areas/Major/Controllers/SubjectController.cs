@@ -29,6 +29,7 @@ namespace Modules.Major.Areas.Major.Controllers
         private readonly SysUserCache _userCache = new SysUserCache();
         private readonly MajorSubjectChangeLogCache _changeLogCache = new MajorSubjectChangeLogCache();
         private readonly CateUserFieldCache _userFieldCache = new CateUserFieldCache();
+        private readonly CateSubjectTypeCache _subjectTypeCache = new CateSubjectTypeCache();
 
         /// <summary>Khoa cau hinh danh sach tai khoan super admin.</summary>
         private const string CONFIG_SUPER_ADMIN_PERMIT = "CONFIG_SUPER_ADMIN_PERMIT";
@@ -51,18 +52,10 @@ namespace Modules.Major.Areas.Major.Controllers
         /// </summary>
         private void LoadPermittedCatalogs()
         {
-            // KHONG goi InvalidateAll o day. Danh muc linh vuc / hanh vi rat it
-            // thay doi, nen de tang cache tu phuc vu. Truoc day hai dong xoa cache
-            // khien MOI lan mo man hinh deu phai doc lai CSDL - dung nghia vo hieu
-            // hoa cache va lam giao dien cham han.
-            // Khi sua danh muc, chinh man hinh Danh muc da tu xoa cache tuong ung.
             var allFields = _fieldCache.GetAll() ?? new List<CateFieldModel>();
             var allBehaviors = _behaviorCache.GetAll() ?? new List<CateViolationBehaviorModel>();
+            ViewBag.ListSubjectTypes = _subjectTypeCache.GetAll()?.Where(item => item.IsActive).OrderBy(item => item.SortOrder).ToList() ?? new List<CateSubjectTypeModel>();
 
-            // Doc phan cong linh vuc TRUOC khi xet super admin.
-            // Chua duoc phan linh vuc nao thi khong thay gi - ke ca quan tri.
-            // Phan quyen linh vuc la phan cong nghiep vu, khong phai quyen he thong:
-            // nguoi chua duoc giao linh vuc thi khong co gi de thao tac.
             var permittedIds = _userFieldCache.GetPermittedFieldIds(User?.UserName)
                                ?? new List<int>();
 
@@ -539,6 +532,13 @@ namespace Modules.Major.Areas.Major.Controllers
             }
             model.ListViolations = _violationCache.GetBySubjectId(id, User?.UserName) ?? new System.Collections.Generic.List<MajorSubjectViolationModel>();
             model.InitialViolationDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(model.SubjectTypeIds))
+            {
+                model.ListSubjectTypeIds = model.SubjectTypeIds.Split(',')
+                    .Select(x => int.TryParse(x.Trim(), out int val) ? val : 0)
+                    .Where(x => x > 0).ToList();
+            }
+
             LoadPermittedCatalogs();
 
             // Man hinh Cap nhat chi cho sua thong tin dinh danh. Viec ghi nhan vi pham
@@ -749,6 +749,36 @@ namespace Modules.Major.Areas.Major.Controllers
             return PartialView("_ViolationHistory", model);
         }
 
+        /// <summary>
+        /// Màn hình chi tiết các đơn vị cùng quản lý / theo dõi đối tượng (hồ sơ gốc + vi phạm).
+        /// </summary>
+        [AjaxOnly]
+        [HttpGet]
+        [ActionType(Type = EnumActionType.View)]
+        public ActionResult MonitoringUnits(Guid id)
+        {
+            var model = _subjectCache.GetById(id);
+            if (model == null)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = CreateMessage(_subjectTitle, EnumProcessType.DataNotExist, EnumMsgIcon.Error)
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                model.ListMonitoringUnits = _subjectCache.GetMonitoringUnits(id, User?.UserName)
+                                            ?? new List<MajorSubjectMonitoringUnitModel>();
+            }
+            catch
+            {
+                model.ListMonitoringUnits = new List<MajorSubjectMonitoringUnitModel>();
+            }
+            return PartialView("_MonitoringUnits", model);
+        }
+
         /// <summary>Màn hình Log cập nhật của một đối tượng.</summary>
         [AjaxOnly]
         [HttpGet]
@@ -857,6 +887,8 @@ namespace Modules.Major.Areas.Major.Controllers
                     avatarUrl = subject.AvatarUrl,
                     identityCardFrontUrl = subject.IdentityCardFrontUrl,
                     identityCardBackUrl = subject.IdentityCardBackUrl,
+                    subjectTypeIds = subject.SubjectTypeIds,
+                    subjectTypeNames = subject.SubjectTypeNames,
                     violationCount = listViolations.Count,
 
                     /* Giao dien dung de hien goi y cho dung ngu canh:

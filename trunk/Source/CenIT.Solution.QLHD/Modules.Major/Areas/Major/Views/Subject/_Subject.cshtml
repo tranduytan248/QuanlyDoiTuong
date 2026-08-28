@@ -1,4 +1,4 @@
-@using TSFramework.App.Processors
+﻿@using TSFramework.App.Processors
 @using Cores.Cate.Models
 @using Cores.Major.Models
 @model Cores.Major.Models.MajorSubjectModel
@@ -6,6 +6,14 @@
 @{
     var listFields = ViewBag.ListFields as List<CateFieldModel> ?? new List<CateFieldModel>();
     var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
+    var listSubjectTypes = ViewBag.ListSubjectTypes as List<CateSubjectTypeModel> ?? new List<CateSubjectTypeModel>();
+    var selectedSubjectTypeIds = Model?.ListSubjectTypeIds ?? new List<int>();
+    if (selectedSubjectTypeIds.Count == 0 && !string.IsNullOrEmpty(Model?.SubjectTypeIds))
+    {
+        selectedSubjectTypeIds = Model.SubjectTypeIds.Split(',')
+            .Select(x => int.TryParse(x.Trim(), out int val) ? val : 0)
+            .Where(x => x > 0).ToList();
+    }
     var isEditMode = Model?.SubjectId.HasValue == true && Model.SubjectId.Value != Guid.Empty;
 
     // Man hinh "Cap nhat thong tin" chi sua phan dinh danh, khong hien phan nhap
@@ -157,6 +165,23 @@
                     <div class="col-md-12">
                         <label class="col-form-label pr-0 font-bold text-85 mb-1">Nơi ở hiện tại</label>
                         @Html.TextBoxFor(model => model.CurrentResidence, new { @class = "form-control", placeholder = "Địa chỉ thường trú / tạm trú / nơi ở thực tế hiện nay..." })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-2">
+                    <div class="col-md-12">
+                        <label class="col-form-label pr-0 font-bold text-85 mb-1">
+                            Loại đối tượng
+                            <small class="text-secondary font-normal">(Có thể chọn nhiều loại: Sử dụng ma túy, Mua bán dâm, Trộm cắp...)</small>
+                        </label>
+                        <select id="selectSubjectTypeIds" class="select2 form-control w-100" multiple="multiple" data-placeholder="-- Chọn một hoặc nhiều loại đối tượng --" onchange="syncSubjectTypeIds();">
+                            @foreach (var st in listSubjectTypes)
+                            {
+                                var isSelected = selectedSubjectTypeIds.Contains(st.SubjectTypeId);
+                                <option value="@st.SubjectTypeId" @(isSelected ? "selected" : "")>@st.SubjectTypeName</option>
+                            }
+                        </select>
+                        @Html.HiddenFor(model => model.SubjectTypeIds)
                     </div>
                 </div>
 
@@ -819,5 +844,21 @@
         var i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
+
+    function syncSubjectTypeIds() {
+        var vals = $('#selectSubjectTypeIds').val();
+        $('#SubjectTypeIds').val(vals ? vals.join(',') : '');
+    }
+
+    $(document).ready(function () {
+        if ($.fn.select2) {
+            $('#selectSubjectTypeIds').select2({
+                placeholder: '-- Chọn một hoặc nhiều loại đối tượng --',
+                allowClear: true,
+                width: '100%'
+            });
+        }
+        syncSubjectTypeIds();
+    });
 </script>
 }

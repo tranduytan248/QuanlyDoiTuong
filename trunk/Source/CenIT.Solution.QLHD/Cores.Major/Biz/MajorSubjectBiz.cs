@@ -139,6 +139,7 @@ namespace Cores.Major.Biz
                 model.ReporterPhone != null ? model.ReporterPhone.Trim() : string.Empty,
                 model.ReporterPosition != null ? model.ReporterPosition.Trim() : string.Empty,
                 model.ReporterUnionId,
+                model.SubjectTypeIds,
                 username
             );
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TSFramework.App.Attributes;
@@ -60,6 +60,13 @@ namespace Cores.Major.Models
 
         [CustomDisplayName("Subject_Label_PhoneNumber")]
         public string PhoneNumber { get; set; }
+
+        [CustomDisplayName("Subject_Label_SubjectTypeIds")]
+        public string SubjectTypeIds { get; set; }
+
+        public string SubjectTypeNames { get; set; }
+
+        public List<int> ListSubjectTypeIds { get; set; } = new List<int>();
 
         [CustomDisplayName("Subject_Label_ReporterName")]
         public string ReporterName { get; set; }

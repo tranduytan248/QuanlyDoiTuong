@@ -1,4 +1,4 @@
-﻿namespace Modules.Major.Areas.Major.Models
+namespace Modules.Major.Areas.Major.Models
 {
     public class SearchSubjectModel
     {
@@ -15,5 +15,8 @@
 
         /// <summary>Tra cứu theo hành vi vi phạm - danh sách id phân tách bởi dấu phẩy.</summary>
         public string BehaviorIds { get; set; }
+
+        /// <summary>Tra cứu theo loại đối tượng - danh sách id phân tách bởi dấu phẩy.</summary>
+        public string SubjectTypeIds { get; set; }
     }
 }

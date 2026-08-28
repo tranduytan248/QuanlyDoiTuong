@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cores.Major.Models;
@@ -76,6 +76,7 @@ namespace Cores.Major.Helpers
             AddIfChanged(changes, "AvatarUrl", "Ảnh chân dung", oldModel.AvatarUrl, newModel.AvatarUrl);
             AddIfChanged(changes, "IdentityCardFrontUrl", "Ảnh CCCD mặt trước", oldModel.IdentityCardFrontUrl, newModel.IdentityCardFrontUrl);
             AddIfChanged(changes, "IdentityCardBackUrl", "Ảnh CCCD mặt sau", oldModel.IdentityCardBackUrl, newModel.IdentityCardBackUrl);
+            AddIfChanged(changes, "SubjectTypeIds", "Loại đối tượng", oldModel.SubjectTypeIds, newModel.SubjectTypeIds);
 
             return changes;
         }

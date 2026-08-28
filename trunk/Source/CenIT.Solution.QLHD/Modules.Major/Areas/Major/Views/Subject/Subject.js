@@ -89,6 +89,15 @@ function initTableSubject() {
                             '</div>';
                     }
 
+                    // Dòng 3: Loại đối tượng (Hiển thị dạng badge tags)
+                    if (row.SubjectTypeNames) {
+                        var types = row.SubjectTypeNames.split(',');
+                        var typeBadges = types.map(function (t) {
+                            return '<span class="badge badge-light-blue text-primary-d2 border-1 brc-primary-m3 text-80 font-bold mr-1 mb-1 shadow-none"><i class="fas fa-tag mr-1 text-80"></i>' + (t ? t.trim() : "") + '</span>';
+                        });
+                        html += '<div class="mt-1 d-flex align-items-center flex-wrap">' + typeBadges.join('') + '</div>';
+                    }
+
                     html += '</div>';
                     return html;
                 }
@@ -351,6 +360,19 @@ function fillSubjectFormFromLookup(data) {
     setLookupFieldValue("PhoneNumber", data.phoneNumber);
     setLookupFieldValue("PlaceOfOrigin", data.placeOfOrigin);
     setLookupFieldValue("CurrentResidence", data.currentResidence);
+    setLookupFieldValue("SubjectTypeIds", data.subjectTypeIds);
+
+    // Gán danh sách Loại đối tượng vào select2
+    var $selectTypes = $("#ModalContent #selectSubjectTypeIds");
+    if ($selectTypes.length === 0) $selectTypes = $("#selectSubjectTypeIds");
+    if ($selectTypes.length > 0) {
+        if (data.subjectTypeIds) {
+            var typeArr = data.subjectTypeIds.split(',').map(function (s) { return s.trim(); });
+            $selectTypes.val(typeArr).trigger('change');
+        } else {
+            $selectTypes.val([]).trigger('change');
+        }
+    }
 
     setLookupImage("AvatarUrl", "previewAvatar", data.avatarUrl, "/Contents/Base/imgs/avatar-default.png");
     setLookupImage("IdentityCardFrontUrl", "previewFront", data.identityCardFrontUrl, "/Contents/Base/imgs/no-image.png");
@@ -387,6 +409,13 @@ function clearLookupSubjectState() {
         var $subjectId = $("#ModalContent #SubjectId");
         if ($subjectId.length === 0) $subjectId = $("#SubjectId");
         $subjectId.val("");
+
+        var $selectTypes = $("#ModalContent #selectSubjectTypeIds");
+        if ($selectTypes.length === 0) $selectTypes = $("#selectSubjectTypeIds");
+        if ($selectTypes.length > 0) {
+            $selectTypes.val([]).trigger('change');
+        }
+        setLookupFieldValue("SubjectTypeIds", "");
     }
     // Đối tượng không còn được xác định -> khoá lại phần nhập vi phạm
     lockViolationPanel();

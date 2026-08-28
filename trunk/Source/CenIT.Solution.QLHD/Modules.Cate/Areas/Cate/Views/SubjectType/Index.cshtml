@@ -1,6 +1,7 @@
-﻿﻿@using TSFramework.App.Processors
+﻿@using TSFramework.App.Processors
 @{
-    ViewBag.Title = AppProcessor.Messagor.GetMessage("SubjectType_Title") ?? "Danh mục Loại đối tượng";
+    var titleMsg = AppProcessor.Messagor.GetMessage("SubjectType_Title");
+    ViewBag.Title = !string.IsNullOrWhiteSpace(titleMsg) ? titleMsg : "Danh mục Loại đối tượng";
 }
 
 @section PageTitle

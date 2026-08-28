@@ -29,6 +29,9 @@ namespace Cores.Major.Models
         public string RelatedDocuments { get; set; }
         public string Images { get; set; }
 
+        public string SubjectTypeIds { get; set; }
+        public string SubjectTypeNames { get; set; }
+
         public bool? IsOwner { get; set; }
     }
 }

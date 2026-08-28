@@ -1,4 +1,4 @@
-﻿/* =============================================================================
+/* =============================================================================
    29. DANH MỤC LOẠI ĐỐI TƯỢNG (Cate_SubjectTypes)
    -----------------------------------------------------------------------------
    - Bảng Cate_SubjectTypes
@@ -394,7 +394,18 @@ BEGIN
           WHERE p.RoleId = 1 AND p.FunctionId = fa.FunctionId AND p.Action = fa.Action
       );
 
-    PRINT 'Da cap quyen Cate/SubjectType cho Quan tri he thong.';
+    -- Cấp quyền View, Add, Edit cho RoleId = 19 (Cán bộ nghiệp vụ)
+    INSERT INTO dbo.Sys_Permissions (RoleId, FunctionId, Action)
+    SELECT 19, fa.FunctionId, fa.Action
+    FROM dbo.Sys_FunctionActions fa
+    WHERE fa.FunctionId = @FunctionIdSubjectType AND ISNULL(fa.IsDeleted, 0) = 0
+      AND fa.Action IN ('View', 'Add', 'Edit')
+      AND NOT EXISTS (
+          SELECT 1 FROM dbo.Sys_Permissions p
+          WHERE p.RoleId = 19 AND p.FunctionId = fa.FunctionId AND p.Action = fa.Action
+      );
+
+    PRINT 'Da cap quyen Cate/SubjectType cho Quan tri he thong va Can bo nghiep vu.';
 END
 GO
 
@@ -402,11 +413,21 @@ GO
    29.11. Đăng ký Menu "Loại đối tượng" vào Menu "Danh mục" (ParentId = 16)
    ----------------------------------------------------------------------------- */
 DECLARE @ParentMenuId INT = 16;
+DECLARE @ViewFaId INT;
+SELECT TOP 1 @ViewFaId = fa.FunctionActionId
+FROM dbo.Sys_FunctionActions fa
+INNER JOIN dbo.Sys_Functions f ON fa.FunctionId = f.FunctionId
+WHERE f.Name = 'SubjectType' AND fa.Action = 'View';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Sys_Menus WHERE Link = '/Cate/SubjectType' AND ISNULL(IsDelete, 0) = 0)
 BEGIN
-    INSERT INTO dbo.Sys_Menus (Name, Link, ParentId, LevelMenu, Position, Icon, IsDelete)
-    VALUES (N'Loại đối tượng', '/Cate/SubjectType', @ParentMenuId, 2, 3, 'fas fa-tags', 0);
+    INSERT INTO dbo.Sys_Menus (Name, Link, ParentId, LevelMenu, Position, Icon, FunctionActionId, Depth, IsShow, IsDelete)
+    VALUES (N'Loại đối tượng', '/Cate/SubjectType', @ParentMenuId, 2, 3, 'fas fa-tags', ISNULL(@ViewFaId, 0), '16', 1, 0);
+
+    UPDATE Sys_Menus
+    SET Depth = '16,' + CAST(MenuId AS VARCHAR(50))
+    WHERE Link = '/Cate/SubjectType';
+
     PRINT 'Da them menu Loai doi tuong.';
 END
 ELSE
@@ -417,6 +438,9 @@ BEGIN
         LevelMenu = 2,
         Position = 3,
         Icon = 'fas fa-tags',
+        FunctionActionId = ISNULL(@ViewFaId, 0),
+        Depth = '16,' + CAST(MenuId AS VARCHAR(50)),
+        IsShow = 1,
         IsDelete = 0
     WHERE Link = '/Cate/SubjectType';
     PRINT 'Da cap nhat menu Loai doi tuong.';

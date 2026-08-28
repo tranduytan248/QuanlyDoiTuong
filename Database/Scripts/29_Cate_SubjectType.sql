@@ -214,39 +214,22 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SET @SubjectTypeCode = LTRIM(RTRIM(@SubjectTypeCode));
-    SET @SubjectTypeName = LTRIM(RTRIM(@SubjectTypeName));
-    SET @Description = LTRIM(RTRIM(@Description));
+    SET @SubjectTypeCode = LTRIM(RTRIM(ISNULL(@SubjectTypeCode, '')));
+    SET @SubjectTypeName = LTRIM(RTRIM(ISNULL(@SubjectTypeName, '')));
+    SET @Description = LTRIM(RTRIM(ISNULL(@Description, '')));
 
     -- Kiểm tra trùng mã (trừ bản ghi hiện tại)
     IF EXISTS (
         SELECT 1 FROM dbo.Cate_SubjectTypes
         WHERE SubjectTypeCode = @SubjectTypeCode
-          AND SubjectTypeId != @SubjectTypeId
-          AND IsDeleted = 0
+          AND ISNULL(IsDeleted, 0) = 0
+          AND (@SubjectTypeId IS NULL OR @SubjectTypeId = 0 OR SubjectTypeId != @SubjectTypeId)
     )
     BEGIN
-        SELECT -2; -- EnumStatus.Existed
-        RETURN;
+        RETURN -9; -- EnumStatus.Existed
     END
 
-    IF @SubjectTypeId > 0
-    BEGIN
-        UPDATE dbo.Cate_SubjectTypes
-        SET
-            SubjectTypeCode = @SubjectTypeCode,
-            SubjectTypeName = @SubjectTypeName,
-            Description = @Description,
-            SortOrder = @SortOrder,
-            IsActive = @IsActive,
-            UpdatedDate = GETDATE(),
-            UpdatedBy = @UserName
-        WHERE SubjectTypeId = @SubjectTypeId
-          AND IsDeleted = 0;
-
-        SELECT @SubjectTypeId;
-    END
-    ELSE
+    IF (@SubjectTypeId IS NULL OR @SubjectTypeId = 0)
     BEGIN
         INSERT INTO dbo.Cate_SubjectTypes
         (
@@ -271,8 +254,23 @@ BEGIN
             @UserName
         );
 
-        SELECT SCOPE_IDENTITY();
+        DECLARE @NewId INT = CAST(SCOPE_IDENTITY() AS INT);
+        RETURN @NewId;
     END
+
+    UPDATE dbo.Cate_SubjectTypes
+    SET
+        SubjectTypeCode = @SubjectTypeCode,
+        SubjectTypeName = @SubjectTypeName,
+        Description = @Description,
+        SortOrder = @SortOrder,
+        IsActive = @IsActive,
+        UpdatedDate = GETDATE(),
+        UpdatedBy = @UserName
+    WHERE SubjectTypeId = @SubjectTypeId
+      AND IsDeleted = 0;
+
+    RETURN @SubjectTypeId;
 END
 GO
 
@@ -290,6 +288,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    IF @SubjectTypeId IS NULL OR @SubjectTypeId <= 0
+        RETURN 0;
+
     UPDATE dbo.Cate_SubjectTypes
     SET
         IsDeleted = 1,
@@ -297,7 +298,7 @@ BEGIN
         UpdatedBy = @UserName
     WHERE SubjectTypeId = @SubjectTypeId;
 
-    SELECT 1;
+    RETURN 1;
 END
 GO
 
@@ -315,6 +316,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    IF @SubjectTypeId IS NULL OR @SubjectTypeId <= 0
+        RETURN 0;
+
     UPDATE dbo.Cate_SubjectTypes
     SET
         IsActive = CASE WHEN IsActive = 1 THEN 0 ELSE 1 END,
@@ -323,7 +327,7 @@ BEGIN
     WHERE SubjectTypeId = @SubjectTypeId
       AND IsDeleted = 0;
 
-    SELECT 1;
+    RETURN 1;
 END
 GO
 

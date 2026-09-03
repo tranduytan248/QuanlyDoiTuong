@@ -894,20 +894,34 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
+</script>
+}
+
+<script type="text/javascript">
     function syncSubjectTypeIds() {
         var vals = $('#selectSubjectTypeIds').val();
-        $('#SubjectTypeIds').val(vals ? vals.join(',') : '');
+        $('#SubjectTypeIds').val(vals ? (Array.isArray(vals) ? vals.join(',') : vals) : '');
+    }
+
+    function initSubjectTypeSelect2() {
+        if ($.fn.select2) {
+            var $sel = $('#selectSubjectTypeIds');
+            if ($sel.length > 0) {
+                if ($sel.hasClass("select2-hidden-accessible")) {
+                    $sel.select2('destroy');
+                }
+                $sel.select2({
+                    placeholder: '-- Chọn một hoặc nhiều loại đối tượng --',
+                    allowClear: false,
+                    width: '100%'
+                });
+            }
+        }
+        syncSubjectTypeIds();
     }
 
     $(document).ready(function () {
-        if ($.fn.select2) {
-            $('#selectSubjectTypeIds').select2({
-                placeholder: '-- Chọn một hoặc nhiều loại đối tượng --',
-                allowClear: false,
-                width: '100%'
-            });
-        }
-        syncSubjectTypeIds();
+        initSubjectTypeSelect2();
     });
+    setTimeout(initSubjectTypeSelect2, 200);
 </script>
-}

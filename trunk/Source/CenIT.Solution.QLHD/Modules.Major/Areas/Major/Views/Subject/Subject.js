@@ -879,3 +879,27 @@ $(document).on("shown.bs.modal", "#modal_SubjectChangeLog", function () {
     var subjectId = $(this).find("#LogSubjectId").val();
     if (subjectId) { initTableSubjectChangeLog(subjectId); }
 });
+
+/* Đồng bộ giá trị Loại đối tượng cho form Thêm / Sửa đối tượng */
+function syncSubjectTypeIds() {
+    var $sel = $("#selectSubjectTypeIds");
+    if ($sel.length === 0) return;
+    var vals = $sel.val();
+    $("#SubjectTypeIds").val(vals ? (Array.isArray(vals) ? vals.join(",") : vals) : "");
+}
+
+/* Khởi tạo Select2 cho Loại đối tượng khi mở modal Add / Edit */
+$(document).on("shown.bs.modal", "#modal_AddSubject, #modal_EditSubject", function () {
+    var $sel = $(this).find("#selectSubjectTypeIds");
+    if ($sel.length > 0 && $.fn.select2) {
+        if (!$sel.hasClass("select2-hidden-accessible")) {
+            $sel.select2({
+                placeholder: "-- Chọn một hoặc nhiều loại đối tượng --",
+                allowClear: false,
+                width: "100%"
+            });
+        }
+    }
+    syncSubjectTypeIds();
+});
+

@@ -67,6 +67,23 @@ namespace TSFramework.Core.Providers
             }
 
             var sTitle = _message.GetMessage($"{EnumHelper.GetDescription(icon)}_Title");
+            if (string.IsNullOrEmpty(sTitle))
+            {
+                switch (icon)
+                {
+                    case EnumMsgIcon.Success: sTitle = "Thành công"; break;
+                    case EnumMsgIcon.Error: sTitle = "Lỗi"; break;
+                    case EnumMsgIcon.Warning: sTitle = "Cảnh báo"; break;
+                    case EnumMsgIcon.Info: sTitle = "Thông báo"; break;
+                    default: sTitle = "Thông báo"; break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(sMessage))
+            {
+                sMessage = "{0}";
+            }
+
             return
                 $"showNotify('{sTitle}', {string.Join(",", "'" + sIcon + "'", "'" + string.Format(sMessage, "<b>" + messageContent.Replace("'", @"\'") + "</b>") + "'", "'" + sUrl + "'", "'" + sTarget + "'", "'" + sType + "'", "'" + sPlacement + "'")});";
         }
@@ -98,6 +115,11 @@ namespace TSFramework.Core.Providers
                 case EnumProcessType.NonFormat:
                     sMessage = _message.GetMessage("Common_NonFormat");
                     break;
+            }
+
+            if (string.IsNullOrEmpty(sMessage))
+            {
+                sMessage = "{0}";
             }
 
             sMessage = string.Format(sMessage, "<b>" + messageContent.Replace("'", @"\'") + "</b>");

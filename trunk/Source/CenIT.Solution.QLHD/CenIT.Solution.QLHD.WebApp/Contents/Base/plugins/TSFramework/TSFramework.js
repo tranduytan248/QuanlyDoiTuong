@@ -367,9 +367,20 @@ window.onerror = function (message, source, lineno, colno, error) {
 };
 
 function showNotify(title, icon, message, url, target, type, placement) {
-    var clssName = type;
+    var clssName = type || "info";
 
     if (typeof placement === "undefined") placement = "tc";
+
+    if (!title) {
+        if (clssName === "success") title = "Thành công";
+        else if (clssName === "danger" || clssName === "error") title = "Lỗi";
+        else if (clssName === "warning") title = "Cảnh báo";
+        else title = "Thông báo";
+    }
+
+    if (!message) {
+        message = url || "Thao tác đã được thực hiện.";
+    }
 
     $.aceToaster.add({
         placement: placement,

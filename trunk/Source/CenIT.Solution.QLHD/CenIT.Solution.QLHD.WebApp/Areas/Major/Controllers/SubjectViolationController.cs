@@ -354,7 +354,7 @@ namespace Modules.Major.Areas.Major.Controllers
                     return Json(new
                     {
                         status = true,
-                        message = CreateMessage("Không có thông tin nào thay đổi", EnumProcessType.Edit, EnumMsgIcon.Info)
+                        message = CreateMessage("Không có thông tin nào thay đổi", EnumProcessType.NonFormat, EnumMsgIcon.Info)
                     }, JsonRequestBehavior.AllowGet);
                 }
 

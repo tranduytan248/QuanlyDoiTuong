@@ -66,7 +66,7 @@
                     <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
                         <i class="fas fa-exclamation-triangle text-orange-d2 mr-1 text-90"></i> Hành vi vi phạm
                     </label>
-                    <select class="form-control select2" id="BehaviorIds" name="BehaviorIds" multiple="multiple" data-placeholder="-- Tất cả hành vi vi phạm --">
+                    <select class="form-control none-select2" id="BehaviorIds" name="BehaviorIds" multiple="multiple" data-placeholder="-- Tất cả hành vi vi phạm --">
                         @foreach (var behavior in listBehaviors)
                         {
                             <option value="@behavior.BehaviorId" data-fieldid="@behavior.FieldId">@behavior.BehaviorName</option>

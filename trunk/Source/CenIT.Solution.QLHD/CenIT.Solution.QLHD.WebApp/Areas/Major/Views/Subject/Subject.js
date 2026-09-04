@@ -42,7 +42,18 @@ function initTableSubject() {
                 d.SubjectTypeIds = $("#Search #SubjectTypeIds").val();
                 // Danh sách hành vi vi phạm được chọn, ghép thành chuỗi phân tách bởi dấu phẩy
                 var behaviors = $("#Search #BehaviorIds").val();
-                d.BehaviorIds = (behaviors && behaviors.length > 0) ? (Array.isArray(behaviors) ? behaviors.join(",") : behaviors) : "";
+                var behaviorIds = (behaviors && behaviors.length > 0) ? (Array.isArray(behaviors) ? behaviors.join(",") : behaviors) : "";
+                var fieldId = $("#Search #SearchFieldId").val();
+
+                // Nếu người dùng KHÔNG chọn hành vi cụ thể nhưng CÓ chọn lĩnh vực:
+                // Tự động gom tất cả BehaviorId thuộc lĩnh vực đó để tìm kiếm theo lĩnh vực
+                if (!behaviorIds && fieldId && _allSearchBehaviorOptions.length > 0) {
+                    var fieldBehaviors = _allSearchBehaviorOptions.filter(function (x) { return x.fieldId === String(fieldId); }).map(function (x) { return x.id; });
+                    if (fieldBehaviors.length > 0) {
+                        behaviorIds = fieldBehaviors.join(",");
+                    }
+                }
+                d.BehaviorIds = behaviorIds;
             }
         },
         "columns": [
@@ -904,58 +915,99 @@ $(document).on("shown.bs.modal", "#modal_AddSubject, #modal_EditSubject", functi
     syncSubjectTypeIds();
 });
 
+/* Cache toàn bộ danh mục hành vi vi phạm ban đầu */
+var _allSearchBehaviorOptions = [];
+
 /* Khởi tạo bộ lọc tìm kiếm tại Index */
 function initSearchFilters() {
-    // Khởi tạo Select2 cho Hành vi vi phạm nếu có thư viện Select2
-    if ($.fn.select2) {
-        var $behaviorSelect = $("#Search #BehaviorIds");
-        if ($behaviorSelect.length > 0) {
-            if ($behaviorSelect.hasClass("select2-hidden-accessible")) {
-                $behaviorSelect.select2("destroy");
+    var $behaviors = $("#Search #BehaviorIds");
+    if ($behaviors.length === 0) return;
+
+    // Cache tất cả options lúc ban đầu
+    if (_allSearchBehaviorOptions.length === 0) {
+        $behaviors.find("option").each(function () {
+            var val = $(this).val();
+            if (val) {
+                _allSearchBehaviorOptions.push({
+                    id: String(val),
+                    text: $(this).text().trim(),
+                    fieldId: String($(this).attr("data-fieldid") || "")
+                });
             }
-            $behaviorSelect.select2({
-                placeholder: "-- Tất cả hành vi vi phạm --",
-                allowClear: true,
-                width: "100%"
-            });
-        }
+        });
     }
 
-    // Khi chọn Lĩnh vực thì tự động lọc danh sách Hành vi vi phạm tương ứng
-    $("#Search #SearchFieldId").on("change", function () {
-        var fieldId = $(this).val();
-        var $behaviors = $("#Search #BehaviorIds");
-        $behaviors.val(null);
-
-        if (!fieldId) {
-            $behaviors.find("option").prop("disabled", false).show();
-        } else {
-            $behaviors.find("option").each(function () {
-                var fId = $(this).attr("data-fieldid");
-                if (fId === fieldId) {
-                    $(this).prop("disabled", false).show();
-                } else {
-                    $(this).prop("disabled", true).hide();
-                }
-            });
+    // Khởi tạo Select2 cho Hành vi vi phạm
+    if ($.fn.select2) {
+        if ($behaviors.hasClass("select2-hidden-accessible")) {
+            $behaviors.select2("destroy");
         }
+        $behaviors.select2({
+            placeholder: "-- Tất cả hành vi vi phạm --",
+            allowClear: true,
+            width: "100%"
+        });
+    }
 
-        if ($.fn.select2 && $behaviors.data("select2")) {
-            $behaviors.select2("destroy").select2({
-                placeholder: "-- Tất cả hành vi vi phạm --",
-                allowClear: true,
-                width: "100%"
-            });
-        }
+    // Lắng nghe sự kiện đổi Lĩnh vực (bắt cả native change lẫn Select2 events)
+    $(document).off("change", "#Search #SearchFieldId").on("change", "#Search #SearchFieldId", function () {
+        filterBehaviorsBySelectedField();
     });
 
     // Hỗ trợ phím Enter khi đang ở bất kỳ ô nhập tìm kiếm nào
-    $("#Search input").on("keypress", function (e) {
+    $("#Search input").off("keypress").on("keypress", function (e) {
         if (e.which === 13) {
             e.preventDefault();
             _tableSubject.ajax.reload(null, false);
         }
     });
+}
+
+function filterBehaviorsBySelectedField() {
+    var fieldId = String($("#Search #SearchFieldId").val() || "").trim();
+    var $behaviors = $("#Search #BehaviorIds");
+    if ($behaviors.length === 0) return;
+
+    var selectedVals = $behaviors.val() || [];
+    if (!Array.isArray(selectedVals)) {
+        selectedVals = selectedVals ? [selectedVals] : [];
+    }
+
+    // Xóa sạch options hiện tại trong thẻ select
+    $behaviors.empty();
+
+    // Lọc danh sách theo lĩnh vực
+    var filtered = _allSearchBehaviorOptions;
+    if (fieldId) {
+        filtered = _allSearchBehaviorOptions.filter(function (item) {
+            return item.fieldId === fieldId;
+        });
+    }
+
+    // Thêm các option phù hợp vào thẻ select
+    filtered.forEach(function (item) {
+        var opt = new Option(item.text, item.id, false, false);
+        $(opt).attr("data-fieldid", item.fieldId);
+        $behaviors.append(opt);
+    });
+
+    // Giữ lại các giá trị đã chọn nếu còn hợp lệ
+    var validRemaining = selectedVals.filter(function (v) {
+        return filtered.some(function (item) { return item.id === String(v); });
+    });
+    $behaviors.val(validRemaining);
+
+    // Kích hoạt lại Select2 hiển thị danh sách mới
+    if ($.fn.select2) {
+        if ($behaviors.hasClass("select2-hidden-accessible")) {
+            $behaviors.select2("destroy");
+        }
+        $behaviors.select2({
+            placeholder: "-- Tất cả hành vi vi phạm --",
+            allowClear: true,
+            width: "100%"
+        });
+    }
 }
 
 /* Xoá điều kiện tìm kiếm và reload lại bảng */
@@ -965,16 +1017,7 @@ function resetSubjectSearch() {
     $("#Search #Gender").val("").trigger("change");
     $("#Search #SubjectTypeIds").val("").trigger("change");
     $("#Search #SearchFieldId").val("").trigger("change");
-    var $behaviors = $("#Search #BehaviorIds");
-    $behaviors.val(null);
-    $behaviors.find("option").prop("disabled", false).show();
-    if ($.fn.select2 && $behaviors.data("select2")) {
-        $behaviors.select2("destroy").select2({
-            placeholder: "-- Tất cả hành vi vi phạm --",
-            allowClear: true,
-            width: "100%"
-        });
-    }
+    filterBehaviorsBySelectedField();
     _tableSubject.ajax.reload(null, false);
 }
 

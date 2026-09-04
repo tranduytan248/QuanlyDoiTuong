@@ -9,6 +9,7 @@
 var _tableSubject;
 $(document).ready(function () {
     initTableSubject();
+    initSearchFilters();
 });
 
 function initTableSubject() {
@@ -41,7 +42,7 @@ function initTableSubject() {
                 d.SubjectTypeIds = $("#Search #SubjectTypeIds").val();
                 // Danh sách hành vi vi phạm được chọn, ghép thành chuỗi phân tách bởi dấu phẩy
                 var behaviors = $("#Search #BehaviorIds").val();
-                d.BehaviorIds = (behaviors && behaviors.length > 0) ? behaviors.join(",") : "";
+                d.BehaviorIds = (behaviors && behaviors.length > 0) ? (Array.isArray(behaviors) ? behaviors.join(",") : behaviors) : "";
             }
         },
         "columns": [
@@ -902,4 +903,79 @@ $(document).on("shown.bs.modal", "#modal_AddSubject, #modal_EditSubject", functi
     }
     syncSubjectTypeIds();
 });
+
+/* Khởi tạo bộ lọc tìm kiếm tại Index */
+function initSearchFilters() {
+    // Khởi tạo Select2 cho Hành vi vi phạm nếu có thư viện Select2
+    if ($.fn.select2) {
+        var $behaviorSelect = $("#Search #BehaviorIds");
+        if ($behaviorSelect.length > 0) {
+            if ($behaviorSelect.hasClass("select2-hidden-accessible")) {
+                $behaviorSelect.select2("destroy");
+            }
+            $behaviorSelect.select2({
+                placeholder: "-- Tất cả hành vi vi phạm --",
+                allowClear: true,
+                width: "100%"
+            });
+        }
+    }
+
+    // Khi chọn Lĩnh vực thì tự động lọc danh sách Hành vi vi phạm tương ứng
+    $("#Search #SearchFieldId").on("change", function () {
+        var fieldId = $(this).val();
+        var $behaviors = $("#Search #BehaviorIds");
+        $behaviors.val(null);
+
+        if (!fieldId) {
+            $behaviors.find("option").prop("disabled", false).show();
+        } else {
+            $behaviors.find("option").each(function () {
+                var fId = $(this).attr("data-fieldid");
+                if (fId === fieldId) {
+                    $(this).prop("disabled", false).show();
+                } else {
+                    $(this).prop("disabled", true).hide();
+                }
+            });
+        }
+
+        if ($.fn.select2 && $behaviors.data("select2")) {
+            $behaviors.select2("destroy").select2({
+                placeholder: "-- Tất cả hành vi vi phạm --",
+                allowClear: true,
+                width: "100%"
+            });
+        }
+    });
+
+    // Hỗ trợ phím Enter khi đang ở bất kỳ ô nhập tìm kiếm nào
+    $("#Search input").on("keypress", function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            _tableSubject.ajax.reload(null, false);
+        }
+    });
+}
+
+/* Xoá điều kiện tìm kiếm và reload lại bảng */
+function resetSubjectSearch() {
+    $("#Search #IdentityCardNumber").val("");
+    $("#Search #FullName").val("");
+    $("#Search #Gender").val("").trigger("change");
+    $("#Search #SubjectTypeIds").val("").trigger("change");
+    $("#Search #SearchFieldId").val("").trigger("change");
+    var $behaviors = $("#Search #BehaviorIds");
+    $behaviors.val(null);
+    $behaviors.find("option").prop("disabled", false).show();
+    if ($.fn.select2 && $behaviors.data("select2")) {
+        $behaviors.select2("destroy").select2({
+            placeholder: "-- Tất cả hành vi vi phạm --",
+            allowClear: true,
+            width: "100%"
+        });
+    }
+    _tableSubject.ajax.reload(null, false);
+}
+
 

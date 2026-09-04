@@ -6,99 +6,97 @@
     var listBehaviors = ViewBag.ListBehaviors as List<CateViolationBehaviorModel> ?? new List<CateViolationBehaviorModel>();
     var listSubjectTypes = ViewBag.ListSubjectTypes as List<CateSubjectTypeModel> ?? new List<CateSubjectTypeModel>();
 }
-<div class="card dcard">
-    <div class="card-header">
-        <h5 class="card-title text-120 text-primary">@AppProcessor.Messagor.GetMessage("Condition_Title")</h5>
+
+<div class="card dcard shadow-sm border-1 brc-grey-l1 mb-3">
+    <div class="card-header bgc-white border-b-1 brc-grey-l2 py-2">
+        <h5 class="card-title text-110 text-primary font-bold mb-0">
+            <i class="fas fa-filter text-primary-m1 mr-1"></i> @(AppProcessor.Messagor.GetMessage("Condition_Title") ?? "Bộ lọc tìm kiếm đối tượng")
+        </h5>
         <div class="card-toolbar no-border">
-            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px">
+            <a href="#" data-action="toggle" class="card-toolbar-btn btn btn-sm radius-1 btn-outline-default mx-2px" title="Thu gọn / Mở rộng">
                 <i class="fa fa-angle-double-up w-2 mx-1px"></i>
             </a>
         </div>
     </div>
-    <div class="card-body collapse show">
-        <div class="form-horizontal" id="Search">
+    <div class="card-body collapse show px-3 py-3 bgc-grey-l5">
+        <div id="Search">
             <div class="row">
-                <!-- CỘT TRÁI -->
-                <div class="col-12 col-lg-6">
-                    <div class="form-group row mb-3">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Số CCCD</label>
-                        <div class="col-sm-8">
-                            @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control", placeholder = "Nhập số CCCD/CMND...", autocomplete = "off" })
-                        </div>
-                    </div>
-
-                    <div class="form-group row mb-3">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Lĩnh vực</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="SearchFieldId">
-                                <option value="">-- Tất cả lĩnh vực --</option>
-                                @foreach (var field in listFields)
-                                {
-                                    <option value="@field.FieldId">@field.FieldName</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row mb-0">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Giới tính</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="Gender" name="Gender">
-                                <option value="">-- Tất cả giới tính --</option>
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                                <option value="Khác">Khác</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- HÀNG 1: THÔNG TIN NHÂN THÂN -->
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="far fa-id-card text-primary mr-1 text-90"></i> Số CCCD / CMND
+                    </label>
+                    @Html.TextBoxFor(model => model.IdentityCardNumber, new { @class = "form-control", placeholder = "Nhập số CCCD/CMND cần tra...", autocomplete = "off" })
                 </div>
 
-                <!-- CỘT PHẢI -->
-                <div class="col-12 col-lg-6">
-                    <div class="form-group row mb-3">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Họ và tên</label>
-                        <div class="col-sm-8">
-                            @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", placeholder = "Nhập họ tên hoặc tên gọi khác...", autocomplete = "off" })
-                        </div>
-                    </div>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="far fa-user text-primary mr-1 text-90"></i> Họ và tên / Tên gọi khác
+                    </label>
+                    @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", placeholder = "Nhập họ tên hoặc tên gọi khác...", autocomplete = "off" })
+                </div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Hành vi vi phạm</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="BehaviorIds" name="BehaviorIds" multiple size="4">
-                                @foreach (var behavior in listBehaviors)
-                                {
-                                    <option value="@behavior.BehaviorId" data-fieldid="@behavior.FieldId">@behavior.BehaviorName</option>
-                                }
-                            </select>
-                            <small class="form-text text-secondary text-85">
-                                <i class="fas fa-info-circle mr-1"></i>Giữ Ctrl để chọn nhiều hành vi. Chọn lĩnh vực để thu gọn danh sách.
-                            </small>
-                        </div>
-                    </div>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="fas fa-venus-mars text-primary mr-1 text-90"></i> Giới tính
+                    </label>
+                    <select class="form-control" id="Gender" name="Gender">
+                        <option value="">-- Tất cả giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
 
-                    <div class="form-group row mb-0">
-                        <label class="col-sm-4 col-form-label text-sm-right font-bold pr-2">Loại đối tượng</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="SubjectTypeIds" name="SubjectTypeIds">
-                                <option value="">-- Tất cả loại đối tượng --</option>
-                                @foreach (var st in listSubjectTypes)
-                                {
-                                    <option value="@st.SubjectTypeId">@st.SubjectTypeName</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
+                <!-- HÀNG 2: PHÂN LOẠI & HÀNH VI VI PHẠM -->
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="far fa-folder-open text-primary mr-1 text-90"></i> Lĩnh vực vi phạm
+                    </label>
+                    <select class="form-control" id="SearchFieldId">
+                        <option value="">-- Tất cả lĩnh vực --</option>
+                        @foreach (var field in listFields)
+                        {
+                            <option value="@field.FieldId">@field.FieldName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle text-orange-d2 mr-1 text-90"></i> Hành vi vi phạm
+                    </label>
+                    <select class="form-control select2" id="BehaviorIds" name="BehaviorIds" multiple="multiple" data-placeholder="-- Tất cả hành vi vi phạm --">
+                        @foreach (var behavior in listBehaviors)
+                        {
+                            <option value="@behavior.BehaviorId" data-fieldid="@behavior.FieldId">@behavior.BehaviorName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <label class="font-bold text-85 mb-1 text-secondary-d2 d-flex align-items-center">
+                        <i class="fas fa-tags text-primary mr-1 text-90"></i> Loại đối tượng
+                    </label>
+                    <select class="form-control" id="SubjectTypeIds" name="SubjectTypeIds">
+                        <option value="">-- Tất cả loại đối tượng --</option>
+                        @foreach (var st in listSubjectTypes)
+                        {
+                            <option value="@st.SubjectTypeId">@st.SubjectTypeName</option>
+                        }
+                    </select>
                 </div>
             </div>
+
+            <!-- NÚT BẤM THAO TÁC -->
+            <div class="d-flex justify-content-center align-items-center pt-2 mt-1 border-t-1 brc-grey-l2">
+                <button type="button" class="btn btn-primary px-4 py-2 font-bold radius-2 shadow-sm mr-3" onclick="_tableSubject.ajax.reload(null, false);">
+                    <i class="fa fa-search mr-1"></i> Tìm kiếm đối tượng
+                </button>
+                <button type="button" class="btn btn-outline-secondary px-3 py-2 font-bold radius-2" onclick="resetSubjectSearch();">
+                    <i class="fa fa-eraser mr-1"></i> Xoá điều kiện
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="card-footer text-center">
-        <button type="button" class="btn btn-primary px-3" onclick="_tableSubject.ajax.reload(null, false);">
-            <i class="fa fa-search"></i>&nbsp;Tìm kiếm đối tượng
-        </button>
-        <button type="button" class="btn btn-secondary px-3" onclick="resetSubjectSearch();">
-            <i class="fa fa-eraser"></i>&nbsp;Xoá điều kiện
-        </button>
     </div>
 </div>
